@@ -1,3 +1,4 @@
+```tsx
 import { NextResponse } from "next/server";
 
 const ZOHO_ACCOUNTS_URL =
@@ -57,7 +58,10 @@ export async function GET(request: Request) {
     const tokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok) {
-      console.error("Zoho token exchange failed", tokenData);
+      console.error(
+        "Zoho token exchange failed",
+        tokenData
+      );
 
       return new NextResponse(
         "Zoho token exchange failed. Check the Vercel logs.",
@@ -77,13 +81,8 @@ export async function GET(request: Request) {
       );
     }
 
-    console.log(
-      "ZOHO_REFRESH_TOKEN:",
-      tokenData.refresh_token
-    );
-
     return new NextResponse(
-      "Zoho authorization successful. The refresh token has been generated. Check your Vercel function logs for the refresh token.",
+      "Zoho authorization successful. The refresh token has been generated.",
       { status: 200 }
     );
   } catch (error) {
@@ -98,3 +97,4 @@ export async function GET(request: Request) {
     );
   }
 }
+```
