@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { OpenChatButton } from "@/components/open-chat-button";
 import { FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/site-data";
 
 function SocialIcon({ name }: { name: string }) {
@@ -101,7 +102,7 @@ export function SiteFooter() {
               {FOOTER_LINKS.start.map((item) => (
                 <li key={item.label}>
                   {item.chat ? (
-                    <button type="button" className="text-left hover:text-white">{item.label}</button>
+                    <OpenChatButton className="text-left hover:text-white">{item.label}</OpenChatButton>
                   ) : (
                     <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener noreferrer" : undefined} className="hover:text-white">
                       {item.label}
