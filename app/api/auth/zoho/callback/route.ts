@@ -1,48 +1,45 @@
-```tsx
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const ZOHO_ACCOUNTS_URL =
   process.env.ZOHO_ACCOUNTS_URL || "https://accounts.zoho.com";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+
+  const code = searchParams.get("code");
+  const error = searchParams.get("error");
+
+  if (error) {
+    return new NextResponse(
+      `Zoho authorization failed: ${error}`,
+      { status: 400 }
+    );
+  }
+
+  if (!code) {
+    return new NextResponse(
+      "No authorization code was provided.",
+      { status: 400 }
+    );
+  }
+
+  const clientId = process.env.ZOHO_CLIENT_ID;
+  const clientSecret = process.env.ZOHO_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    return new NextResponse(
+      "Zoho OAuth credentials are not configured.",
+      { status: 500 }
+    );
+  }
+
   try {
-    const { searchParams } = new URL(request.url);
-
-    const code = searchParams.get("code");
-    const error = searchParams.get("error");
-
-    if (error) {
-      return new NextResponse(
-        `Zoho authorization failed: ${error}`,
-        { status: 400 }
-      );
-    }
-
-    if (!code) {
-      return new NextResponse(
-        "No Zoho authorization code was provided.",
-        { status: 400 }
-      );
-    }
-
-    const clientId = process.env.ZOHO_CLIENT_ID;
-    const clientSecret = process.env.ZOHO_CLIENT_SECRET;
-
-    if (!clientId || !clientSecret) {
-      return new NextResponse(
-        "Zoho OAuth credentials are not configured.",
-        { status: 500 }
-      );
-    }
-
     const tokenResponse = await fetch(
       `${ZOHO_ACCOUNTS_URL}/oauth/v2/token`,
       {
         method: "POST",
         headers: {
-          Accept: "application/json",
-          "Content-Type":
-            "application/x-www-form-urlencoded",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
           code,
@@ -58,43 +55,31 @@ export async function GET(request: Request) {
     const tokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok) {
-      console.error(
-        "Zoho token exchange failed",
-        tokenData
-      );
+      console.error("Zoho token exchange failed:", tokenData);
 
       return new NextResponse(
-        "Zoho token exchange failed. Check the Vercel logs.",
+        "Zoho authorization failed during token exchange.",
         { status: 500 }
       );
     }
 
     if (!tokenData.refresh_token) {
-      console.error(
-        "Zoho refresh token missing",
-        tokenData
-      );
-
       return new NextResponse(
-        "Zoho did not return a refresh token. Check the Vercel logs.",
+        "Zoho authorization succeeded, but no refresh token was returned.",
         { status: 500 }
       );
     }
 
     return new NextResponse(
-      "Zoho authorization successful. The refresh token has been generated.",
+      "Zoho authorization successful. The refresh token has been generated. Add it to Vercel as ZOHO_REFRESH_TOKEN.",
       { status: 200 }
     );
-  } catch (error) {
-    console.error(
-      "Zoho OAuth callback error",
-      error
-    );
+  } catch (err) {
+    console.error("Zoho OAuth error:", err);
 
     return new NextResponse(
-      "Zoho OAuth callback failed.",
+      "An unexpected error occurred during Zoho authorization.",
       { status: 500 }
     );
   }
 }
-```
