@@ -23,6 +23,7 @@ import {
   WHY_NAIROBIX,
   ENGAGEMENT_PROCESS,
   INDUSTRIES_SERVED,
+  CLIENT_WORKSPACE,
 } from "@/lib/site-data";
 
 export default function HomePage() {
@@ -141,21 +142,31 @@ export default function HomePage() {
           </div>
           <div className="grid gap-6 lg:grid-cols-3">
             {HOME_SOLUTIONS.map((solution) => (
-              <Link key={solution.title} href={solution.href} className="group block">
-                <ImageFrame
+              <Link
+                key={solution.title}
+                href={solution.href}
+                className="group relative isolate flex min-h-[430px] flex-col justify-end overflow-hidden rounded-[var(--radius-card)] border border-white/10 p-6 sm:min-h-[460px] sm:p-8"
+              >
+                <Image
                   src={solution.image}
                   alt={solution.imageAlt}
-                  aspect="portrait"
+                  fill
                   sizes="(min-width: 1024px) 33vw, 100vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
                 />
-                <div className="mt-5">
-                  <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#030304] via-[#030304]/55 to-[#030304]/10" />
+                <div
+                  className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
+                  style={{ backgroundImage: `url("${GRAIN_DATA_URI}")` }}
+                />
+                <div className="relative">
+                  <div className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
                     {solution.number}
                   </div>
                   <Heading variant="heading-md" as="h3">
                     {solution.title}
                   </Heading>
-                  <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{solution.description}</p>
+                  <p className="mt-3 max-w-xs text-base leading-7 text-slate-200">{solution.description}</p>
                   <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
                     {solution.cta}
                   </span>
@@ -218,6 +229,16 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+
+          <Card variant="surface" className="mt-12 p-6 sm:p-8">
+            <Eyebrow>{CLIENT_WORKSPACE.eyebrow}</Eyebrow>
+            <Heading variant="heading-md" as="h3" className="mt-4">
+              {CLIENT_WORKSPACE.title}
+            </Heading>
+            <p className="mt-3 max-w-[var(--max-width-prose)] text-base leading-7 text-[var(--text-secondary)]">
+              {CLIENT_WORKSPACE.description}
+            </p>
+          </Card>
         </Section>
 
         {/* 8. Trust — industries + illustrative case studies */}

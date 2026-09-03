@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/Card";
 import { CTASection } from "@/components/ui/CTASection";
 import { Button } from "@/components/ui/Button";
 import { GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
-import { BOOKING_URL } from "@/lib/site-data";
+import { BOOKING_URL, BUSINESSES_WE_SERVE } from "@/lib/site-data";
 
 export const metadata: Metadata = {
   title: "About | NairobiX",
@@ -96,6 +96,27 @@ export default function AboutPage() {
               </Card>
             ))}
           </div>
+        </Section>
+
+        <Section tone="surface" border="top">
+          <div className="mb-10 max-w-2xl">
+            <Eyebrow>WHO WE WORK WITH</Eyebrow>
+            <Heading as="h2" variant="display-md" className="mt-4">
+              Built for businesses facing a familiar set of growth problems.
+            </Heading>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {BUSINESSES_WE_SERVE.map((item) => (
+              <Card key={item.type} variant="outline" className="p-5">
+                <p className="text-sm font-semibold text-white">{item.type}</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{item.problem}</p>
+              </Card>
+            ))}
+          </div>
+          <p className="mt-6 text-sm leading-6 text-[var(--text-tertiary)]">
+            And other growth-focused businesses across sectors, wherever a connected system would
+            make the biggest difference.
+          </p>
         </Section>
 
         <CTASection

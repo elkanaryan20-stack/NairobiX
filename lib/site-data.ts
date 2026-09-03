@@ -129,8 +129,8 @@ export const SOLUTION_CATEGORIES = [
         ],
         cta: "Request Solution →",
         href: "/request-solution",
-        image: "/images/photography/systems-pattern.webp",
-        imageAlt: "Geometric shadows from architectural pillars forming a repeating pattern.",
+        image: "/images/photography/operations-workflow.webp",
+        imageAlt: "A team member working on a laptop at a standing desk inside an organized operations facility.",
       },
     ],
   },
@@ -176,8 +176,8 @@ export const SOLUTION_CATEGORIES = [
         ],
         cta: "Request Solution →",
         href: "/request-solution",
-        image: "/images/photography/build-innovate.webp",
-        imageAlt: "A spiral staircase viewed from directly above.",
+        image: "/images/photography/digital-payment.webp",
+        imageAlt: "Two people exchanging phones to complete a digital payment at a retail counter.",
       },
     ],
   },
@@ -348,6 +348,30 @@ export const INDUSTRIES_SERVED = [
   "Finance",
   "Construction",
 ];
+
+export const BUSINESSES_WE_SERVE = [
+  { type: "SMEs & Established Businesses", problem: "growth that has plateaued or outgrown ad hoc systems" },
+  { type: "Professional Services", problem: "growth that depends on referrals alone" },
+  { type: "Healthcare", problem: "inconsistent patient inquiries and follow-up" },
+  { type: "Education", problem: "enrollment inquiries that go unanswered" },
+  { type: "Real Estate", problem: "slow lead response across listings" },
+  { type: "E-commerce & Retail", problem: "inconsistent traffic and cart abandonment" },
+  { type: "Hospitality", problem: "seasonal demand and guest retention" },
+  { type: "Financial Services", problem: "lead qualification and trust-building at scale" },
+  { type: "NGOs & Organizations", problem: "visibility and engagement on limited resources" },
+];
+
+export const CLIENT_WORKSPACE = {
+  eyebrow: "THE NAIROBIX WORKSPACE",
+  title: "A shared space for the work itself, not just the emails about it.",
+  description:
+    "Once an engagement begins, clients and partners get access to a dedicated NairobiX workspace — a single place to track project visibility, deliverables, growth reports and open requests, so collaboration doesn't depend on scattered emails and calls. It's part of how NairobiX works day to day, not a separate product.",
+};
+
+export const PARTNER_PORTAL_NOTE =
+  "Active partners get access to the NairobiX Partner Portal — a shared space for tracking referrals, requests and updates, so collaboration stays organized as the partnership grows.";
+
+export const CONTACT_EMAIL = "hello@nairobix.com";
 
 export const FAQS = [
   {

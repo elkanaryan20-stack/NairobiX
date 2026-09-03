@@ -10,6 +10,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { CONTACT_EMAIL } from "@/lib/site-data";
 
 export const metadata: Metadata = {
   title: "Contact | NairobiX",
@@ -48,6 +49,16 @@ export default function ContactPage() {
             </Heading>
             <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">
               Pick the path that matches where you are, or use the general message form below.
+            </p>
+            <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
+              For general business inquiries, you can also reach us directly at{" "}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="font-semibold text-white hover:text-[var(--color-primary)]"
+              >
+                {CONTACT_EMAIL}
+              </a>
+              .
             </p>
           </div>
 

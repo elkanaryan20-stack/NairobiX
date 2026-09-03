@@ -9,6 +9,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
+import { PARTNER_PORTAL_NOTE } from "@/lib/site-data";
 
 export const metadata: Metadata = {
   title: "Partnership | NairobiX",
@@ -130,6 +131,7 @@ export default function PartnershipPage() {
               </Card>
             ))}
           </div>
+          <p className="mt-8 max-w-2xl text-sm leading-6 text-[var(--text-tertiary)]">{PARTNER_PORTAL_NOTE}</p>
         </Section>
       </main>
       <SiteFooter />

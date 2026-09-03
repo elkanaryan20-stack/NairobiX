@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { OpenChatButton } from "@/components/open-chat-button";
-import { FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/site-data";
+import { CONTACT_EMAIL, FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/site-data";
 
 function SocialIcon({ name }: { name: string }) {
   const sharedClass = "h-4 w-4 fill-current";
@@ -72,6 +72,12 @@ export function SiteFooter() {
             <p className="max-w-xs text-sm leading-7 text-[var(--text-secondary)]">
               Intelligent growth systems for ambitious businesses.
             </p>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="mt-4 inline-block text-sm font-medium text-[var(--text-secondary)] hover:text-white"
+            >
+              {CONTACT_EMAIL}
+            </a>
           </div>
 
           <div>
