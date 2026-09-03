@@ -1,3 +1,8 @@
+export const BOOKING_URL = "https://nairobix.zohobookings.com/4940054000000039045";
+
+export const BOTPRESS_SHARE_URL =
+  "https://cdn.botpress.cloud/webchat/v3.7/shareable.html?configUrl=https://files.bpcontent.cloud/2026/08/01/07/20260801073051-QOAXJ859.json";
+
 export const NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "Solutions", href: "/solutions" },
@@ -21,8 +26,8 @@ export const FOOTER_LINKS = {
   ],
   start: [
     { label: "Free Business Growth Assessment", href: "/business-growth-audit", external: false },
-    { label: "Book a Consultation", href: "https://nairobix.zohobookings.com/4940054000000039045", external: true },
-    { label: "Talk to Nia", href: "https://cdn.botpress.cloud/webchat/v3.7/shareable.html?configUrl=https://files.bpcontent.cloud/2026/08/01/07/20260801073051-QOAXJ859.json", external: true, chat: true },
+    { label: "Book a Consultation", href: BOOKING_URL, external: true },
+    { label: "Talk to Nia", href: BOTPRESS_SHARE_URL, external: true, chat: true },
   ],
 };
 
@@ -45,6 +50,8 @@ export const SOLUTION_CATEGORIES = [
         title: "Digital Marketing",
         eyebrow: "01 — DIGITAL MARKETING",
         heading: "Get your business in front of the right people.",
+        problem:
+          "Visibility is inconsistent — some months bring steady inquiries, others go quiet, with no clear reason why.",
         description:
           "We build digital marketing systems designed to improve visibility, attract qualified prospects and create a more consistent flow of opportunities.",
         ideal: [
@@ -55,14 +62,16 @@ export const SOLUTION_CATEGORIES = [
         ],
         cta: "Request Solution →",
         href: "/request-solution",
-        image:
-          "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
+        image: "/images/photography/nairobi-skyline.webp",
+        imageAlt: "The Nairobi city skyline under a bright midday sky.",
       },
       {
         id: "growth-strategy",
         title: "Growth Strategy & Analytics",
         eyebrow: "02 — GROWTH STRATEGY & ANALYTICS",
         heading: "Know where to focus before you spend more.",
+        problem:
+          "Budget and effort are going somewhere, but it's difficult to say with confidence which activities are actually driving results.",
         description:
           "We help businesses identify growth opportunities, understand performance and make better decisions using strategy and business data.",
         ideal: [
@@ -73,8 +82,8 @@ export const SOLUTION_CATEGORIES = [
         ],
         cta: "Request Solution →",
         href: "/request-solution",
-        image:
-          "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
+        image: "/images/photography/acquire-grow.webp",
+        imageAlt: "A concrete staircase leading upward toward daylight.",
       },
     ],
   },
@@ -88,6 +97,8 @@ export const SOLUTION_CATEGORIES = [
         title: "CRM & Sales Systems",
         eyebrow: "03 — CRM & SALES SYSTEMS",
         heading: "Turn more opportunities into customers.",
+        problem:
+          "Leads exist in inboxes, WhatsApp threads and someone's memory — not in a system the whole team can see and act on.",
         description:
           "We design systems that organize leads, improve follow-up and give teams greater visibility across the sales process.",
         ideal: [
@@ -98,14 +109,16 @@ export const SOLUTION_CATEGORIES = [
         ],
         cta: "Request Solution →",
         href: "/request-solution",
-        image:
-          "https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=1200&q=80",
+        image: "/images/photography/convert-scale.webp",
+        imageAlt: "Colleagues reviewing notes together at a wooden table.",
       },
       {
         id: "business-automation",
         title: "Business Automation",
         eyebrow: "04 — BUSINESS AUTOMATION",
         heading: "Let your business run smarter.",
+        problem:
+          "Quotes, follow-ups and reporting still depend on someone remembering to do them manually, every single time.",
         description:
           "We automate repetitive processes so teams can spend less time on manual work and more time on customers and growth.",
         ideal: [
@@ -116,8 +129,8 @@ export const SOLUTION_CATEGORIES = [
         ],
         cta: "Request Solution →",
         href: "/request-solution",
-        image:
-          "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
+        image: "/images/photography/systems-pattern.webp",
+        imageAlt: "Geometric shadows from architectural pillars forming a repeating pattern.",
       },
     ],
   },
@@ -131,6 +144,8 @@ export const SOLUTION_CATEGORIES = [
         title: "AI Solutions",
         eyebrow: "05 — AI SOLUTIONS",
         heading: "Put AI to work inside your business.",
+        problem:
+          "Customer questions, internal tasks and routine information requests still take up time that could go toward higher-value work.",
         description:
           "We implement practical AI solutions that help businesses automate tasks, support customers, improve productivity and make better use of their information.",
         ideal: [
@@ -141,14 +156,16 @@ export const SOLUTION_CATEGORIES = [
         ],
         cta: "Request Solution →",
         href: "/request-solution",
-        image:
-          "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80",
+        image: "/images/photography/modern-office.webp",
+        imageAlt: "A sunlit modern office with people working quietly in the background.",
       },
       {
         id: "web-digital-solutions",
         title: "Web & Digital Solutions",
         eyebrow: "06 — WEB & DIGITAL SOLUTIONS",
         heading: "Build digital experiences that move your business forward.",
+        problem:
+          "The website exists, but it functions as a digital brochure rather than something that actively supports growth.",
         description:
           "We create websites, platforms and digital experiences designed around your customers, business processes and growth objectives.",
         ideal: [
@@ -159,8 +176,8 @@ export const SOLUTION_CATEGORIES = [
         ],
         cta: "Request Solution →",
         href: "/request-solution",
-        image:
-          "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+        image: "/images/photography/build-innovate.webp",
+        imageAlt: "A spiral staircase viewed from directly above.",
       },
     ],
   },
@@ -171,8 +188,8 @@ export const HOME_SOLUTIONS = [
     title: "Acquire & Grow",
     number: "01",
     description: "Build stronger customer acquisition and create measurable demand.",
-    image:
-      "https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/photography/acquire-grow.webp",
+    imageAlt: "A concrete staircase leading upward toward daylight, framed by tall walls.",
     href: "/solutions#acquire-grow",
     cta: "Explore Solution →",
   },
@@ -180,8 +197,8 @@ export const HOME_SOLUTIONS = [
     title: "Convert & Scale",
     number: "02",
     description: "Turn opportunities into customers and build systems that support scalable growth.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/photography/convert-scale.webp",
+    imageAlt: "Colleagues reviewing notes together at a wooden table during a working session.",
     href: "/solutions#convert-scale",
     cta: "Explore Solution →",
   },
@@ -189,8 +206,8 @@ export const HOME_SOLUTIONS = [
     title: "Build & Innovate",
     number: "03",
     description: "Build intelligent digital infrastructure for the next stage of growth.",
-    image:
-      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/photography/build-innovate.webp",
+    imageAlt: "A spiral staircase viewed from directly above, forming a precise architectural pattern.",
     href: "/solutions#build-innovate",
     cta: "Explore Solution →",
   },
@@ -202,25 +219,134 @@ export const CASE_STUDIES = [
     label: "Healthcare",
     title: "Patient Growth & Experience System",
     description: "How a connected growth system could transform a modern healthcare business.",
-    image:
-      "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/photography/case-healthcare.webp",
+    imageAlt: "Warm wood beams and white architectural curves inside a premium modern building.",
   },
   {
     slug: "customer-acquisition-retention-system",
     label: "Hospitality",
     title: "Customer Acquisition & Retention System",
     description: "How a connected growth system could transform a hospitality brand.",
-    image:
-      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/photography/case-hospitality.webp",
+    imageAlt: "An elegant hotel lobby corridor with an arched doorway and patterned rug.",
   },
   {
     slug: "lead-generation-sales-system",
     label: "Real Estate",
     title: "Lead Generation & Sales System",
     description: "How a connected growth system could transform a real-estate business.",
-    image:
-      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/photography/case-realestate.webp",
+    imageAlt: "A contemporary building at dusk with warm interior light glowing through the windows.",
   },
+];
+
+export const HERO_IMAGE = {
+  src: "/images/photography/hero-arrival.webp",
+  alt: "Sunlight cutting through a modern architectural walkway, casting long shadows across the floor.",
+};
+
+export const WHAT_WE_DO = {
+  eyebrow: "WHAT NAIROBIX DOES",
+  title: "Not a marketing agency. A connected growth system.",
+  body: "NairobiX is not a marketing agency, a software vendor, or an automation consultancy — although the work touches all three. Digital marketing, CRM and sales systems, business automation, AI implementation, web and digital solutions, growth strategy and analytics are brought together as one body of work, because in practice these disciplines determine each other. A campaign that generates leads a sales team can't follow up on is not a marketing problem — it's a systems problem. NairobiX works at the level where growth actually happens: across the whole business, not inside a single department.",
+};
+
+export const PROBLEMS_WE_SOLVE = [
+  {
+    title: "Leads come in, then go quiet.",
+    description:
+      "Inquiries arrive from ads, referrals or your website, but follow-up is inconsistent, slow, or depends on one person remembering to respond.",
+  },
+  {
+    title: "Marketing and sales don't share a system.",
+    description:
+      "Your team can see what channels bring in traffic, but has no clear view of what actually turns into paying customers.",
+  },
+  {
+    title: "Growth still runs on manual effort.",
+    description:
+      "Quotes, follow-ups, onboarding and reporting run on spreadsheets, memory and repeated manual work instead of a system built to carry them.",
+  },
+  {
+    title: "It's unclear where to focus next.",
+    description:
+      "Budget, time and attention are being spent, but it's difficult to see which investments are actually moving the business forward.",
+  },
+];
+
+export const GROWTH_APPROACH = [
+  {
+    step: "Understand",
+    description:
+      "We review where your business is today — acquisition, sales process, systems and operations — to find what's limiting growth and where the strongest opportunities exist.",
+  },
+  {
+    step: "Build",
+    description:
+      "We design and implement the systems, digital assets and strategies your business needs, sized to your current stage rather than a fixed package.",
+  },
+  {
+    step: "Connect",
+    description:
+      "We connect marketing, sales, customer experience and operations so information and follow-up move automatically between them, instead of living in separate tools.",
+  },
+  {
+    step: "Optimize",
+    description:
+      "We track what the system produces, identify where performance is weakest, and refine it — growth work continues after launch rather than ending at handover.",
+  },
+];
+
+export const WHY_NAIROBIX = [
+  {
+    title: "One accountable partner, not five vendors",
+    description:
+      "Marketing, CRM, automation and web work are usually split across separate freelancers or agencies who don't coordinate. NairobiX carries all of it under one plan, so nothing falls into the gap between two vendors.",
+  },
+  {
+    title: "Built around your business, not a fixed package",
+    description:
+      "The Business Growth Assessment shapes the plan before any system is built — the goal is the right system for your stage and budget, not a standard bundle sold the same way to every client.",
+  },
+  {
+    title: "Strategy stays connected to execution",
+    description:
+      "Recommendations are implemented by the same team that made them, and reviewed against what the system actually produces — not handed off as a document and left.",
+  },
+];
+
+export const ENGAGEMENT_PROCESS = [
+  {
+    number: "01",
+    title: "Share your business",
+    description: "Submit the Business Growth Assessment — a structured look at your goals, challenges and current systems.",
+  },
+  {
+    number: "02",
+    title: "NairobiX reviews it",
+    description: "We review your responses against your industry and growth stage to identify the highest-impact opportunities.",
+  },
+  {
+    number: "03",
+    title: "You get a clear plan",
+    description: "You receive the priorities and proposed approach in plain terms, with room to ask questions before anything begins.",
+  },
+  {
+    number: "04",
+    title: "We build and connect",
+    description: "Implementation begins across the agreed systems, with performance reviewed and refined as the engagement continues.",
+  },
+];
+
+export const INDUSTRIES_SERVED = [
+  "Healthcare",
+  "Hospitality",
+  "Real Estate",
+  "Retail & E-commerce",
+  "Professional Services",
+  "Education",
+  "Finance",
+  "Construction",
 ];
 
 export const FAQS = [

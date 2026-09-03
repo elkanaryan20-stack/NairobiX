@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -11,6 +11,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  weight: "variable",
+  axes: ["opsz", "SOFT", "WONK"],
 });
 
 export const metadata: Metadata = {
@@ -42,9 +49,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/images/NairobiX-removebg-preview.png",
-    shortcut: "/images/NairobiX-removebg-preview.png",
-    apple: "/images/NairobiX-removebg-preview.png",
+    icon: "/images/NairobiX-logo.png",
+    shortcut: "/images/NairobiX-logo.png",
+    apple: "/images/NairobiX-logo.png",
   },
 };
 
@@ -52,7 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#0b0b0d] text-white">
 

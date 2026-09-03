@@ -1,7 +1,5 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
-
-const BOTPRESS_SHARE_URL =
-  "https://cdn.botpress.cloud/webchat/v3.7/shareable.html?configUrl=https://files.bpcontent.cloud/2026/08/01/07/20260801073051-QOAXJ859.json";
+import { BOTPRESS_SHARE_URL } from "@/lib/site-data";
 
 export function OpenChatButton({
   children,

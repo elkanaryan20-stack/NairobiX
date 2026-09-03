@@ -69,14 +69,14 @@ export function SiteFooter() {
               />
               <span className="text-lg font-bold sm:text-xl">Nairobi<span className="text-[var(--color-primary)]">X</span></span>
             </div>
-            <p className="max-w-xs text-sm leading-7 text-slate-300">
+            <p className="max-w-xs text-sm leading-7 text-[var(--text-secondary)]">
               Intelligent growth systems for ambitious businesses.
             </p>
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Solutions</h3>
-            <ul className="space-y-3 text-sm text-slate-300">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Solutions</p>
+            <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.solutions.map((item) => (
                 <li key={item.label}>
                   <Link href={item.href} className="hover:text-white">{item.label}</Link>
@@ -86,8 +86,8 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Company</h3>
-            <ul className="space-y-3 text-sm text-slate-300">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Company</p>
+            <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.company.map((item) => (
                 <li key={item.label}>
                   <Link href={item.href} className="hover:text-white">{item.label}</Link>
@@ -97,8 +97,8 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Start</h3>
-            <ul className="space-y-3 text-sm text-slate-300">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Start</p>
+            <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.start.map((item) => (
                 <li key={item.label}>
                   {item.chat ? (
@@ -114,7 +114,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Social</h3>
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Social</p>
             <div className="flex flex-wrap gap-3">
               {SOCIAL_LINKS.map((link) => (
                 <a
@@ -123,7 +123,7 @@ export function SiteFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={link.label}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 transition hover:border-[var(--color-primary)] hover:text-white"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[var(--text-secondary)] transition hover:border-[var(--color-primary)] hover:text-white"
                 >
                   <SocialIcon name={link.icon} />
                 </a>
@@ -132,7 +132,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-[var(--text-tertiary)] sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 NairobiX. All rights reserved.</p>
           <div className="flex items-center gap-5">
             <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>

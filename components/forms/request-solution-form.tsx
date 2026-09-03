@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { ChipGroup, FormInput, FormSelect, FormTextarea, SectionHeader } from "@/components/forms/FormField";
 import { ErrorBanner, FormSuccessState, LeadFormShell } from "@/components/forms/LeadFormShell";
+import { Button } from "@/components/ui/Button";
+import { trackConversion } from "@/lib/analytics";
 
 const solutionOptions = [
   "Digital Marketing",
@@ -131,6 +133,7 @@ export function RequestSolutionForm() {
         return;
       }
 
+      trackConversion("generate_lead", { form_type: "request_solution" });
       setIsSuccess(true);
     } catch (error) {
       console.error("Solution request failed", error);
@@ -238,14 +241,10 @@ export function RequestSolutionForm() {
         </div>
 
         <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-400">We’re focused on the right growth system for your business.</p>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#ea6a16] disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <p className="text-sm text-[var(--text-tertiary)]">We&apos;re focused on the right growth system for your business.</p>
+          <Button type="submit" disabled={isSubmitting} variant="primary">
             {isSubmitting ? "Sending Request..." : "Submit Request →"}
-          </button>
+          </Button>
         </div>
       </form>
     </LeadFormShell>

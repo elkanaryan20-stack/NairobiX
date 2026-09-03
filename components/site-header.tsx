@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { NAV_ITEMS } from "@/lib/site-data";
+import { BOOKING_URL, NAV_ITEMS } from "@/lib/site-data";
 
 const CTAS = [
-  { label: "Book a Consultation", href: "https://nairobix.zohobookings.com/4940054000000039045", external: true },
+  { label: "Book a Consultation", href: BOOKING_URL, external: true },
   { label: "Get Free Growth Assessment", href: "/business-growth-audit", external: false },
 ];
 
@@ -24,7 +24,7 @@ export function SiteHeader() {
             alt="NairobiX"
             width={32}
             height={32}
-            priority
+            preload
             className="h-7 w-auto object-contain sm:h-8 lg:h-9"
           />
           <span className="text-lg font-bold sm:text-xl lg:text-2xl">Nairobi<span className="text-[var(--color-primary)]">X</span></span>
@@ -38,7 +38,7 @@ export function SiteHeader() {
                 key={item.label}
                 href={item.href}
                 className={`text-sm font-medium transition ${
-                  isActive ? "text-[var(--color-primary)]" : "text-slate-300 hover:text-white"
+                  isActive ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)] hover:text-white"
                 }`}
               >
                 {item.label}
@@ -57,7 +57,7 @@ export function SiteHeader() {
               className={
                 cta.label === "Book a Consultation"
                   ? "inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:border-white/30 hover:bg-white/10"
-                  : "inline-flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#ea6a16]"
+                  : "inline-flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-primary-strong)]"
               }
             >
               {cta.label}
@@ -89,7 +89,7 @@ export function SiteHeader() {
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={`rounded-xl px-3 py-3 text-base font-medium ${
-                  pathname === item.href ? "text-[var(--color-primary)]" : "text-slate-200"
+                  pathname === item.href ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"
                 }`}
               >
                 {item.label}
@@ -97,9 +97,10 @@ export function SiteHeader() {
             ))}
             <div className="mt-2 border-t border-white/10 pt-4">
               <a
-                href="https://nairobix.zohobookings.com/4940054000000039045"
+                href={BOOKING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => setMobileOpen(false)}
                 className="mb-3 flex w-full items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm font-medium text-white"
               >
                 Book a Consultation

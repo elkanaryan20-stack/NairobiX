@@ -18,7 +18,7 @@ export function SectionHeader({
     <div className="mb-6">
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">{number}</p>
       <h2 className="mt-3 text-2xl font-semibold text-white sm:text-3xl">{title}</h2>
-      {description ? <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">{description}</p> : null}
+      {description ? <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-secondary)]">{description}</p> : null}
     </div>
   );
 }
@@ -45,7 +45,7 @@ export function FormInput({
   helperText?: string;
 }) {
   return (
-    <label className="block text-sm font-medium text-slate-200">
+    <label className="block text-sm font-medium text-[var(--text-secondary)]">
       <span className="flex items-center gap-2">
         {label}
         {required ? <span className="text-[var(--color-primary)]">*</span> : null}
@@ -56,9 +56,9 @@ export function FormInput({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-2xl border border-white/10 bg-[#121417] px-4 py-3.5 text-base text-white placeholder:text-slate-500 focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
+        className="mt-2 w-full rounded-[var(--radius-card)] border border-white/10 bg-[#121417] px-4 py-3.5 text-base text-white placeholder:text-[var(--text-tertiary)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
       />
-      {helperText ? <span className="mt-2 block text-xs text-slate-400">{helperText}</span> : null}
+      {helperText ? <span className="mt-2 block text-xs text-[var(--text-tertiary)]">{helperText}</span> : null}
       <FieldError message={error} />
     </label>
   );
@@ -86,7 +86,7 @@ export function FormTextarea({
   helperText?: string;
 }) {
   return (
-    <label className="block text-sm font-medium text-slate-200">
+    <label className="block text-sm font-medium text-[var(--text-secondary)]">
       <span className="flex items-center gap-2">
         {label}
         {required ? <span className="text-[var(--color-primary)]">*</span> : null}
@@ -97,9 +97,9 @@ export function FormTextarea({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-2xl border border-white/10 bg-[#121417] px-4 py-3.5 text-base text-white placeholder:text-slate-500 focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
+        className="mt-2 w-full rounded-[var(--radius-card)] border border-white/10 bg-[#121417] px-4 py-3.5 text-base text-white placeholder:text-[var(--text-tertiary)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
       />
-      {helperText ? <span className="mt-2 block text-xs text-slate-400">{helperText}</span> : null}
+      {helperText ? <span className="mt-2 block text-xs text-[var(--text-tertiary)]">{helperText}</span> : null}
       <FieldError message={error} />
     </label>
   );
@@ -123,7 +123,7 @@ export function FormSelect({
   error?: string;
 }) {
   return (
-    <label className="block text-sm font-medium text-slate-200">
+    <label className="block text-sm font-medium text-[var(--text-secondary)]">
       <span className="flex items-center gap-2">
         {label}
         {required ? <span className="text-[var(--color-primary)]">*</span> : null}
@@ -132,9 +132,9 @@ export function FormSelect({
         name={name}
         value={value}
         onChange={onChange}
-        className="mt-2 w-full rounded-2xl border border-white/10 bg-[#121417] px-4 py-3.5 text-base text-white focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
+        className="mt-2 w-full rounded-[var(--radius-card)] border border-white/10 bg-[#121417] px-4 py-3.5 text-base text-white focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
       >
-        <option value="" className="text-slate-500">Select an option</option>
+        <option value="" className="text-[var(--text-tertiary)]">Select an option</option>
         {options.map((option) => (
           <option key={option.value} value={option.value} className="text-white bg-[#121417]">
             {option.label}
@@ -166,7 +166,7 @@ export function ChipGroup({
   allowSingleSelection?: boolean;
 }) {
   return (
-    <div className="block text-sm font-medium text-slate-200">
+    <div className="block text-sm font-medium text-[var(--text-secondary)]">
       <span className="flex items-center gap-2">{label}</span>
       <div className="mt-3 flex flex-wrap gap-2.5" role="group" aria-label={name}>
         {options.map((option) => {
@@ -176,10 +176,10 @@ export function ChipGroup({
               key={option}
               type="button"
               onClick={() => onSelect(option)}
-              className={`rounded-full border px-4 py-2 text-sm transition ${
+              className={`rounded-full border px-4 py-3 text-sm transition ${
                 active
                   ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-white shadow-[0_0_0_1px_rgba(249,115,22,0.2)]"
-                  : "border-white/10 bg-white/[0.02] text-slate-300 hover:border-white/20 hover:bg-white/[0.04]"
+                  : "border-white/10 bg-white/[0.02] text-[var(--text-secondary)] hover:border-white/20 hover:bg-white/[0.04]"
               } ${allowSingleSelection ? "min-w-[184px]" : ""}`}
               aria-pressed={active}
             >
@@ -188,7 +188,7 @@ export function ChipGroup({
           );
         })}
       </div>
-      {helperText ? <span className="mt-2 block text-xs text-slate-400">{helperText}</span> : null}
+      {helperText ? <span className="mt-2 block text-xs text-[var(--text-tertiary)]">{helperText}</span> : null}
       <FieldError message={error} />
     </div>
   );

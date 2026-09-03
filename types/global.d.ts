@@ -6,6 +6,7 @@ declare global {
       setVisibility?: (visible: boolean) => void;
     };
     dataLayer?: Array<Record<string, unknown>>;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 

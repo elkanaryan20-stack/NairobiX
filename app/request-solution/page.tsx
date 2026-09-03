@@ -11,7 +11,9 @@ export default function RequestSolutionPage() {
   return (
     <>
       <SiteHeader />
-      <RequestSolutionForm />
+      <main className="bg-[#0b0b0d] text-white">
+        <RequestSolutionForm />
+      </main>
       <SiteFooter />
     </>
   );

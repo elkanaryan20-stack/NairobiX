@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CASE_STUDIES } from "@/lib/site-data";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Heading } from "@/components/ui/Heading";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { ImageFrame } from "@/components/ui/ImageFrame";
 
 export function generateStaticParams() {
   return CASE_STUDIES.map((study) => ({ slug: study.slug }));
@@ -15,7 +21,7 @@ export function generateMetadata({ params }: { params: Promise<{ slug: string }>
     if (!study) {
       return {
         title: "Case Study | NairobiX",
-        description: "Concept growth system case study by NairobiX.",
+        description: "Illustrative growth system scenario by NairobiX.",
       };
     }
 
@@ -50,42 +56,50 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <section className="border-b border-white/10">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <Container className="py-20">
             <div className="max-w-3xl">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">{study.label}</p>
-              <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">{study.title}</h1>
-              <p className="mt-6 text-lg leading-8 text-slate-300">How a connected growth system could transform {study.label.toLowerCase()} operations and customer experience.</p>
+              <Eyebrow>{study.label} · Illustrative Scenario</Eyebrow>
+              <Heading as="h1" variant="display-lg" className="mt-4">
+                {study.title}
+              </Heading>
+              <p className="mt-6 text-lg leading-8 text-[var(--text-secondary)]">
+                An illustrative look at how a connected growth system could transform{" "}
+                {study.label.toLowerCase()} operations and customer experience — not documented
+                results from a named client.
+              </p>
             </div>
-          </div>
+          </Container>
         </section>
 
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02]">
-            <div
-              className="h-80 w-full bg-cover bg-center"
-              style={{ backgroundImage: `linear-gradient(180deg, rgba(11,11,13,0.15), rgba(11,11,13,0.8)), url('${study.image}')` }}
-            />
+        <Section>
+          <div className="overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/[0.02]">
+            <ImageFrame src={study.image} alt={study.imageAlt} aspect="wide" />
             <div className="grid gap-8 p-6 md:grid-cols-2 lg:grid-cols-3 lg:p-8">
               {sections.map((section) => (
-                <div key={section.title} className="rounded-[24px] border border-white/10 bg-[#121417] p-5">
-                  <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">{section.title}</h2>
-                  <p className="mt-4 text-base leading-7 text-slate-200">{section.body}</p>
-                </div>
+                <Card key={section.title} variant="surface" className="p-5">
+                  <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
+                    {section.title}
+                  </h2>
+                  <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">{section.body}</p>
+                </Card>
               ))}
             </div>
           </div>
 
-          <div className="mt-16 rounded-[32px] border border-white/10 bg-white/[0.02] p-8 sm:p-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">NEXT STEP</p>
-            <h2 className="mt-4 text-3xl font-semibold text-white">Build a Similar Growth System</h2>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-              If this challenge sounds familiar, we can map the right growth system for your business and identify the most valuable opportunities to act on.
+          <div className="mt-16 rounded-[var(--radius-card)] border border-white/10 bg-white/[0.02] p-8 sm:p-10">
+            <Eyebrow>NEXT STEP</Eyebrow>
+            <Heading as="h2" variant="display-md" className="mt-4">
+              Build a Similar Growth System
+            </Heading>
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">
+              If this challenge sounds familiar, we can map the right growth system for your
+              business and identify the most valuable opportunities to act on.
             </p>
-            <Link href="/request-solution" className="mt-6 inline-flex items-center rounded-full bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold text-white hover:bg-[#ea6a16]">
+            <Button href="/request-solution" variant="primary" className="mt-6">
               Request Solution →
-            </Link>
+            </Button>
           </div>
-        </section>
+        </Section>
       </main>
       <SiteFooter />
     </>

@@ -11,7 +11,9 @@ export default function PartnerPage() {
   return (
     <>
       <SiteHeader />
-      <GrowthPartnerForm />
+      <main className="bg-[#0b0b0d] text-white">
+        <GrowthPartnerForm />
+      </main>
       <SiteFooter />
     </>
   );
