@@ -20,6 +20,29 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Environment Variables
+
+### Zoho Bookings OAuth
+
+Server-side only — never expose these to the browser. Set as environment
+variables in Vercel (or `.env.local` for local development); do not commit
+real values.
+
+- `ZOHO_BOOKINGS_CLIENT_ID` — Client ID for the "NairobiX Bookings" Zoho
+  OAuth application.
+- `ZOHO_BOOKINGS_CLIENT_SECRET` — Client Secret for the same application.
+- `ZOHO_BOOKINGS_REFRESH_TOKEN` — Obtained after completing the OAuth
+  consent flow at `https://www.nairobix.com/api/bookings/callback`; add
+  this once the callback confirms a refresh token was issued.
+- `ZOHO_BOOKINGS_ACCOUNTS_URL` — Optional. Defaults to
+  `https://accounts.zoho.com` (the `.com` data center). Only set this if
+  the Bookings application is registered on a different Zoho data center.
+- `ZOHO_BOOKINGS_API_URL` — Optional. Defaults to `https://www.zohoapis.com`.
+  Only set this if the token response's `api_domain` indicates a different
+  regional endpoint.
+- `ZOHO_BOOKINGS_WORKSPACE_ID` — Optional, local discovery only (see
+  `discover-zoho-bookings.sh`). Not read by any deployed application code.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
