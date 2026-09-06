@@ -11,3 +11,12 @@ declare global {
 }
 
 export {};
+declare global {
+  interface Window {
+    gtag?: (
+      command: string,
+      target: string,
+      parameters?: Record<string, unknown>
+    ) => void;
+  }
+}
