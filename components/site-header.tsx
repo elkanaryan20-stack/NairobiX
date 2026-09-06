@@ -7,7 +7,7 @@ import { useState } from "react";
 import { BOOKING_URL, NAV_ITEMS } from "@/lib/site-data";
 
 const CTAS = [
-  { label: "Book a Consultation", href: BOOKING_URL, external: true },
+  { label: "Book a Consultation", href: BOOKING_URL, external: false },
   { label: "Get Free Growth Assessment", href: "/business-growth-audit", external: false },
 ];
 
@@ -96,15 +96,13 @@ export function SiteHeader() {
               </Link>
             ))}
             <div className="mt-2 border-t border-white/10 pt-4">
-              <a
+              <Link
                 href={BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
                 onClick={() => setMobileOpen(false)}
                 className="mb-3 flex w-full items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm font-medium text-white"
               >
                 Book a Consultation
-              </a>
+              </Link>
               <Link
                 href="/business-growth-audit"
                 className="flex w-full items-center justify-center rounded-full bg-[var(--color-primary)] px-4 py-3 text-sm font-semibold text-white"

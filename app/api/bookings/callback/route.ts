@@ -72,13 +72,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log(
-      "Zoho Bookings refresh token generated. Copy it from these server logs and add it to Vercel as ZOHO_BOOKINGS_REFRESH_TOKEN:",
-      tokenData.refresh_token
-    );
+    console.log("Zoho Bookings authorization completed. A refresh token was issued.");
 
     return new NextResponse(
-      "Zoho Bookings authorization successful. The refresh token has been generated and written to the server logs (not shown here). Retrieve it from your deployment logs and add it to Vercel as ZOHO_BOOKINGS_REFRESH_TOKEN.",
+      "Zoho Bookings authorization successful. Contact the site administrator to complete setup.",
       { status: 200 }
     );
   } catch (err) {

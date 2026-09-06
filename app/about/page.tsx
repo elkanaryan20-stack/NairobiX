@@ -128,7 +128,7 @@ export default function AboutPage() {
           <Button href="/business-growth-audit" variant="primary">
             Get Your Free Business Growth Assessment →
           </Button>
-          <Button href={BOOKING_URL} external variant="secondary">
+          <Button href={BOOKING_URL} variant="secondary">
             Book a Consultation →
           </Button>
         </CTASection>

@@ -1,11 +1,29 @@
 const DEFAULT_ZOHO_BOOKINGS_ACCOUNTS_URL = "https://accounts.zoho.com";
 const DEFAULT_ZOHO_BOOKINGS_API_URL = "https://www.zohoapis.com";
 
+// Identifies the single published "NairobiX Business Growth Consultation"
+// service in Zoho Bookings. Not secret — the same service ID is already
+// embedded in the public hosted booking URL in lib/site-data.ts.
+export const NAIROBIX_CONSULTATION_WORKSPACE_ID = "4940054000000039011";
+export const NAIROBIX_CONSULTATION_SERVICE_ID = "4940054000000039045";
+export const NAIROBIX_CONSULTATION_STAFF_ID = "4940054000000039009";
+export const NAIROBIX_BOOKINGS_TIMEZONE = "Africa/Nairobi";
+
 type ZohoBookingsResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: string };
 
+// Zoho access tokens are valid for roughly an hour. Caching them in module
+// scope avoids requesting a new one on every API call, which otherwise trips
+// Zoho's OAuth rate limit ("too many requests continuously") under normal
+// traffic. This is a per-instance cache — safe to keep small and simple.
+let cachedAccessToken: { token: string; expiresAt: number } | null = null;
+
 async function getZohoBookingsAccessToken(): Promise<ZohoBookingsResult<string>> {
+  if (cachedAccessToken && cachedAccessToken.expiresAt > Date.now()) {
+    return { ok: true, data: cachedAccessToken.token };
+  }
+
   const clientId = process.env.ZOHO_BOOKINGS_CLIENT_ID;
   const clientSecret = process.env.ZOHO_BOOKINGS_CLIENT_SECRET;
   const refreshToken = process.env.ZOHO_BOOKINGS_REFRESH_TOKEN;
@@ -42,7 +60,11 @@ async function getZohoBookingsAccessToken(): Promise<ZohoBookingsResult<string>>
     };
   }
 
-  const tokenData = (await tokenResponse.json()) as { access_token?: string; error?: string };
+  const tokenData = (await tokenResponse.json()) as {
+    access_token?: string;
+    error?: string;
+    expires_in?: number;
+  };
 
   if (!tokenData.access_token) {
     console.error("Zoho Bookings access token missing", tokenData);
@@ -51,6 +73,13 @@ async function getZohoBookingsAccessToken(): Promise<ZohoBookingsResult<string>>
       error: "We couldn't establish a secure Bookings connection right now.",
     };
   }
+
+  const expiresInMs = (tokenData.expires_in ?? 3600) * 1000;
+  cachedAccessToken = {
+    token: tokenData.access_token,
+    // Refresh a little early to avoid using a token that expires mid-request.
+    expiresAt: Date.now() + expiresInMs - 60_000,
+  };
 
   return { ok: true, data: tokenData.access_token };
 }
@@ -83,7 +112,9 @@ async function zohoBookingsGet<T>(
     };
   }
 
-  return { ok: true, data: data as T };
+  // Every Zoho Bookings API response nests the actual payload one level
+  // deeper, under a top-level "response" key: { response: { returnvalue, status } }.
+  return { ok: true, data: (data?.response ?? data) as T };
 }
 
 /** GET /bookings/v1/json/workspaces — lists all workspaces, or one if workspaceId is given. */
@@ -122,4 +153,113 @@ export function fetchZohoBookingsAvailability(params: {
   if (params.resourceId) query.resource_id = params.resourceId;
 
   return zohoBookingsGet("availableslots", query);
+}
+
+async function zohoBookingsPost<T>(
+  path: string,
+  formParams: Record<string, string>
+): Promise<ZohoBookingsResult<T>> {
+  const tokenResult = await getZohoBookingsAccessToken();
+
+  if (!tokenResult.ok) {
+    return tokenResult;
+  }
+
+  const apiUrl = process.env.ZOHO_BOOKINGS_API_URL || DEFAULT_ZOHO_BOOKINGS_API_URL;
+  const url = `${apiUrl}/bookings/v1/json/${path}`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Zoho-oauthtoken ${tokenResult.data}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    },
+    body: new URLSearchParams(formParams),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    console.error(`Zoho Bookings ${path} request failed`, { status: response.status, data });
+    return {
+      ok: false,
+      error: `Zoho Bookings ${path} request failed (${response.status}).`,
+    };
+  }
+
+  return { ok: true, data: (data?.response ?? data) as T };
+}
+
+export type ZohoBookingsCustomerDetails = {
+  name: string;
+  email: string;
+  phone_number: string;
+};
+
+type ZohoBookingsAppointmentReturnValue = {
+  status?: string;
+  message?: string;
+  booking_id?: string;
+  appointment_id?: string;
+  [key: string]: unknown;
+};
+
+/**
+ * POST /bookings/v1/json/appointment — creates a confirmed appointment.
+ * Zoho expects form-encoded params (not JSON), with customer_details and
+ * additional_fields passed as JSON-encoded strings. A 200 response does not
+ * guarantee success — the nested returnvalue.status must be checked.
+ */
+export async function createZohoBookingsAppointment(params: {
+  serviceId: string;
+  staffId?: string;
+  groupId?: string;
+  resourceId?: string;
+  fromTime: string;
+  timezone: string;
+  customer: ZohoBookingsCustomerDetails;
+  additionalFields?: Record<string, string>;
+}): Promise<ZohoBookingsResult<ZohoBookingsAppointmentReturnValue>> {
+  if (!params.staffId && !params.groupId && !params.resourceId) {
+    return {
+      ok: false,
+      error: "One of staffId, groupId, or resourceId is required.",
+    };
+  }
+
+  const formParams: Record<string, string> = {
+    service_id: params.serviceId,
+    from_time: params.fromTime,
+    timezone: params.timezone,
+    customer_details: JSON.stringify(params.customer),
+  };
+
+  if (params.staffId) formParams.staff_id = params.staffId;
+  if (params.groupId) formParams.group_id = params.groupId;
+  if (params.resourceId) formParams.resource_id = params.resourceId;
+  if (params.additionalFields) {
+    formParams.additional_fields = JSON.stringify(params.additionalFields);
+  }
+
+  const result = await zohoBookingsPost<{ returnvalue?: ZohoBookingsAppointmentReturnValue }>(
+    "appointment",
+    formParams
+  );
+
+  if (!result.ok) {
+    return result;
+  }
+
+  const returnValue = result.data.returnvalue;
+
+  if (!returnValue || returnValue.status === "failure") {
+    console.error("Zoho Bookings appointment creation failed", result.data);
+    return {
+      ok: false,
+      error: returnValue?.message || "Zoho Bookings could not create the appointment.",
+    };
+  }
+
+  return { ok: true, data: returnValue };
 }

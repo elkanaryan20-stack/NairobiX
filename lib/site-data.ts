@@ -1,4 +1,4 @@
-export const BOOKING_URL = "https://nairobix.zohobookings.com/4940054000000039045";
+export const BOOKING_URL = "/book";
 
 export const BOTPRESS_SHARE_URL =
   "https://cdn.botpress.cloud/webchat/v3.7/shareable.html?configUrl=https://files.bpcontent.cloud/2026/08/01/07/20260801073051-QOAXJ859.json";
@@ -26,7 +26,7 @@ export const FOOTER_LINKS = {
   ],
   start: [
     { label: "Free Business Growth Assessment", href: "/business-growth-audit", external: false },
-    { label: "Book a Consultation", href: BOOKING_URL, external: true },
+    { label: "Book a Consultation", href: BOOKING_URL, external: false },
     { label: "Talk to Nia", href: BOTPRESS_SHARE_URL, external: true, chat: true },
   ],
 };
