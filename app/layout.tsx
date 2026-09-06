@@ -81,7 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* NairobiX AI Assistant */}
         <Script
           src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
 
         <Script
