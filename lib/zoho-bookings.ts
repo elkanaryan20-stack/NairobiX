@@ -97,7 +97,15 @@ async function zohoBookingsGet<T>(
     },
   });
 
-  const data = await response.json();
+  const responseText = await response.text();
+
+  let data: unknown;
+
+  try {
+    data = JSON.parse(responseText);
+  } catch {
+    data = responseText;
+  }
 
   if (!response.ok) {
     console.error(`Zoho Bookings ${path} request failed`, {
@@ -254,7 +262,37 @@ export async function createZohoBookingsAppointment(params: {
     data = responseText;
   }
 
-  if (!response.ok) {
+  /**
+   * Zoho Bookings can return HTTP 200 while the actual
+   * appointment operation has failed.
+   *
+   * Example:
+   * {
+   *   "returnvalue": {
+   *     "status": "failure"
+   *   },
+   *   "status": "success"
+   * }
+   */
+  const returnValue =
+    typeof data === "object" &&
+    data !== null &&
+    "returnvalue" in data
+      ? (
+          data as {
+            returnvalue?: {
+              status?: string;
+              errormessage?: string;
+              message?: string;
+            };
+          }
+        ).returnvalue
+      : undefined;
+
+  const bookingFailed =
+    returnValue?.status?.toLowerCase() === "failure";
+
+  if (!response.ok || bookingFailed) {
     console.error("Zoho Bookings appointment creation failed", {
       status: response.status,
       data,
@@ -262,7 +300,10 @@ export async function createZohoBookingsAppointment(params: {
 
     return {
       ok: false,
-      error: `Zoho Bookings appointment creation failed (${response.status}).`,
+      error:
+        returnValue?.errormessage ||
+        returnValue?.message ||
+        `Zoho Bookings appointment creation failed (${response.status}).`,
     };
   }
 
