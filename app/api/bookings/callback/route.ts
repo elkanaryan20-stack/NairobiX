@@ -1,11 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const ZOHO_BOOKINGS_ACCOUNTS_URL =
-  process.env.ZOHO_BOOKINGS_ACCOUNTS_URL || "https://accounts.zoho.com";
-
-const ZOHO_BOOKINGS_REDIRECT_URI =
-  "https://www.nairobix.com/api/bookings/callback";
-
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
@@ -28,6 +22,9 @@ export async function GET(request: NextRequest) {
 
   const clientId = process.env.ZOHO_BOOKINGS_CLIENT_ID;
   const clientSecret = process.env.ZOHO_BOOKINGS_CLIENT_SECRET;
+  const accountsUrl =
+    process.env.ZOHO_BOOKINGS_ACCOUNTS_URL ||
+    "https://accounts.zoho.com";
 
   if (!clientId || !clientSecret) {
     return new NextResponse(
@@ -36,56 +33,139 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const redirectUri =
+    "https://www.nairobix.com/api/bookings/callback";
+
+  const body = new URLSearchParams({
+    code,
+    client_id: clientId,
+    client_secret: clientSecret,
+    grant_type: "authorization_code",
+    redirect_uri: redirectUri,
+  });
+
   try {
     const tokenResponse = await fetch(
-      `${ZOHO_BOOKINGS_ACCOUNTS_URL}/oauth/v2/token`,
+      `${accountsUrl}/oauth/v2/token`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type":
+            "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({
-          code,
-          client_id: clientId,
-          client_secret: clientSecret,
-          grant_type: "authorization_code",
-          redirect_uri: ZOHO_BOOKINGS_REDIRECT_URI,
-        }),
+        body: body.toString(),
       }
     );
 
     const tokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok) {
-      console.error("Zoho Bookings token exchange failed:", tokenData);
+      console.error(
+        "Zoho Bookings token exchange failed:",
+        tokenData
+      );
 
       return new NextResponse(
-        "Zoho Bookings authorization failed during token exchange.",
+        "Zoho Bookings token exchange failed. Check the deployment logs for the error.",
         { status: 500 }
       );
     }
 
     if (!tokenData.refresh_token) {
+      console.error(
+        "Zoho Bookings response did not contain a refresh token."
+      );
+
       return new NextResponse(
-        "Zoho Bookings authorization succeeded, but no refresh token was returned. Make sure the authorization request included access_type=offline.",
+        "Authorization succeeded, but Zoho did not return a refresh token. Please authorize again with offline access and consent.",
         { status: 500 }
       );
     }
 
-    console.log(
-      "Zoho Bookings refresh token generated. Copy it from these server logs and add it to Vercel as ZOHO_BOOKINGS_REFRESH_TOKEN:",
-      tokenData.refresh_token
+    return new NextResponse(
+      `<!DOCTYPE html>
+<html>
+  <head>
+    <title>NairobiX — Zoho Bookings Authorization</title>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #0b0b0d;
+        color: #ffffff;
+        padding: 40px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .success {
+        color: #22c55e;
+      }
+
+      .token {
+        display: block;
+        margin-top: 20px;
+        padding: 20px;
+        background: #17171a;
+        border: 1px solid #333;
+        border-radius: 10px;
+        word-break: break-all;
+        user-select: all;
+      }
+
+      .warning {
+        margin-top: 20px;
+        color: #f97316;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="success">
+        Zoho Bookings authorization successful
+      </h1>
+
+      <p>
+        Your refresh token has been generated.
+      </p>
+
+      <p>
+        Copy the token below and add it to Vercel as:
+      </p>
+
+      <strong>
+        ZOHO_BOOKINGS_REFRESH_TOKEN
+      </strong>
+
+      <div class="token">${tokenData.refresh_token}</div>
+
+      <p class="warning">
+        Keep this token private. Do not share it in chat,
+        GitHub, screenshots, or public logs.
+      </p>
+    </div>
+  </body>
+</html>`,
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
+  } catch (error) {
+    console.error(
+      "Zoho Bookings OAuth callback error:",
+      error
     );
 
     return new NextResponse(
-      "Zoho Bookings authorization successful. The refresh token has been generated and written to the server logs (not shown here). Retrieve it from your deployment logs and add it to Vercel as ZOHO_BOOKINGS_REFRESH_TOKEN.",
-      { status: 200 }
-    );
-  } catch (err) {
-    console.error("Zoho Bookings OAuth error:", err);
-
-    return new NextResponse(
-      "An unexpected error occurred during Zoho Bookings authorization.",
+      "An unexpected error occurred while connecting Zoho Bookings.",
       { status: 500 }
     );
   }
