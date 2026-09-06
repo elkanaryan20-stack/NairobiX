@@ -5,30 +5,11 @@ import { ChipGroup, FormInput, FormSelect, FormTextarea, SectionHeader } from "@
 import { ErrorBanner, FormSuccessState, LeadFormShell } from "@/components/forms/LeadFormShell";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
-
-const solutionOptions = [
-  "Digital Marketing",
-  "CRM & Sales Systems",
-  "Business Automation",
-  "AI Solutions",
-  "Web & Digital Solutions",
-  "Growth Strategy & Analytics",
-  "Custom Quote",
-];
-
-const investmentOptions = [
-  "Under KSh 25,000",
-  "KSh 25,000 – 50,000",
-  "KSh 50,000 – 100,000",
-  "KSh 100,000+",
-];
-
-const timelineOptions = [
-  "Immediately",
-  "Within 2–4 weeks",
-  "Within 1–3 months",
-  "Exploring options",
-];
+import {
+  INVESTMENT_OPTIONS as investmentOptions,
+  SOLUTION_OPTIONS as solutionOptions,
+  TIMELINE_OPTIONS as timelineOptions,
+} from "@/lib/forms/options";
 
 const initialState = {
   First_Name: "",

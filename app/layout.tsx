@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { NiaWidget } from "@/components/nia/NiaWidget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -78,18 +79,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           `}
         </Script>
 
-        {/* NairobiX AI Assistant */}
-        <Script
-          src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"
-          strategy="afterInteractive"
-        />
-
-        <Script
-          src="https://files.bpcontent.cloud/2026/08/01/07/20260801073051-LCOLD5TC.js"
-          strategy="afterInteractive"
-        />
-
         {children}
+        <NiaWidget />
       </body>
     </html>
   );

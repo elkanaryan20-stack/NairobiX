@@ -1,20 +1,20 @@
-import type { AnchorHTMLAttributes, ReactNode } from "react";
-import { BOTPRESS_SHARE_URL } from "@/lib/site-data";
+"use client";
+
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export function OpenChatButton({
   children,
   className,
   ...props
-}: AnchorHTMLAttributes<HTMLAnchorElement> & { children: ReactNode }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { children: ReactNode }) {
   return (
-    <a
-      href={BOTPRESS_SHARE_URL}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
+      onClick={() => window.dispatchEvent(new Event("nia:open"))}
       className={className}
       {...props}
     >
       {children}
-    </a>
+    </button>
   );
 }

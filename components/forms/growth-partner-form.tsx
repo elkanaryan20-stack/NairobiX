@@ -5,23 +5,10 @@ import { ChipGroup, FormInput, FormSelect, FormTextarea, SectionHeader } from "@
 import { ErrorBanner, FormSuccessState, LeadFormShell } from "@/components/forms/LeadFormShell";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
-
-const partnerTypeOptions = [
-  "Business Consultant",
-  "Marketing Agency",
-  "Business Centre",
-  "Cyber Cafe / ICT Centre",
-  "Printing / Branding Centre",
-];
-
-const partnershipInterestOptions = [
-  "Refer Businesses to NairobiX",
-  "Offer NairobiX Solutions to Your Clients",
-  "Collaborate on Client Projects",
-  "White-Label NairobiX Solutions",
-  "Strategic Business Partnership",
-  "Explore a Custom Partnership",
-];
+import {
+  PARTNER_TYPE_OPTIONS as partnerTypeOptions,
+  PARTNERSHIP_INTEREST_OPTIONS as partnershipInterestOptions,
+} from "@/lib/forms/options";
 
 const initialState = {
   First_Name: "",

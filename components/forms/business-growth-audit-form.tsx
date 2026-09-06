@@ -15,56 +15,13 @@ import {
 } from "@/components/forms/LeadFormShell";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
-
-const marketingOptions = [
-  "Facebook / Instagram",
-  "Google Business Profile",
-  "Website",
-  "WhatsApp Business",
-  "Paid Advertising",
-  "Email Marketing",
-  "SEO",
-  "None currently",
-];
-
-const industryOptions = [
-  "Retail & E-commerce",
-  "Professional Services",
-  "Real Estate",
-  "Healthcare",
-  "Education",
-  "Hospitality",
-  "Beauty & Wellness",
-  "Finance",
-  "Construction",
-  "Manufacturing",
-];
-
-const growthGoalOptions = [
-  "Generate more qualified leads",
-  "Increase sales and revenue",
-  "Attract more customers",
-  "Improve online visibility",
-  "Improve customer follow-up",
-  "Improve customer retention",
-  "Automate repetitive processes",
-  "Improve digital presence",
-  "Build better sales and growth systems",
-  "I need guidance",
-];
-
-const timelineOptions = [
-  "Immediately",
-  "Within 2–4 weeks",
-  "Within 1–3 months",
-  "Exploring options",
-];
-
-const budgetOptions = [
-  "Comfortable with recommended budget",
-  "Wants to understand budget first",
-  "Not currently",
-];
+import {
+  BUDGET_READINESS_OPTIONS as budgetOptions,
+  GROWTH_GOAL_OPTIONS as growthGoalOptions,
+  INDUSTRY_OPTIONS as industryOptions,
+  MARKETING_CHANNEL_OPTIONS as marketingOptions,
+  TIMELINE_OPTIONS as timelineOptions,
+} from "@/lib/forms/options";
 
 const initialState = {
   First_Name: "",

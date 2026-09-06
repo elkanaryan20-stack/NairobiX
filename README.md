@@ -43,6 +43,15 @@ real values.
 - `ZOHO_BOOKINGS_WORKSPACE_ID` — Optional, local discovery only (see
   `discover-zoho-bookings.sh`). Not read by any deployed application code.
 
+### Nia (Claude API)
+
+Server-side only — never expose this to the browser. Powers the native Nia
+chat assistant at `app/api/nia/chat/route.ts`.
+
+- `ANTHROPIC_API_KEY` — API key for the Anthropic account used to run Nia.
+  Without it, Nia degrades gracefully to an error message rather than
+  failing the build or the rest of the site.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -8,15 +8,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { FormInput, FormTextarea, FieldError } from "@/components/forms/FormField";
 import { trackConversion } from "@/lib/analytics";
-
-const DISCUSSION_TOPICS = [
-  "Growth Strategy",
-  "Digital Marketing",
-  "CRM & Sales Systems",
-  "Business Automation",
-  "AI Solutions",
-  "Website & Digital Solutions",
-] as const;
+import { DISCUSSION_TOPIC_OPTIONS as DISCUSSION_TOPICS } from "@/lib/forms/options";
 
 const STEPS = ["Consultation", "Date", "Time", "Details", "Confirm"] as const;
 
