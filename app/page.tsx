@@ -238,25 +238,27 @@ export default function HomePage() {
             ))}
           </div>
 
-          <Card variant="surface" className="relative mt-12 p-6 sm:p-8">
-            <div className="sm:pr-32 lg:pr-36">
-              <Eyebrow>{CLIENT_WORKSPACE.eyebrow}</Eyebrow>
-              <Heading variant="heading-md" as="h3" className="mt-4">
-                {CLIENT_WORKSPACE.title}
-              </Heading>
-              <p className="mt-3 max-w-[var(--max-width-prose)] text-base leading-7 text-[var(--text-secondary)]">
-                {CLIENT_WORKSPACE.description}
-              </p>
-            </div>
-            <div className="pointer-events-none absolute right-6 top-1/2 hidden h-28 w-[5.5rem] -translate-y-1/2 overflow-hidden rounded-[var(--radius-image)] shadow-[var(--shadow-elevated)] sm:block md:right-8 lg:h-32 lg:w-24">
-              <Image
-                src="/images/photography/workspace-preview.webp"
-                alt="A professional working on a laptop in a bright, modern office."
-                fill
-                sizes="120px"
-                className="object-cover"
-              />
-              <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
+          <Card variant="surface" className="mt-12 p-6 sm:p-8">
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-10">
+              <div className="min-w-0 lg:max-w-md xl:max-w-lg">
+                <Eyebrow>{CLIENT_WORKSPACE.eyebrow}</Eyebrow>
+                <Heading variant="heading-md" as="h3" className="mt-4">
+                  {CLIENT_WORKSPACE.title}
+                </Heading>
+                <p className="mt-3 max-w-[var(--max-width-prose)] text-base leading-7 text-[var(--text-secondary)]">
+                  {CLIENT_WORKSPACE.description}
+                </p>
+              </div>
+              <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[var(--radius-image)] shadow-[var(--shadow-elevated)] sm:mx-auto sm:max-w-md lg:mx-0 lg:w-72 lg:max-w-none xl:w-80">
+                <Image
+                  src="/images/photography/workspace-preview.webp"
+                  alt="Two colleagues collaborating at a sunlit table in a plant-filled office."
+                  fill
+                  sizes="(min-width: 1024px) 320px, (min-width: 640px) 448px, 100vw"
+                  className="object-cover"
+                />
+                <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
+              </div>
             </div>
           </Card>
         </Section>
