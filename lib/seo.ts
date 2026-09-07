@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const SITE_NAME = "NairobiX";
-export const SITE_URL = "https://nairobix.com";
+export const SITE_URL = "https://www.nairobix.com";
 
 export const HOME_TITLE = "NairobiX | Premium Business Growth Systems";
 export const HOME_DESCRIPTION =
