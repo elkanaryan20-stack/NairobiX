@@ -261,13 +261,13 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[var(--radius-image)] shadow-[var(--shadow-elevated)]">
+              <div className="relative aspect-[1122/1223] w-full overflow-hidden rounded-[var(--radius-image)] shadow-[var(--shadow-elevated)]">
                 <Image
                   src="/images/photography/workspace.webp"
                   alt="A modern executive workspace at dusk, with a city skyline through floor-to-ceiling windows."
                   fill
                   sizes="(min-width: 1024px) 28vw, (min-width: 768px) 40vw, 100vw"
-                  className="object-cover"
+                  className="object-cover object-center"
                 />
                 <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
               </div>
