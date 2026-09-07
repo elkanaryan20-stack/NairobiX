@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageCircle } from "lucide-react";
 import { NiaChat } from "@/components/nia/NiaChat";
+import { NiaMark } from "@/components/nia/NiaMark";
 
 export function NiaLauncher() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +40,7 @@ export function NiaLauncher() {
           aria-expanded={false}
           className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-[0_12px_32px_rgba(249,115,22,0.35)] transition hover:bg-[var(--color-primary-strong)] sm:bottom-6 sm:right-6"
         >
-          <MessageCircle className="h-6 w-6" />
+          <NiaMark className="h-6 w-6" />
         </button>
       )}
     </>

@@ -365,6 +365,29 @@ export const CLIENT_WORKSPACE = {
     "Once an engagement begins, clients and partners get access to a dedicated NairobiX workspace — a single place to track project visibility, deliverables, growth reports and open requests, so collaboration doesn't depend on scattered emails and calls. It's part of how NairobiX works day to day, not a separate product.",
 };
 
+export const WORKSPACE_FEATURES = [
+  {
+    id: "visibility",
+    title: "Project visibility",
+    description: "Track active work, milestones and deliverables.",
+  },
+  {
+    id: "reporting",
+    title: "Growth reporting",
+    description: "See performance and progress in one place.",
+  },
+  {
+    id: "communication",
+    title: "Open communication",
+    description: "Submit requests and stay connected with the NairobiX team.",
+  },
+  {
+    id: "nia",
+    title: "Nia Growth Assistant",
+    description: "Get guidance and quick answers whenever you need them.",
+  },
+];
+
 export const PARTNER_PORTAL_NOTE =
   "Active partners get access to the NairobiX Partner Portal — a shared space for tracking referrals, requests and updates, so collaboration stays organized as the partnership grows.";
 

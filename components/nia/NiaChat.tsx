@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, X } from "lucide-react";
+import { X } from "lucide-react";
 import { NiaMessage, NiaTypingIndicator } from "@/components/nia/NiaMessage";
 import { NiaInput } from "@/components/nia/NiaInput";
 import { NiaSuggestions } from "@/components/nia/NiaSuggestions";
+import { NiaMark } from "@/components/nia/NiaMark";
 import type { NiaChatMessage } from "@/lib/nia/types";
 
 const FALLBACK_EMPTY_REPLY =
@@ -86,7 +87,7 @@ export function NiaChat({ onClose }: { onClose: () => void }) {
       <header className="flex items-center justify-between border-b border-white/10 px-4 py-3.5">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-primary)]/15 text-[var(--color-primary)]">
-            <Sparkles className="h-4 w-4" />
+            <NiaMark className="h-4 w-4" />
           </span>
           <div>
             <p className="text-sm font-semibold text-white">Nia</p>

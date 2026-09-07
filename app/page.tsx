@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ComponentType } from "react";
+import { ClipboardList, TrendingUp, Mail } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Faq } from "@/components/faq";
@@ -11,6 +13,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ImageFrame, GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
 import { CTASection } from "@/components/ui/CTASection";
+import { NiaMark } from "@/components/nia/NiaMark";
 import {
   BOOKING_URL,
   HOME_SOLUTIONS,
@@ -24,7 +27,15 @@ import {
   ENGAGEMENT_PROCESS,
   INDUSTRIES_SERVED,
   CLIENT_WORKSPACE,
+  WORKSPACE_FEATURES,
 } from "@/lib/site-data";
+
+const WORKSPACE_FEATURE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  visibility: ClipboardList,
+  reporting: TrendingUp,
+  communication: Mail,
+  nia: NiaMark,
+};
 
 export default function HomePage() {
   return (
@@ -239,8 +250,8 @@ export default function HomePage() {
           </div>
 
           <Card variant="surface" className="mt-12 p-6 sm:p-8">
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-10">
-              <div className="min-w-0 lg:max-w-md xl:max-w-lg">
+            <div className="grid gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10 lg:grid-cols-[0.95fr_0.85fr_1fr] lg:items-center lg:gap-10">
+              <div className="min-w-0 md:col-span-2 lg:col-span-1">
                 <Eyebrow>{CLIENT_WORKSPACE.eyebrow}</Eyebrow>
                 <Heading variant="heading-md" as="h3" className="mt-4">
                   {CLIENT_WORKSPACE.title}
@@ -249,15 +260,38 @@ export default function HomePage() {
                   {CLIENT_WORKSPACE.description}
                 </p>
               </div>
-              <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[var(--radius-image)] shadow-[var(--shadow-elevated)] sm:mx-auto sm:max-w-md lg:mx-0 lg:w-72 lg:max-w-none xl:w-80">
+
+              <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[var(--radius-image)] shadow-[var(--shadow-elevated)]">
                 <Image
-                  src="/images/photography/workspace-preview.webp"
-                  alt="Two colleagues collaborating at a sunlit table in a plant-filled office."
+                  src="/images/photography/workspace.webp"
+                  alt="A modern executive workspace at dusk, with a city skyline through floor-to-ceiling windows."
                   fill
-                  sizes="(min-width: 1024px) 320px, (min-width: 640px) 448px, 100vw"
+                  sizes="(min-width: 1024px) 28vw, (min-width: 768px) 40vw, 100vw"
                   className="object-cover"
                 />
                 <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
+              </div>
+
+              <div className="min-w-0">
+                <Eyebrow>INSIDE YOUR WORKSPACE</Eyebrow>
+                <div className="mt-5 divide-y divide-white/10">
+                  {WORKSPACE_FEATURES.map((feature) => {
+                    const Icon = WORKSPACE_FEATURE_ICONS[feature.id];
+                    return (
+                      <div key={feature.id} className="flex items-start gap-3 py-3.5 first:pt-0 last:pb-0">
+                        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        <div>
+                          <p className="text-sm font-semibold text-white">{feature.title}</p>
+                          <p className="mt-0.5 text-sm leading-6 text-[var(--text-secondary)]">
+                            {feature.description}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </Card>
