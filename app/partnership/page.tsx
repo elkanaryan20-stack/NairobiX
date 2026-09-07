@@ -10,11 +10,15 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
 import { PARTNER_PORTAL_NOTE } from "@/lib/site-data";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "Partnership | NairobiX",
-  description: "Partner with NairobiX to deliver growth systems, digital transformation, and strategic solutions to more businesses.",
-};
+const TITLE = "Partnership";
+const DESCRIPTION =
+  "Partner with NairobiX to deliver growth systems, digital transformation, and strategic solutions to more businesses.";
+
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/partnership" });
 
 const BENEFITS = [
   { title: "Refer", text: "Introduce businesses that could benefit from a stronger growth system." },
@@ -39,6 +43,7 @@ const APPLICATION_STEPS = [
 export default function PartnershipPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/partnership" })} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <section className="relative isolate overflow-hidden border-b border-white/10">

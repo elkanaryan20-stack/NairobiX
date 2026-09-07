@@ -3,12 +3,15 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { LegalDocument, type LegalSection } from "@/components/ui/LegalDocument";
 import { CONTACT_EMAIL } from "@/lib/site-data";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description:
-    "How NairobiX collects, uses, shares and protects personal information across the website, forms, consultations, Nia and related services.",
-};
+const TITLE = "Privacy Policy";
+const DESCRIPTION =
+  "How NairobiX collects, uses, shares and protects personal information across the website, forms, consultations, Nia and related services.";
+
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/privacy" });
 
 const LAST_UPDATED = "7 September 2026";
 
@@ -221,6 +224,7 @@ const SECTIONS: LegalSection[] = [
 export default function PrivacyPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/privacy" })} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <LegalDocument

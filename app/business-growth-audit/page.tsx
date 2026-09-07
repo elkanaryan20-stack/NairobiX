@@ -6,16 +6,24 @@ import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { ENGAGEMENT_PROCESS } from "@/lib/site-data";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "Business Growth Assessment | NairobiX",
-  description:
-    "A structured review of your acquisition, sales process and operational systems, used to identify the highest-impact next step for your business.",
-};
+const TITLE = "Business Growth Assessment";
+const DESCRIPTION =
+  "A structured review of your acquisition, sales process and operational systems, used to identify the highest-impact next step for your business.";
+
+export const metadata: Metadata = pageMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/business-growth-audit",
+});
 
 export default function BusinessGrowthAuditPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/business-growth-audit" })} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <Section spacing="compact">

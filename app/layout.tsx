@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import { NiaWidget } from "@/components/nia/NiaWidget";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE_URL, HOME_TITLE, HOME_DESCRIPTION } from "@/lib/seo";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,29 +25,23 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.nairobix.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "NairobiX | Premium Business Growth Partner",
+    default: HOME_TITLE,
     template: "%s | NairobiX",
   },
-  description:
-    "NairobiX helps ambitious businesses grow through connected strategy, digital marketing, CRM, automation, AI and digital systems.",
-  keywords: [
-    "NairobiX",
-    "business growth partner",
-    "digital marketing Kenya",
-    "CRM systems",
-    "automation",
-    "AI solutions",
-    "growth strategy",
-  ],
+  description: HOME_DESCRIPTION,
   openGraph: {
-    title: "NairobiX | Premium Business Growth Partner",
-    description:
-      "Intelligent growth systems for ambitious businesses in Kenya and beyond.",
-    url: "https://www.nairobix.com",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
+    url: SITE_URL,
     siteName: "NairobiX",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
   },
   alternates: {
     canonical: "/",
@@ -58,6 +55,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#0b0b0d] text-white">
+        <JsonLd data={organizationJsonLd()} />
+        <JsonLd data={websiteJsonLd()} />
 
         {/* Google Analytics */}
         <Script

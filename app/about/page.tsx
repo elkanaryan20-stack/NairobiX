@@ -11,11 +11,15 @@ import { CTASection } from "@/components/ui/CTASection";
 import { Button } from "@/components/ui/Button";
 import { GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
 import { BOOKING_URL, BUSINESSES_WE_SERVE } from "@/lib/site-data";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "About | NairobiX",
-  description: "Learn how NairobiX helps businesses grow through connected strategy, systems, technology, and execution.",
-};
+const TITLE = "About";
+const DESCRIPTION =
+  "NairobiX is a Nairobi-based business growth partner connecting strategy, digital marketing, CRM, automation, AI and web systems into one body of work.";
+
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/about" });
 
 const PILLARS = [
   {
@@ -35,6 +39,7 @@ const PILLARS = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/about" })} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <section className="relative isolate overflow-hidden border-b border-white/10">

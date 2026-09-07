@@ -9,15 +9,21 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { Button } from "@/components/ui/Button";
 import { ImageFrame } from "@/components/ui/ImageFrame";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd, serviceListJsonLd } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "Solutions | NairobiX",
-  description: "Discover NairobiX growth systems for digital marketing, CRM, automation, AI, and web solutions.",
-};
+const TITLE = "Solutions";
+const DESCRIPTION =
+  "Explore NairobiX's connected growth solutions across digital marketing, CRM and sales systems, business automation, AI and web development.";
+
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/solutions" });
 
 export default function SolutionsPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/solutions" })} />
+      <JsonLd data={serviceListJsonLd(SOLUTION_CATEGORIES)} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <section className="border-b border-white/10">

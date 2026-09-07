@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import type { ComponentType } from "react";
 import { ClipboardList, TrendingUp, Mail } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
@@ -14,6 +15,9 @@ import { Card } from "@/components/ui/Card";
 import { ImageFrame, GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
 import { CTASection } from "@/components/ui/CTASection";
 import { NiaMark } from "@/components/nia/NiaMark";
+import { JsonLd } from "@/components/JsonLd";
+import { HOME_TITLE, HOME_DESCRIPTION, homeMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 import {
   BOOKING_URL,
   HOME_SOLUTIONS,
@@ -37,9 +41,12 @@ const WORKSPACE_FEATURE_ICONS: Record<string, ComponentType<{ className?: string
   nia: NiaMark,
 };
 
+export const metadata: Metadata = homeMetadata();
+
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: HOME_TITLE, description: HOME_DESCRIPTION, path: "/" })} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         {/* 1. Hero */}

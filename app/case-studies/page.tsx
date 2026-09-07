@@ -8,15 +8,20 @@ import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { ImageFrame } from "@/components/ui/ImageFrame";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "Case Studies | NairobiX",
-  description: "Illustrative growth system scenarios across industries, showing how NairobiX approaches a connected system for a given business.",
-};
+const TITLE = "Case Studies";
+const DESCRIPTION =
+  "Illustrative growth system scenarios across industries, showing how NairobiX approaches a connected system for a given business.";
+
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/case-studies" });
 
 export default function CaseStudiesPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/case-studies" })} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <section className="border-b border-white/10">

@@ -11,11 +11,15 @@ import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { CONTACT_EMAIL } from "@/lib/site-data";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "Contact | NairobiX",
-  description: "Start a conversation with NairobiX about a business growth assessment, consultation, or tailored growth system.",
-};
+const TITLE = "Contact";
+const DESCRIPTION =
+  "Start a conversation with NairobiX about a business growth assessment, consultation, or tailored growth system.";
+
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/contact" });
 
 const START_OPTIONS = [
   {
@@ -39,6 +43,7 @@ const START_OPTIONS = [
 export default function ContactPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/contact" })} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <Section spacing="compact">

@@ -9,6 +9,9 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { Button } from "@/components/ui/Button";
 import { ImageFrame } from "@/components/ui/ImageFrame";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 
 export function generateStaticParams() {
   return CASE_STUDIES.map((study) => ({ slug: study.slug }));
@@ -18,16 +21,18 @@ export function generateMetadata({ params }: { params: Promise<{ slug: string }>
   return params.then(({ slug }) => {
     const study = CASE_STUDIES.find((item) => item.slug === slug);
     if (!study) {
-      return {
-        title: "Case Study | NairobiX",
+      return pageMetadata({
+        title: "Case Study",
         description: "Illustrative growth system scenario by NairobiX.",
-      };
+        path: `/case-studies/${slug}`,
+      });
     }
 
-    return {
-      title: `${study.title} | NairobiX`,
+    return pageMetadata({
+      title: study.title,
       description: study.description,
-    };
+      path: `/case-studies/${slug}`,
+    });
   });
 }
 
@@ -69,6 +74,9 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
   return (
     <>
+      <JsonLd
+        data={webPageJsonLd({ name: study.title, description: study.description, path: `/case-studies/${study.slug}` })}
+      />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <section className="border-b border-white/10">

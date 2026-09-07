@@ -3,12 +3,15 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { LegalDocument, type LegalSection } from "@/components/ui/LegalDocument";
 import { CONTACT_EMAIL } from "@/lib/site-data";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { webPageJsonLd } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "Terms of Service",
-  description:
-    "The terms that govern use of the NairobiX website, the Business Growth Assessment, consultations, Nia and engagement with NairobiX services.",
-};
+const TITLE = "Terms of Service";
+const DESCRIPTION =
+  "The terms that govern use of the NairobiX website, the Business Growth Assessment, consultations, Nia and engagement with NairobiX services.";
+
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/terms" });
 
 const LAST_UPDATED = "7 September 2026";
 
@@ -239,6 +242,7 @@ const SECTIONS: LegalSection[] = [
 export default function TermsPage() {
   return (
     <>
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/terms" })} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <LegalDocument
