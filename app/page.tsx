@@ -78,14 +78,22 @@ export default function HomePage() {
 
         {/* 2. What NairobiX actually does */}
         <Section spacing="default">
-          <div className="max-w-3xl">
-            <Eyebrow>{WHAT_WE_DO.eyebrow}</Eyebrow>
-            <Heading variant="display-md" className="mt-4">
-              {WHAT_WE_DO.title}
-            </Heading>
-            <p className="mt-6 max-w-[var(--max-width-prose)] text-lg leading-8 text-[var(--text-secondary)]">
-              {WHAT_WE_DO.body}
-            </p>
+          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
+            <div>
+              <Eyebrow>{WHAT_WE_DO.eyebrow}</Eyebrow>
+              <Heading variant="display-md" className="mt-4">
+                {WHAT_WE_DO.title}
+              </Heading>
+              <p className="mt-6 max-w-[var(--max-width-prose)] text-lg leading-8 text-[var(--text-secondary)]">
+                {WHAT_WE_DO.body}
+              </p>
+            </div>
+            <ImageFrame
+              src="/images/photography/modern-office.webp"
+              alt="Two colleagues working together at a bright, plant-filled office table."
+              aspect="square"
+              sizes="(min-width: 1024px) 40vw, 100vw"
+            />
           </div>
         </Section>
 
@@ -109,31 +117,8 @@ export default function HomePage() {
           </div>
         </Section>
 
-        {/* 4. The NairobiX connected-growth approach */}
+        {/* 4. Solutions overview */}
         <Section border="top">
-          <div className="max-w-2xl">
-            <Eyebrow>THE NAIROBIX APPROACH</Eyebrow>
-            <Heading variant="display-md" className="mt-4">
-              One growth system, built in four stages.
-            </Heading>
-          </div>
-          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {GROWTH_APPROACH.map((item, index) => (
-              <div key={item.step} className={index > 0 ? "border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0" : ""}>
-                <div className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
-                  0{index + 1}
-                </div>
-                <Heading variant="heading-md" as="h3">
-                  {item.step}
-                </Heading>
-                <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-
-        {/* 5. Solutions overview */}
-        <Section tone="surface" border="top">
           <div className="mb-10 max-w-2xl">
             <Eyebrow>SOLUTIONS</Eyebrow>
             <Heading variant="display-md" className="mt-4">
@@ -172,6 +157,29 @@ export default function HomePage() {
                   </span>
                 </div>
               </Link>
+            ))}
+          </div>
+        </Section>
+
+        {/* 5. The NairobiX connected-growth approach */}
+        <Section tone="surface" border="top">
+          <div className="max-w-2xl">
+            <Eyebrow>THE NAIROBIX APPROACH</Eyebrow>
+            <Heading variant="display-md" className="mt-4">
+              One growth system, built in four stages.
+            </Heading>
+          </div>
+          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {GROWTH_APPROACH.map((item, index) => (
+              <div key={item.step} className={index > 0 ? "border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0" : ""}>
+                <div className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
+                  0{index + 1}
+                </div>
+                <Heading variant="heading-md" as="h3">
+                  {item.step}
+                </Heading>
+                <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
+              </div>
             ))}
           </div>
         </Section>

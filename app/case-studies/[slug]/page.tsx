@@ -7,7 +7,6 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
-import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ImageFrame } from "@/components/ui/ImageFrame";
 
@@ -40,15 +39,32 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
     notFound();
   }
 
-  const sections = [
-    { title: "Industry", body: study.label },
-    { title: "Business challenge", body: "A business trying to turn inconsistent demand into a more reliable growth engine." },
-    { title: "Growth opportunity", body: "Create a more connected system across acquisition, qualification, conversion and retention." },
-    { title: "Connected growth system", body: "Marketing, CRM, sales workflows, automation and digital experience are designed to work as one operating system." },
-    { title: "How the system works", body: "The business attracts the right audience, captures strong demand, follows up consistently and improves visibility across the customer journey." },
-    { title: "Customer journey", body: "Prospect → enquiry → qualification → follow-up → conversion → retention and referral." },
-    { title: "Technology / implementation", body: "A blended stack of CRM, automation, landing pages, analytics and digital workflows aligned to business process." },
-    { title: "Expected outcomes", body: "Better lead quality, more consistent sales follow-up, improved customer experience and a stronger growth foundation." },
+  const narrative = [
+    {
+      stage: "Context",
+      number: "01",
+      body: `A ${study.label.toLowerCase()} business trying to turn inconsistent demand into a more reliable growth engine — the starting point for this illustrative scenario.`,
+    },
+    {
+      stage: "Challenge",
+      number: "02",
+      body: "Growth opportunity: create a more connected system across acquisition, qualification, conversion and retention, instead of treating each stage as a separate problem.",
+    },
+    {
+      stage: "Strategy",
+      number: "03",
+      body: "Marketing, CRM, sales workflows, automation and digital experience are designed to work as one operating system — a blended stack of CRM, automation, landing pages, analytics and digital workflows aligned to business process.",
+    },
+    {
+      stage: "Execution",
+      number: "04",
+      body: "The business attracts the right audience, captures strong demand, follows up consistently and improves visibility across the customer journey: prospect → enquiry → qualification → follow-up → conversion → retention and referral.",
+    },
+    {
+      stage: "Outcome",
+      number: "05",
+      body: "Illustrative expected outcomes: better lead quality, more consistent sales follow-up, improved customer experience and a stronger growth foundation.",
+    },
   ];
 
   return (
@@ -56,7 +72,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <section className="border-b border-white/10">
-          <Container className="py-20">
+          <Container className="py-20 sm:py-24">
             <div className="max-w-3xl">
               <Eyebrow>{study.label} · Illustrative Scenario</Eyebrow>
               <Heading as="h1" variant="display-lg" className="mt-4">
@@ -71,31 +87,39 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
           </Container>
         </section>
 
-        <Section>
-          <div className="overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/[0.02]">
-            <ImageFrame src={study.image} alt={study.imageAlt} aspect="wide" />
-            <div className="grid gap-8 p-6 md:grid-cols-2 lg:grid-cols-3 lg:p-8">
-              {sections.map((section) => (
-                <Card key={section.title} variant="surface" className="p-5">
-                  <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
-                    {section.title}
-                  </h2>
-                  <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">{section.body}</p>
-                </Card>
-              ))}
-            </div>
-          </div>
+        <Section spacing="compact">
+          <ImageFrame src={study.image} alt={study.imageAlt} aspect="wide" preload />
+        </Section>
 
-          <div className="mt-16 rounded-[var(--radius-card)] border border-white/10 bg-white/[0.02] p-8 sm:p-10">
+        <Section border="top" spacing="compact">
+          <div className="divide-y divide-white/10">
+            {narrative.map((item) => (
+              <div key={item.stage} className="grid gap-4 py-12 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,220px)_1fr] sm:gap-10">
+                <div className="flex items-baseline gap-3 sm:block">
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
+                    {item.number}
+                  </span>
+                  <Heading variant="heading-lg" as="h2">
+                    {item.stage}
+                  </Heading>
+                </div>
+                <p className="max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section border="top" tone="surface">
+          <div className="max-w-2xl">
             <Eyebrow>NEXT STEP</Eyebrow>
             <Heading as="h2" variant="display-md" className="mt-4">
               Build a Similar Growth System
             </Heading>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">
+            <p className="mt-4 text-lg leading-8 text-[var(--text-secondary)]">
               If this challenge sounds familiar, we can map the right growth system for your
               business and identify the most valuable opportunities to act on.
             </p>
-            <Button href="/request-solution" variant="primary" className="mt-6">
+            <Button href="/request-solution" variant="primary" className="mt-8">
               Request Solution →
             </Button>
           </div>

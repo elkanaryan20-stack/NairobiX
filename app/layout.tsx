@@ -49,11 +49,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  icons: {
-    icon: "/images/NairobiX-logo.png",
-    shortcut: "/images/NairobiX-logo.png",
-    apple: "/images/NairobiX-logo.png",
-  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

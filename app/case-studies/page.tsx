@@ -20,7 +20,7 @@ export default function CaseStudiesPage() {
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <section className="border-b border-white/10">
-          <Container className="py-20">
+          <Container className="py-20 sm:py-24">
             <div className="max-w-3xl">
               <Eyebrow>NAIROBIX · CASE STUDIES</Eyebrow>
               <Heading as="h1" variant="display-lg" className="mt-4">
@@ -35,28 +35,34 @@ export default function CaseStudiesPage() {
           </Container>
         </section>
 
-        <Section>
-          <div className="grid gap-8 lg:grid-cols-3">
-            {CASE_STUDIES.map((study) => (
-              <article key={study.slug} className="group overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/[0.02]">
-                <ImageFrame
-                  src={study.image}
-                  alt={study.imageAlt}
-                  aspect="wide"
-                  sizes="(min-width: 1024px) 33vw, 100vw"
-                  className="transition duration-500 group-hover:scale-[1.03]"
-                />
-                <div className="p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
+        <Section spacing="compact">
+          <div className="divide-y divide-white/10">
+            {CASE_STUDIES.map((study, index) => (
+              <article
+                key={study.slug}
+                className="grid items-center gap-10 py-16 first:pt-0 last:pb-0 lg:grid-cols-2 lg:gap-16 lg:py-24"
+              >
+                <div className={index % 2 === 1 ? "lg:order-2" : ""}>
+                  <ImageFrame
+                    src={study.image}
+                    alt={study.imageAlt}
+                    aspect="portrait"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                  />
+                </div>
+                <div className={index % 2 === 1 ? "lg:order-1" : ""}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
                     {study.label} · Illustrative Scenario
                   </p>
-                  <Heading as="h2" variant="heading-md" className="mt-4">
+                  <Heading as="h2" variant="display-md" className="mt-5">
                     {study.title}
                   </Heading>
-                  <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
+                  <p className="mt-5 max-w-lg text-lg leading-8 text-[var(--text-secondary)]">
+                    {study.description}
+                  </p>
                   <Link
                     href={`/case-studies/${study.slug}`}
-                    className="mt-6 inline-flex items-center text-sm font-semibold text-[var(--color-primary)] transition hover:text-[#ff8b40]"
+                    className="mt-8 inline-flex items-center text-sm font-semibold text-white transition hover:text-[var(--color-primary)]"
                   >
                     View Scenario →
                   </Link>

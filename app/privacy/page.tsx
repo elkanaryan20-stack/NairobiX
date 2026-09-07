@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "How NairobiX collects, uses and protects information shared through our forms and communications.",
+};
 
 export default function PrivacyPage() {
   return (
