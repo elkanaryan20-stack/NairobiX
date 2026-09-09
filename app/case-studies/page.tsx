@@ -19,6 +19,10 @@ const DESCRIPTION =
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/case-studies" });
 
 export default function CaseStudiesPage() {
+  const [featured, ...rest] = [...CASE_STUDIES].sort((a, b) =>
+    a.slug === "customer-acquisition-retention-system" ? -1 : b.slug === "customer-acquisition-retention-system" ? 1 : 0
+  );
+
   return (
     <>
       <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/case-studies" })} />
@@ -27,7 +31,7 @@ export default function CaseStudiesPage() {
         <section className="border-b border-white/10">
           <Container className="py-20 sm:py-24">
             <div className="max-w-3xl">
-              <Eyebrow>NAIROBIX · CASE STUDIES</Eyebrow>
+              <Eyebrow>NAIROBIX · SELECTED WORK</Eyebrow>
               <Heading as="h1" variant="display-lg" className="mt-4">
                 What a connected growth system looks like, industry by industry.
               </Heading>
@@ -40,39 +44,70 @@ export default function CaseStudiesPage() {
           </Container>
         </section>
 
-        <Section spacing="compact">
-          <div className="divide-y divide-white/10">
-            {CASE_STUDIES.map((study, index) => (
-              <article
+        {/* Featured scenario */}
+        <Section spacing="default">
+          <div className="mb-8 flex items-baseline gap-4">
+            <span className="font-display text-sm font-medium text-[var(--color-primary)]">01</span>
+            <Eyebrow>Featured Scenario</Eyebrow>
+          </div>
+          <Link href={`/case-studies/${featured.slug}`} className="group grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-16">
+            <div className="overflow-hidden rounded-[var(--radius-image)]">
+              <div className="transition duration-700 ease-out group-hover:scale-[1.03]">
+                <ImageFrame src={featured.image} alt={featured.imageAlt} aspect="wide" preload />
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
+                {featured.label} · Illustrative Scenario
+              </p>
+              <Heading as="h2" variant="display-lg" className="mt-5">
+                {featured.title}
+              </Heading>
+              <p className="mt-5 max-w-lg text-lg leading-8 text-[var(--text-secondary)]">
+                {featured.description}
+              </p>
+              <span className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
+                View Scenario
+                <span className="transition group-hover:translate-x-1">→</span>
+              </span>
+            </div>
+          </Link>
+        </Section>
+
+        {/* Secondary scenarios — asymmetric editorial pairing, not repeated cards */}
+        <Section tone="surface" border="top" spacing="default">
+          <div className="mb-10 flex items-baseline gap-4">
+            <span className="font-display text-sm font-medium text-[var(--color-primary)]">
+              02–{String(CASE_STUDIES.length).padStart(2, "0")}
+            </span>
+            <Eyebrow>More Scenarios</Eyebrow>
+          </div>
+          <div className="grid gap-x-10 gap-y-14 md:grid-cols-2">
+            {rest.map((study, index) => (
+              <Link
                 key={study.slug}
-                className="grid items-center gap-10 py-16 first:pt-0 last:pb-0 lg:grid-cols-2 lg:gap-16 lg:py-24"
+                href={`/case-studies/${study.slug}`}
+                className={`group block ${index % 2 === 1 ? "md:mt-16" : ""}`}
               >
-                <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <ImageFrame
-                    src={study.image}
-                    alt={study.imageAlt}
-                    aspect="portrait"
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                  />
+                <div className="overflow-hidden rounded-[var(--radius-image)]">
+                  <div className="transition duration-700 ease-out group-hover:scale-[1.05]">
+                    <ImageFrame src={study.image} alt={study.imageAlt} aspect="portrait" sizes="(min-width: 768px) 45vw, 100vw" />
+                  </div>
                 </div>
-                <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
-                    {study.label} · Illustrative Scenario
+                <div className="mt-6 border-t border-white/10 pt-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]">
+                    0{index + 2} · {study.label}
                   </p>
-                  <Heading as="h2" variant="display-md" className="mt-5">
+                  <Heading as="h2" variant="heading-lg" className="mt-3">
                     {study.title}
                   </Heading>
-                  <p className="mt-5 max-w-lg text-lg leading-8 text-[var(--text-secondary)]">
-                    {study.description}
-                  </p>
-                  <Link
-                    href={`/case-studies/${study.slug}`}
-                    className="-ml-2 mt-6 inline-flex items-center px-2 py-3 text-sm font-semibold text-white transition hover:text-[var(--color-primary)]"
-                  >
-                    View Scenario →
-                  </Link>
+                  <p className="mt-3 max-w-md text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
+                    View Scenario
+                    <span className="transition group-hover:translate-x-1">→</span>
+                  </span>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </Section>
