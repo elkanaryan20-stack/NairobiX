@@ -17,7 +17,7 @@ import { CTASection } from "@/components/ui/CTASection";
 import { NiaMark } from "@/components/nia/NiaMark";
 import { JsonLd } from "@/components/JsonLd";
 import { HOME_TITLE, HOME_DESCRIPTION, homeMetadata } from "@/lib/seo";
-import { webPageJsonLd } from "@/lib/structured-data";
+import { faqPageJsonLd, webPageJsonLd } from "@/lib/structured-data";
 import {
   BOOKING_URL,
   HOME_SOLUTIONS,
@@ -34,6 +34,14 @@ import {
   WORKSPACE_FEATURES,
 } from "@/lib/site-data";
 
+const INDUSTRY_SLUGS: Record<string, string> = {
+  Healthcare: "healthcare",
+  Hospitality: "hospitality",
+  "Real Estate": "real-estate",
+  "Retail & E-commerce": "ecommerce",
+  "Professional Services": "professional-services",
+};
+
 const WORKSPACE_FEATURE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   visibility: ClipboardList,
   reporting: TrendingUp,
@@ -47,6 +55,7 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={webPageJsonLd({ name: HOME_TITLE, description: HOME_DESCRIPTION, path: "/" })} />
+      <JsonLd data={faqPageJsonLd(FAQS.slice(0, 5))} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         {/* 1. Hero */}
@@ -270,8 +279,8 @@ export default function HomePage() {
 
               <div className="relative aspect-[1122/1223] w-full overflow-hidden rounded-[var(--radius-image)] shadow-[var(--shadow-elevated)]">
                 <Image
-                  src="/images/photography/workspace.webp"
-                  alt="A modern executive workspace at dusk, with a city skyline through floor-to-ceiling windows."
+                  src="/images/photography/pexels-darlene-alderson-7971343.jpg"
+                  alt="A professional working calmly at a minimalist desk with a laptop and coffee."
                   fill
                   sizes="(min-width: 1024px) 28vw, (min-width: 768px) 40vw, 100vw"
                   className="object-cover object-center"
@@ -313,14 +322,21 @@ export default function HomePage() {
             </Heading>
           </div>
           <div className="mb-16 flex flex-wrap gap-3">
-            {INDUSTRIES_SERVED.map((industry) => (
-              <span
-                key={industry}
-                className="rounded-full border border-white/10 bg-white/[0.02] px-4 py-2 text-sm text-[var(--text-secondary)]"
-              >
-                {industry}
-              </span>
-            ))}
+            {INDUSTRIES_SERVED.map((industry) => {
+              const slug = INDUSTRY_SLUGS[industry];
+              const className =
+                "rounded-full border border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition hover:border-[var(--color-primary)]/40 hover:text-white";
+
+              return slug ? (
+                <Link key={industry} href={`/industries/${slug}`} className={className}>
+                  {industry}
+                </Link>
+              ) : (
+                <span key={industry} className={className}>
+                  {industry}
+                </span>
+              );
+            })}
           </div>
 
           <div className="mb-8 flex flex-col gap-3 border-t border-white/10 pt-12 md:flex-row md:items-end md:justify-between">

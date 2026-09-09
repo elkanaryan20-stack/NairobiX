@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Faq } from "@/components/faq";
-import { FAQS } from "@/lib/site-data";
+import { BOOKING_URL, CONTACT_EMAIL, FAQS } from "@/lib/site-data";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { OpenChatButton } from "@/components/open-chat-button";
@@ -10,10 +10,9 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { CONTACT_EMAIL } from "@/lib/site-data";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
-import { webPageJsonLd } from "@/lib/structured-data";
+import { faqPageJsonLd, webPageJsonLd } from "@/lib/structured-data";
 
 const TITLE = "Contact";
 const DESCRIPTION =
@@ -32,10 +31,10 @@ const START_OPTIONS = [
   },
   {
     number: "02",
-    title: "Request a Solution",
-    text: "For businesses ready to discuss a specific challenge or project.",
-    cta: "Request a Solution →",
-    href: "/request-solution",
+    title: "Book a Consultation",
+    text: "For businesses ready to talk through a specific challenge directly with the team.",
+    cta: "Book a Consultation →",
+    href: BOOKING_URL,
     variant: "secondary" as const,
   },
 ];
@@ -44,6 +43,7 @@ export default function ContactPage() {
   return (
     <>
       <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/contact" })} />
+      <JsonLd data={faqPageJsonLd(FAQS)} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         <Section spacing="compact">

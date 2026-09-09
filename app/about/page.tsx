@@ -10,7 +10,8 @@ import { Card } from "@/components/ui/Card";
 import { CTASection } from "@/components/ui/CTASection";
 import { Button } from "@/components/ui/Button";
 import { GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
-import { BOOKING_URL, BUSINESSES_WE_SERVE } from "@/lib/site-data";
+import Link from "next/link";
+import { BOOKING_URL, BUSINESSES_WE_SERVE, GROWTH_APPROACH } from "@/lib/site-data";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
@@ -103,7 +104,47 @@ export default function AboutPage() {
           </div>
         </Section>
 
+        <Section border="top">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <Eyebrow>NAIROBI · AFRICA</Eyebrow>
+              <Heading as="h2" variant="display-md" className="mt-4">
+                Built in Nairobi. Designed for ambitious businesses across Africa.
+              </Heading>
+            </div>
+            <p className="text-lg leading-8 text-[var(--text-secondary)]">
+              NairobiX is based in Nairobi and built around the realities of doing business here —
+              WhatsApp as a primary sales channel, referral-driven growth, and teams that need
+              systems which work with existing tools rather than replacing them wholesale. The
+              same approach applies to ambitious businesses anywhere in East Africa facing the
+              same underlying growth problems.
+            </p>
+          </div>
+        </Section>
+
         <Section tone="surface" border="top">
+          <div className="mb-10 max-w-2xl">
+            <Eyebrow>GROWTH METHODOLOGY</Eyebrow>
+            <Heading as="h2" variant="display-md" className="mt-4">
+              One growth system, built in four stages.
+            </Heading>
+          </div>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {GROWTH_APPROACH.map((item, index) => (
+              <div key={item.step} className={index > 0 ? "border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0" : ""}>
+                <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
+                  0{index + 1}
+                </div>
+                <Heading variant="heading-md" as="h3">
+                  {item.step}
+                </Heading>
+                <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section border="top">
           <div className="mb-10 max-w-2xl">
             <Eyebrow>WHO WE WORK WITH</Eyebrow>
             <Heading as="h2" variant="display-md" className="mt-4">
@@ -136,6 +177,9 @@ export default function AboutPage() {
           <Button href={BOOKING_URL} variant="secondary">
             Book a Consultation →
           </Button>
+          <Link href="/case-studies" className="inline-flex items-center px-2 py-3 text-sm font-semibold text-white hover:text-[var(--color-primary)]">
+            See Case Studies →
+          </Link>
         </CTASection>
       </main>
       <SiteFooter />

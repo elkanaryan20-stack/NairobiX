@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CASE_STUDIES } from "@/lib/site-data";
+import { ALL_SOLUTIONS, CASE_STUDIES, INDUSTRIES } from "@/lib/site-data";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Container } from "@/components/ui/Container";
@@ -43,6 +43,9 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
   if (!study) {
     notFound();
   }
+
+  const relatedSolutions = ALL_SOLUTIONS.filter((solution) => solution.relatedCaseStudySlug === study.slug);
+  const relatedIndustry = INDUSTRIES.find((industry) => industry.caseStudySlug === study.slug);
 
   const narrative = [
     {
@@ -117,6 +120,29 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
           </div>
         </Section>
 
+        {relatedSolutions.length > 0 || relatedIndustry ? (
+          <Section border="top" spacing="compact">
+            <div className="mb-8 max-w-2xl">
+              <Eyebrow>SYSTEMS USED</Eyebrow>
+              <Heading variant="heading-lg" as="h2" className="mt-4">
+                The solutions behind this scenario.
+              </Heading>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {relatedSolutions.map((solution) => (
+                <Button key={solution.id} href={`/solutions/${solution.id}`} variant="secondary" size="md">
+                  {solution.title} →
+                </Button>
+              ))}
+              {relatedIndustry ? (
+                <Button href={`/industries/${relatedIndustry.slug}`} variant="secondary" size="md">
+                  {relatedIndustry.name} Industry →
+                </Button>
+              ) : null}
+            </div>
+          </Section>
+        ) : null}
+
         <Section border="top" tone="surface">
           <div className="max-w-2xl">
             <Eyebrow>NEXT STEP</Eyebrow>
@@ -127,8 +153,8 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
               If this challenge sounds familiar, we can map the right growth system for your
               business and identify the most valuable opportunities to act on.
             </p>
-            <Button href="/request-solution" variant="primary" className="mt-8">
-              Request Solution →
+            <Button href="/business-growth-audit" variant="primary" className="mt-8">
+              Get Your Growth Assessment →
             </Button>
           </div>
         </Section>

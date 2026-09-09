@@ -97,8 +97,8 @@ export default function SolutionsPage() {
                       </ul>
                     </div>
 
-                    <Button href={item.href} variant="primary" size="md" className="mt-8">
-                      {item.cta}
+                    <Button href={`/solutions/${item.id}`} variant="primary" size="md" className="mt-8">
+                      Learn More →
                     </Button>
                   </div>
                 </article>
@@ -121,7 +121,7 @@ export default function SolutionsPage() {
               <Button href="/business-growth-audit" variant="primary">
                 Get Your Free Business Growth Assessment →
               </Button>
-              <Link href="/case-studies" className="inline-flex items-center text-sm font-semibold text-white hover:text-[var(--color-primary)]">
+              <Link href="/case-studies" className="inline-flex items-center px-2 py-3 text-sm font-semibold text-white hover:text-[var(--color-primary)]">
                 See Case Studies →
               </Link>
             </div>

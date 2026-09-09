@@ -4,7 +4,7 @@ import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import { NiaWidget } from "@/components/nia/NiaWidget";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE_URL, HOME_TITLE, HOME_DESCRIPTION } from "@/lib/seo";
-import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
+import { localBusinessJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -57,6 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-[#0b0b0d] text-white">
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
+        <JsonLd data={localBusinessJsonLd()} />
 
         {/* Google Analytics */}
         <Script

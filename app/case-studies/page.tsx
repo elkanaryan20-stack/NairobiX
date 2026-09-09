@@ -67,7 +67,7 @@ export default function CaseStudiesPage() {
                   </p>
                   <Link
                     href={`/case-studies/${study.slug}`}
-                    className="mt-8 inline-flex items-center text-sm font-semibold text-white transition hover:text-[var(--color-primary)]"
+                    className="-ml-2 mt-6 inline-flex items-center px-2 py-3 text-sm font-semibold text-white transition hover:text-[var(--color-primary)]"
                   >
                     View Scenario →
                   </Link>
