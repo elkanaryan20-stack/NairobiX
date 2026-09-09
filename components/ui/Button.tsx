@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 const VARIANT_CLASSES = {
-  primary: "bg-[var(--color-primary)] font-semibold text-white hover:bg-[var(--color-primary-strong)]",
+  primary: "bg-[var(--color-primary)] font-semibold text-[var(--color-on-primary)] hover:bg-[var(--color-primary-strong)]",
   secondary: "border border-white/15 bg-white/5 font-medium text-white hover:border-white/30 hover:bg-white/10",
   ghost: "font-medium text-white hover:text-[var(--color-primary)]",
 } as const;

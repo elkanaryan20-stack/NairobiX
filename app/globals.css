@@ -6,6 +6,10 @@
   --color-primary: #f97316;
   --color-primary-strong: #ea6a16;
   --color-primary-soft: rgba(249, 115, 22, 0.12);
+  /* Text/icon color for content sitting on a solid --color-primary fill.
+     White-on-#f97316 measures ~2.8:1, failing WCAG AA even for large/bold UI
+     text (needs 3:1+); this reuses --background for ~7.3:1. */
+  --color-on-primary: var(--background);
   --color-surface: #0a0a0c;
   --color-surface-2: #0f0f12;
   --color-surface-3: #16171a;
@@ -28,61 +32,71 @@
   --font-display: var(--font-fraunces);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/*
+ * Wrapped in Tailwind's `base` layer so these resets stay overridable by
+ * utility classes. Unlayered CSS always wins over layered CSS regardless of
+ * specificity — an earlier unlayered `input, textarea { font: inherit; }`
+ * here silently beat every `text-base`/`text-lg` utility on form fields,
+ * pinning them to their parent <label>'s `text-sm` (14px) and triggering
+ * iOS Safari's auto-zoom-on-focus on every form in the site.
+ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, sans-serif;
-  line-height: 1.5;
-}
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-geist-sans), Arial, sans-serif;
+    line-height: 1.5;
+  }
 
-* {
-  box-sizing: border-box;
-}
+  * {
+    box-sizing: border-box;
+  }
 
-a {
-  text-decoration: none;
-}
+  a {
+    text-decoration: none;
+  }
 
-button,
-input,
-textarea {
-  font: inherit;
-}
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
 
-img {
-  max-width: 100%;
-  display: block;
-}
+  img {
+    max-width: 100%;
+    display: block;
+  }
 
-main {
-  overflow-x: hidden;
-}
+  main {
+    overflow-x: hidden;
+  }
 
-::selection {
-  background: rgba(249, 115, 22, 0.3);
-}
+  ::selection {
+    background: rgba(249, 115, 22, 0.3);
+  }
 
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-summary:focus-visible,
-[tabindex]:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  summary:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

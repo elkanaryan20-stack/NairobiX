@@ -8,7 +8,7 @@ export function NiaMessage({ message }: { message: NiaChatMessage }) {
       <div
         className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm leading-6 ${
           isUser
-            ? "bg-[var(--color-primary)] text-white"
+            ? "bg-[var(--color-primary)] text-[var(--color-on-primary)]"
             : "border border-white/10 bg-white/[0.03] text-[var(--text-secondary)]"
         }`}
       >

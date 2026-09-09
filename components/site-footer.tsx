@@ -74,43 +74,43 @@ export function SiteFooter() {
             </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="mt-4 inline-block text-sm font-medium text-[var(--text-secondary)] hover:text-white"
+              className="mt-2 inline-block py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-white"
             >
               {CONTACT_EMAIL}
             </a>
           </div>
 
           <div>
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Solutions</p>
-            <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Solutions</p>
+            <ul className="-my-1 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.solutions.map((item) => (
                 <li key={item.label}>
-                  <Link href={item.href} className="hover:text-white">{item.label}</Link>
+                  <Link href={item.href} className="inline-block py-2.5 hover:text-white">{item.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Company</p>
-            <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Company</p>
+            <ul className="-my-1 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.company.map((item) => (
                 <li key={item.label}>
-                  <Link href={item.href} className="hover:text-white">{item.label}</Link>
+                  <Link href={item.href} className="inline-block py-2.5 hover:text-white">{item.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Start</p>
-            <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Start</p>
+            <ul className="-my-1 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.start.map((item) => (
                 <li key={item.label}>
                   {item.chat ? (
-                    <OpenChatButton className="text-left hover:text-white">{item.label}</OpenChatButton>
+                    <OpenChatButton className="inline-block py-2.5 text-left hover:text-white">{item.label}</OpenChatButton>
                   ) : (
-                    <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener noreferrer" : undefined} className="hover:text-white">
+                    <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener noreferrer" : undefined} className="inline-block py-2.5 hover:text-white">
                       {item.label}
                     </a>
                   )}
@@ -141,8 +141,8 @@ export function SiteFooter() {
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-[var(--text-tertiary)] sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 NairobiX. All rights reserved.</p>
           <div className="flex items-center gap-5">
-            <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white">Terms of Service</Link>
+            <Link href="/privacy" className="inline-block py-2.5 hover:text-white">Privacy Policy</Link>
+            <Link href="/terms" className="inline-block py-2.5 hover:text-white">Terms of Service</Link>
           </div>
         </div>
       </div>

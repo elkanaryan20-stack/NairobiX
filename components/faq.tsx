@@ -16,7 +16,7 @@ export function Faq({ items }: { items: FaqItem[] }) {
           className="group p-5 text-left"
           open={index === 0}
         >
-          <summary className="cursor-pointer list-none text-base font-medium text-white marker:content-none">
+          <summary className="-my-1.5 cursor-pointer list-none py-1.5 text-base font-medium text-white marker:content-none">
             <span className="flex items-center justify-between gap-4">
               <span>{item.question}</span>
               <span className="text-xl text-[var(--color-primary)] transition group-open:rotate-45">+</span>

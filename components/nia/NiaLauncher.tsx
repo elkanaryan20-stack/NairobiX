@@ -6,6 +6,17 @@ import { NiaMark } from "@/components/nia/NiaMark";
 
 export function NiaLauncher() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  // Hide the floating bubble while the site header's mobile menu is open —
+  // see the matching dispatch in components/site-header.tsx.
+  useEffect(() => {
+    const handleMobileNav = (event: Event) => {
+      setMobileNavOpen((event as CustomEvent<{ open: boolean }>).detail.open);
+    };
+    window.addEventListener("nairobix:mobile-nav", handleMobileNav);
+    return () => window.removeEventListener("nairobix:mobile-nav", handleMobileNav);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,7 +43,7 @@ export function NiaLauncher() {
         <div className="fixed inset-0 z-50 sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[min(640px,calc(100vh-7rem))] sm:w-[400px]">
           <NiaChat onClose={() => setIsOpen(false)} />
         </div>
-      ) : (
+      ) : mobileNavOpen ? null : (
         <button
           type="button"
           onClick={() => setIsOpen(true)}

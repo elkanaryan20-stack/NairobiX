@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BOOKING_URL, NAV_ITEMS } from "@/lib/site-data";
+import { SkipToContent } from "@/components/skip-to-content";
 
 const CTAS = [
   { label: "Book a Consultation", href: BOOKING_URL, external: false },
@@ -15,10 +16,19 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // The floating Nia launcher is mounted independently in the root layout.
+  // On short mobile viewports its fixed bottom-right bubble overlaps the last
+  // CTA in this open menu, obscuring it and intercepting taps meant for it —
+  // so tell Nia to hide itself for as long as this menu is open.
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("nairobix:mobile-nav", { detail: { open: mobileOpen } }));
+  }, [mobileOpen]);
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#030304]/80 backdrop-blur-xl">
+      <SkipToContent />
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2 text-white" aria-label="NairobiX home">
+        <Link href="/" className="-my-2 flex items-center gap-2 py-2 text-white" aria-label="NairobiX home">
           <Image
             src="/images/NairobiX-logo.png"
             alt="NairobiX"
@@ -57,7 +67,7 @@ export function SiteHeader() {
               className={
                 cta.label === "Book a Consultation"
                   ? "inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:border-white/30 hover:bg-white/10"
-                  : "inline-flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-primary-strong)]"
+                  : "inline-flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--color-on-primary)] transition hover:bg-[var(--color-primary-strong)]"
               }
             >
               {cta.label}
@@ -105,7 +115,7 @@ export function SiteHeader() {
               </Link>
               <Link
                 href="/business-growth-audit"
-                className="flex w-full items-center justify-center rounded-full bg-[var(--color-primary)] px-4 py-3 text-sm font-semibold text-white"
+                className="flex w-full items-center justify-center rounded-full bg-[var(--color-primary)] px-4 py-3 text-sm font-semibold text-[var(--color-on-primary)]"
               >
                 Get Free Growth Assessment
               </Link>

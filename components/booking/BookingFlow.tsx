@@ -447,7 +447,11 @@ export function BookingFlow() {
 
 function StepIndicator({ step }: { step: number }) {
   return (
-    <ol className="flex items-center justify-between gap-2" aria-label="Booking progress">
+    <>
+      <p aria-live="polite" className="sr-only">
+        Step {step + 1} of {STEPS.length}: {STEPS[step]}
+      </p>
+      <ol className="flex items-center justify-between gap-2" aria-label="Booking progress">
       {STEPS.map((label, index) => {
         const isActive = index === step;
         const isDone = index < step;
@@ -456,7 +460,7 @@ function StepIndicator({ step }: { step: number }) {
             <span
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition ${
                 isActive
-                  ? "bg-[var(--color-primary)] text-white"
+                  ? "bg-[var(--color-primary)] text-[var(--color-on-primary)]"
                   : isDone
                     ? "bg-white/15 text-white"
                     : "bg-white/5 text-[var(--text-tertiary)]"
@@ -471,7 +475,8 @@ function StepIndicator({ step }: { step: number }) {
           </li>
         );
       })}
-    </ol>
+      </ol>
+    </>
   );
 }
 
