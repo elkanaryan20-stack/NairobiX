@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Heading } from "@/components/ui/Heading";
+import { ImageFrame } from "@/components/ui/ImageFrame";
 import { Button } from "@/components/ui/Button";
 import { CTASection } from "@/components/ui/CTASection";
 import { JsonLd } from "@/components/JsonLd";
@@ -84,6 +85,12 @@ export default async function InsightArticlePage({ params }: { params: Promise<{
             <p className="mt-6 text-lg leading-8 text-[var(--text-secondary)]">{article.description}</p>
           </Container>
         </section>
+
+        {article.heroImage ? (
+          <Section containerWidth="prose" spacing="compact">
+            <ImageFrame src={article.heroImage} alt={article.heroImageAlt ?? ""} aspect="wide" preload />
+          </Section>
+        ) : null}
 
         <Section containerWidth="prose" spacing="compact">
           <div className="space-y-12">

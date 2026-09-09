@@ -8,6 +8,8 @@ export type InsightArticle = {
   sections: { heading: string; paragraphs: string[] }[];
   relatedSolutionId?: string;
   relatedIndustrySlug?: string;
+  heroImage?: string;
+  heroImageAlt?: string;
 };
 
 export const INSIGHTS: InsightArticle[] = [
@@ -59,6 +61,8 @@ export const INSIGHTS: InsightArticle[] = [
     publishedDate: "2026-01-28",
     readTime: "8 min read",
     relatedSolutionId: "crm-sales",
+    heroImage: "/images/photography/pexels-jakubzerdzicki-38984789.jpg",
+    heroImageAlt: "A kanban-style project board open on a tablet, tracking tasks through stages.",
     sections: [
       {
         heading: "Most failed CRM rollouts fail for the same reason",
@@ -135,6 +139,8 @@ export const INSIGHTS: InsightArticle[] = [
     publishedDate: "2026-02-24",
     readTime: "7 min read",
     relatedSolutionId: "ai-solutions",
+    heroImage: "/images/photography/pexels-naboth-otieno-83498565-19805876.jpg",
+    heroImageAlt: "A developer reviewing code across two screens at a home workstation.",
     sections: [
       {
         heading: "Start with repetition, not ambition",
