@@ -197,31 +197,34 @@ export function BookingFlow() {
 
   if (isBooked && selectedDateISO && selectedTime) {
     return (
-      <Container width="narrow" className="py-16 sm:py-20">
-        <Card variant="outline" className="mx-auto max-w-2xl p-8 text-center sm:p-10">
-          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-2xl text-emerald-300">
+      <Container width="narrow" className="animate-step-fade py-20 sm:py-28">
+        <div className="mx-auto max-w-xl text-center">
+          <div className="mx-auto mb-7 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-2xl text-emerald-300">
             ✓
           </div>
-          <Heading variant="heading-lg" as="h1">
-            Your consultation is confirmed.
+          <Eyebrow className="justify-center">CONSULTATION CONFIRMED</Eyebrow>
+          <Heading variant="display-md" as="h1" className="mt-4">
+            You&apos;re on the calendar.
           </Heading>
           <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
-            Thank you. Your NairobiX Growth Consultation has been scheduled.
+            Thank you — your NairobiX Business Growth Consultation has been scheduled.
           </p>
-          <div className="mt-8 space-y-3 rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-left text-sm">
+
+          <Card variant="surface" className="mt-10 space-y-4 p-6 text-left text-sm sm:p-8">
             <SummaryRow label="Date" value={DATE_FORMATTER_LONG.format(new Date(`${selectedDateISO}T00:00:00`))} />
             <SummaryRow label="Time" value={`${formatTime12h(selectedTime)} (Africa/Nairobi, EAT)`} />
             <SummaryRow label="Duration" value="30 minutes" />
             <SummaryRow label="Business" value={formData.businessName} />
-          </div>
-          <p className="mt-6 text-sm leading-6 text-[var(--text-tertiary)]">
-            A confirmation has been sent to {formData.email}. Our team will reach out shortly before your
-            consultation to confirm the meeting link.
+          </Card>
+
+          <p className="mt-8 text-sm leading-6 text-[var(--text-tertiary)]">
+            A confirmation has been sent to {formData.email}. Our team will reach out shortly before
+            your consultation to confirm the meeting link.
           </p>
-          <Button href="/" variant="primary" className="mt-8">
+          <Button href="/" variant="primary" className="mt-9">
             Return to NairobiX
           </Button>
-        </Card>
+        </div>
       </Container>
     );
   }
@@ -230,22 +233,16 @@ export function BookingFlow() {
     <Container width="narrow" className="py-12 sm:py-16">
       <StepIndicator step={step} />
 
-      <Card variant="outline" className="mt-8 p-6 sm:p-8 lg:p-10">
+      <Card variant="outline" className="mt-8 overflow-hidden p-6 sm:p-8 lg:p-10">
         {step === 0 && (
-          <section>
+          <section key={step} className="animate-step-fade">
             <Eyebrow>30-MINUTE CONSULTATION</Eyebrow>
             <Heading variant="heading-lg" as="h1" className="mt-3">
               NairobiX Business Growth Consultation
             </Heading>
             <p className="mt-5 text-base leading-7 text-[var(--text-secondary)]">
-              A focused 30-minute session with the NairobiX team to understand your business, identify
-              where growth is being held back, and determine the right NairobiX solution for your stage —
-              whether that&apos;s digital marketing, CRM and sales systems, automation, AI, or web and digital
-              solutions.
-            </p>
-            <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
-              There&apos;s no fixed pitch — this is a working conversation about your business, not a sales
-              call.
+              Choose a date and time below, and tell us briefly about your business. That&apos;s all it
+              takes to reserve the session.
             </p>
             <div className="mt-8 flex justify-end">
               <Button onClick={() => setStep(1)} variant="primary">
@@ -256,7 +253,7 @@ export function BookingFlow() {
         )}
 
         {step === 1 && (
-          <section>
+          <section key={step} className="animate-step-fade">
             <SectionIntro number="02" title="Choose a date" description="Select a date for your consultation. Times are shown in East Africa Time (EAT)." />
             <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 lg:grid-cols-7">
               {upcomingDates.map((date) => {
@@ -292,7 +289,7 @@ export function BookingFlow() {
         )}
 
         {step === 2 && (
-          <section>
+          <section key={step} className="animate-step-fade">
             <SectionIntro
               number="03"
               title="Choose a time"
@@ -341,7 +338,7 @@ export function BookingFlow() {
         )}
 
         {step === 3 && (
-          <section>
+          <section key={step} className="animate-step-fade">
             <SectionIntro number="04" title="Your details" description="Tell us a little about your business so the consultation is useful from the first minute." />
             <div className="grid gap-5 md:grid-cols-2">
               <FormInput label="Full Name" name="fullName" value={formData.fullName} onChange={handleFieldChange} required error={formErrors.fullName} />
@@ -410,7 +407,7 @@ export function BookingFlow() {
         )}
 
         {step === 4 && selectedDateISO && selectedTime && (
-          <section>
+          <section key={step} className="animate-step-fade">
             <SectionIntro number="05" title="Confirm your consultation" description="Please review the details below before confirming." />
             <div className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-sm">
               <SummaryRow label="Consultation" value="NairobiX Business Growth Consultation" />
