@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { SOLUTION_CATEGORIES } from "@/lib/site-data";
+import { SOLUTION_CATEGORIES, ALL_SOLUTIONS } from "@/lib/site-data";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Container } from "@/components/ui/Container";
@@ -15,7 +15,7 @@ import { webPageJsonLd, serviceListJsonLd } from "@/lib/structured-data";
 
 const TITLE = "Solutions";
 const DESCRIPTION =
-  "Explore NairobiX's connected growth solutions across digital marketing, CRM and sales systems, business automation, AI and web development.";
+  "NairobiX designs connected growth systems across digital marketing, CRM and sales, automation, AI, web and analytics — not six services sold separately.";
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/solutions" });
 
@@ -26,85 +26,92 @@ export default function SolutionsPage() {
       <JsonLd data={serviceListJsonLd(SOLUTION_CATEGORIES)} />
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
+        {/* Intro / positioning */}
         <section className="border-b border-white/10">
-          <Container className="py-20">
+          <Container className="py-20 sm:py-24">
             <div className="max-w-3xl">
               <Eyebrow>NAIROBIX · SOLUTIONS</Eyebrow>
               <Heading as="h1" variant="display-lg" className="mt-4">
-                Solutions built around how your business grows.
+                NairobiX designs connected growth systems.
               </Heading>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">
-                Each solution below solves a specific, recognizable business problem. Most
-                businesses need more than one — that&apos;s where they connect into a single system.
+                Strategy, marketing, CRM and sales, automation, AI, web platforms and analytics are
+                built as one body of work — because in practice, each discipline determines how
+                well the others perform. The six solutions below are where that system gets built,
+                one working part at a time.
               </p>
+            </div>
+
+            {/* Lightweight framework legend, not another set of boxes */}
+            <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-8">
+              {SOLUTION_CATEGORIES.map((category) => (
+                <a
+                  key={category.id}
+                  href={`#${category.id}`}
+                  className="text-sm font-semibold text-[var(--text-secondary)] transition hover:text-[var(--color-primary)]"
+                >
+                  {category.title} →
+                </a>
+              ))}
             </div>
           </Container>
         </section>
 
-        {SOLUTION_CATEGORIES.map((category, categoryIndex) => (
-          <Section
-            key={category.id}
-            id={category.id}
-            tone={categoryIndex % 2 === 1 ? "surface" : "base"}
-            border="top"
-            className="scroll-mt-24"
-          >
-            <div className="mb-10 flex flex-col gap-4 border-b border-white/10 pb-6 md:flex-row md:items-end md:justify-between">
-              <div>
+        {SOLUTION_CATEGORIES.map((category) => (
+          <div key={category.id} id={category.id} className="scroll-mt-24">
+            <Section spacing="compact" border="top">
+              <div className="max-w-2xl">
                 <Eyebrow>{category.title}</Eyebrow>
-                <Heading variant="heading-lg" as="h2" className="mt-3">
-                  {category.title}
-                </Heading>
+                <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{category.intro}</p>
               </div>
-              <p className="max-w-xl text-base leading-7 text-[var(--text-secondary)]">{category.intro}</p>
-            </div>
+            </Section>
 
-            <div className="grid gap-8 lg:grid-cols-2">
-              {category.items.map((item) => (
-                <article key={item.id} className="overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/[0.02]">
-                  <ImageFrame
-                    src={item.image}
-                    alt={item.imageAlt}
-                    aspect="wide"
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                  />
-                  <div className="p-6 sm:p-8">
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">{item.eyebrow}</p>
-                    <Heading variant="heading-md" as="h3" className="mt-4">
-                      {item.heading}
-                    </Heading>
+            {category.items.map((item) => {
+              const solutionIndex = ALL_SOLUTIONS.findIndex((solution) => solution.id === item.id) + 1;
+              const isEven = solutionIndex % 2 === 0;
 
-                    <div className="mt-5 border-l-2 border-[var(--color-primary)]/40 pl-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
-                        The problem
-                      </p>
-                      <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{item.problem}</p>
+              return (
+                <Section key={item.id} tone={isEven ? "surface" : "base"} spacing="compact">
+                  <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+                    <div className={isEven ? "lg:order-2" : ""}>
+                      <ImageFrame
+                        src={item.image}
+                        alt={item.imageAlt}
+                        aspect="wide"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                      />
                     </div>
-
-                    <p className="mt-5 text-base leading-7 text-[var(--text-secondary)]">{item.description}</p>
-
-                    <div className="mt-6">
-                      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
-                        Ideal for businesses that want to...
+                    <div className={isEven ? "lg:order-1" : ""}>
+                      <span className="font-display text-sm font-medium text-[var(--color-primary)]">
+                        {String(solutionIndex).padStart(2, "0")}
+                      </span>
+                      <Heading variant="heading-lg" as="h2" className="mt-3">
+                        {item.heading}
+                      </Heading>
+                      <p className="mt-5 text-base leading-7 text-[var(--text-secondary)]">
+                        <span className="text-white">{item.problem}</span> {item.description}
                       </p>
-                      <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
-                        {item.ideal.map((point) => (
-                          <li key={point} className="flex items-start gap-3">
-                            <span className="mt-1 h-2 w-2 rounded-full bg-[var(--color-primary)]" />
-                            <span>{point}</span>
-                          </li>
+                      <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+                        {item.ideal.slice(0, 3).map((point) => (
+                          <span key={point} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                            <span className="h-1 w-1 shrink-0 rounded-full bg-[var(--color-primary)]" />
+                            {point}
+                          </span>
                         ))}
-                      </ul>
+                      </div>
+                      <Link
+                        href={`/solutions/${item.id}`}
+                        className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-white transition hover:text-[var(--color-primary)]"
+                      >
+                        Learn More
+                        <span className="transition">→</span>
+                      </Link>
                     </div>
-
-                    <Button href={`/solutions/${item.id}`} variant="primary" size="md" className="mt-8">
-                      Learn More →
-                    </Button>
                   </div>
-                </article>
-              ))}
-            </div>
-          </Section>
+                </Section>
+              );
+            })}
+          </div>
         ))}
 
         <Section border="top" tone="surface">
@@ -114,8 +121,8 @@ export default function SolutionsPage() {
               Start with the Business Growth Assessment.
             </Heading>
             <p className="mt-4 text-lg leading-8 text-[var(--text-secondary)]">
-              It identifies which of these solutions — or which combination of them — matches
-              where your business actually is right now.
+              It identifies which of these {ALL_SOLUTIONS.length} solutions — or which combination
+              of them — matches where your business actually is right now.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button href="/business-growth-audit" variant="primary">
