@@ -207,7 +207,7 @@ export default async function IndustryDetailPage({ params }: { params: Promise<{
                 </Heading>
                 <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">{caseStudy.description}</p>
                 <Button href={`/case-studies/${caseStudy.slug}`} variant="secondary" className="mt-6">
-                  View Case Study →
+                  View Scenario →
                 </Button>
               </div>
             </div>

@@ -54,13 +54,44 @@ export type SolutionDetail = {
   image: string;
   imageAlt: string;
   businessChallenge: string;
+  problemFlow: string[];
   whatWeBuild: string[];
+  systemFlow: { label: string; detail: string }[];
   process: { stage: string; description: string }[];
   technology: string[];
   timeline: string;
+  portalPreview: {
+    title: string;
+    caption: string;
+    metrics: { label: string; direction: "up" | "down" }[];
+    rows: { label: string; status: string }[];
+  };
   outcomes: string[];
+  outcomeMetrics: { label: string; direction: "up" | "down" }[];
   relatedCaseStudySlug: string;
   faqs: { question: string; answer: string }[];
+};
+
+// Short role each technology plays in a NairobiX system — used by the
+// Technology Ecosystem visual so the tech list reads as "how these work
+// together" rather than a bare list of logos/names.
+export const TECH_ROLES: Record<string, string> = {
+  "Google Ads": "Intent capture",
+  "Meta Ads": "Demand generation",
+  "Google Analytics": "Performance intelligence",
+  "Google Search Console": "Search visibility",
+  "Zoho CRM": "Lead & pipeline management",
+  "WhatsApp Business": "Customer communication",
+  "Workflow automation": "Process orchestration",
+  "KPI dashboards": "Decision visibility",
+  "APIs and integrations": "System connectivity",
+  "Internal notification systems": "Operational alerts",
+  "AI assistants (Claude-based)": "Conversational AI",
+  "AI-powered workflows": "Intelligent automation",
+  "Modern web applications (Next.js)": "Digital infrastructure",
+  "Custom portals and dashboards": "Client experience layer",
+  "Analytics and conversion tracking": "Conversion intelligence",
+  "Sales reporting dashboards": "Pipeline visibility",
 };
 
 export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; items: SolutionDetail[] }[] = [
@@ -90,11 +121,22 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         imageAlt: "The Nairobi city skyline under a bright midday sky.",
         businessChallenge:
           "Most businesses aren't short on marketing activity — they're short on a system that turns that activity into a predictable flow of qualified inquiries. Ads run without a clear read on what they cost per lead. Content gets published without a plan for who it's for. The result is visibility that rises and falls without an obvious cause, and a team that can't say with confidence what to do more of.",
+        problemFlow: ["Scattered channels", "Unclear attribution", "Slow follow-up", "Lost opportunities"],
         whatWeBuild: [
           "Paid search and social campaigns (Google Ads, Meta Ads) built around specific offers and audiences",
           "SEO foundations — technical health, on-page structure and content aligned to how customers actually search",
           "Content built around buyer intent rather than a generic posting calendar",
           "Tracking wired to real conversions, not just clicks and impressions",
+        ],
+        systemFlow: [
+          { label: "Traffic", detail: "Prospects discover the business through search, social and referral." },
+          { label: "Meta / Google", detail: "Paid campaigns built around specific offers and audiences." },
+          { label: "Landing Page", detail: "A page built to convert that specific audience, not a generic homepage." },
+          { label: "Lead Capture", detail: "Forms and tracking wired to real conversions, not just clicks." },
+          { label: "Zoho CRM", detail: "Every inquiry lands in one pipeline automatically." },
+          { label: "WhatsApp / Email", detail: "Follow-up happens on the channel the customer actually uses." },
+          { label: "Sales", detail: "The team works a qualified, visible pipeline instead of a cold list." },
+          { label: "Analytics", detail: "Performance feeds back into what to run more — or less — of." },
         ],
         process: [
           { stage: "Discover", description: "We review current channels, past ad spend and search visibility to see where demand already exists and where it's being missed." },
@@ -105,11 +147,32 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         ],
         technology: ["Google Ads", "Meta Ads", "Google Analytics", "Google Search Console", "Zoho CRM"],
         timeline: "Initial campaigns typically go live within 2–3 weeks; the full system usually matures over 60–90 days as data accumulates.",
+        portalPreview: {
+          title: "Marketing Performance",
+          caption: "Preview of the NairobiX marketing workspace",
+          metrics: [
+            { label: "Qualified Leads", direction: "up" },
+            { label: "Cost per Lead", direction: "down" },
+            { label: "Channel Visibility", direction: "up" },
+          ],
+          rows: [
+            { label: "Google Ads", status: "Active" },
+            { label: "Meta Ads", status: "Active" },
+            { label: "Organic Search", status: "Growing" },
+            { label: "Weekly Reporting", status: "On track" },
+          ],
+        },
         outcomes: [
           "A more consistent flow of inbound inquiries, month over month",
           "Clear visibility into which channels are actually producing customers",
           "Less dependence on any single source of leads",
           "A measurable, trackable cost per lead instead of a guess",
+        ],
+        outcomeMetrics: [
+          { label: "Inbound Inquiries", direction: "up" },
+          { label: "Channel Visibility", direction: "up" },
+          { label: "Lead Source Dependence", direction: "down" },
+          { label: "Cost per Lead Clarity", direction: "up" },
         ],
         relatedCaseStudySlug: "customer-acquisition-retention-system",
         faqs: [
@@ -148,11 +211,21 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         imageAlt: "A concrete staircase leading upward toward daylight.",
         businessChallenge:
           "Data usually exists somewhere — in an ads dashboard, a spreadsheet, a CRM nobody fully trusts — but it rarely gets turned into a decision. Businesses end up choosing where to invest next based on instinct or whoever spoke last in a meeting, rather than a clear view of what's actually moving revenue.",
+        problemFlow: ["Data in silos", "No shared view", "Decisions by instinct", "Budget misallocated"],
         whatWeBuild: [
           "A growth audit across acquisition, sales and retention to find the highest-impact gaps",
           "KPI dashboards that bring marketing, sales and operational data into one view",
           "A prioritized roadmap ranking opportunities by impact and effort",
           "A regular cadence of performance reviews so the plan adapts as results come in",
+        ],
+        systemFlow: [
+          { label: "Data Sources", detail: "Ads, CRM, analytics and spreadsheets — wherever performance data already lives." },
+          { label: "Consolidation", detail: "Scattered numbers are brought into one trustworthy view." },
+          { label: "KPI Dashboard", detail: "Marketing, sales and operational data sit side by side." },
+          { label: "Analysis", detail: "Performance is reviewed against acquisition, conversion and retention." },
+          { label: "Prioritized Roadmap", detail: "The two or three highest-impact opportunities, not a long list." },
+          { label: "Review Cadence", detail: "A recurring review keeps the roadmap current as results come in." },
+          { label: "Reallocation", detail: "Budget and effort shift toward what's actually working." },
         ],
         process: [
           { stage: "Discover", description: "We audit current performance across acquisition, conversion and retention to establish an honest baseline." },
@@ -161,13 +234,34 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { stage: "Integrate", description: "Reporting is connected to the systems producing the data — CRM, ad platforms, analytics — so it stays current without manual work." },
           { stage: "Optimize", description: "We review the roadmap on a set cadence, retiring what isn't working and doubling down on what is." },
         ],
-        technology: ["Google Analytics", "Google Search Console", "Zoho CRM reporting", "KPI dashboards"],
+        technology: ["Google Analytics", "Google Search Console", "Zoho CRM", "KPI dashboards"],
         timeline: "An initial assessment and first dashboard are typically ready within 2–3 weeks; strategic review is an ongoing, not one-off, process.",
+        portalPreview: {
+          title: "Growth Strategy",
+          caption: "Preview of the NairobiX strategy workspace",
+          metrics: [
+            { label: "Revenue Visibility", direction: "up" },
+            { label: "Reporting Effort", direction: "down" },
+            { label: "Decision Speed", direction: "up" },
+          ],
+          rows: [
+            { label: "Acquisition", status: "Reviewed" },
+            { label: "Conversion", status: "Reviewed" },
+            { label: "Retention", status: "Needs focus" },
+            { label: "Roadmap", status: "On track" },
+          ],
+        },
         outcomes: [
           "A clear view of what's actually driving revenue",
           "A short, prioritized list of the highest-impact opportunities",
           "Faster, better-informed budget decisions",
           "Less time spent reconciling numbers across disconnected tools",
+        ],
+        outcomeMetrics: [
+          { label: "Revenue Visibility", direction: "up" },
+          { label: "Priority Clarity", direction: "up" },
+          { label: "Decision Speed", direction: "up" },
+          { label: "Reporting Effort", direction: "down" },
         ],
         relatedCaseStudySlug: "patient-growth-experience-system",
         faqs: [
@@ -209,11 +303,23 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         imageAlt: "Colleagues reviewing notes together at a wooden table.",
         businessChallenge:
           "When leads live across WhatsApp, personal inboxes and a salesperson's memory, follow-up depends entirely on individual discipline. Some prospects get a fast, thorough response; others wait days or get missed completely — and there's no reliable way to see which is which until a customer is already gone.",
+        problemFlow: ["Leads across channels", "Manual tracking", "Inconsistent follow-up", "Poor sales visibility"],
         whatWeBuild: [
           "Zoho CRM setup and pipeline design matched to your actual sales process",
           "Lead-routing and follow-up automation so no inquiry sits untouched",
           "WhatsApp Business integration for the channel customers actually use",
           "Sales reporting that shows pipeline health, not just closed deals",
+        ],
+        systemFlow: [
+          { label: "Lead Source", detail: "Website, WhatsApp, referrals and campaigns — wherever leads originate." },
+          { label: "Lead Capture", detail: "Every inquiry is recorded automatically, not manually copied over." },
+          { label: "Zoho CRM", detail: "One system of record the whole team can see." },
+          { label: "Qualification", detail: "Leads are assessed against real buying signals, not gut feel." },
+          { label: "Pipeline", detail: "Deals move through defined stages that match how the team actually sells." },
+          { label: "Follow-up", detail: "Automated reminders make sure no inquiry sits untouched." },
+          { label: "Opportunity", detail: "Qualified deals are tracked with full context and history." },
+          { label: "Conversion", detail: "Deals close against a visible, repeatable process." },
+          { label: "Reporting", detail: "Pipeline health is visible at any time, not just at month-end." },
         ],
         process: [
           { stage: "Discover", description: "We map how leads currently arrive and move through your sales process, including the informal steps that never made it into a system." },
@@ -224,11 +330,32 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         ],
         technology: ["Zoho CRM", "WhatsApp Business", "Workflow automation", "Sales reporting dashboards"],
         timeline: "CRM setup and an initial pipeline are typically live within 3–4 weeks; full workflow automation is usually complete within 6–8 weeks.",
+        portalPreview: {
+          title: "Sales Pipeline",
+          caption: "Preview of the NairobiX sales workspace",
+          metrics: [
+            { label: "Response Time", direction: "down" },
+            { label: "Pipeline Visibility", direction: "up" },
+            { label: "Lead Leakage", direction: "down" },
+          ],
+          rows: [
+            { label: "New Leads", status: "Assigned" },
+            { label: "Qualified", status: "In progress" },
+            { label: "Proposal", status: "Active" },
+            { label: "Won", status: "Reported" },
+          ],
+        },
         outcomes: [
           "No leads lost in inboxes or WhatsApp threads",
           "Faster, more consistent follow-up times",
           "A pipeline the whole team can see and act on",
           "A clearer, more predictable path from inquiry to customer",
+        ],
+        outcomeMetrics: [
+          { label: "Lead Leakage", direction: "down" },
+          { label: "Follow-up Time", direction: "down" },
+          { label: "Pipeline Visibility", direction: "up" },
+          { label: "Conversion Path Clarity", direction: "up" },
         ],
         relatedCaseStudySlug: "lead-generation-sales-system",
         faqs: [
@@ -263,11 +390,20 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         imageAlt: "A team member working on a laptop at a standing desk inside an organized operations facility.",
         businessChallenge:
           "As a business grows, the manual processes that worked at a small scale — one person chasing quotes, another manually compiling a weekly report — start to break under their own weight. Work doesn't get faster; it just depends on more people doing more repetitive tasks, with more room for something to be missed.",
+        problemFlow: ["Repeated manual work", "Process bottlenecks", "Human dependency", "Limited scalability"],
         whatWeBuild: [
           "Automated workflows for quotes, follow-ups and client onboarding",
           "Integrations between existing tools via API, so data doesn't need re-entering",
           "Internal notification and reminder systems so nothing depends on memory",
           "Reduced manual data entry across marketing, sales and operations",
+        ],
+        systemFlow: [
+          { label: "Trigger", detail: "A quote request, new lead or scheduled event starts the workflow." },
+          { label: "Workflow", detail: "Defined steps run automatically, in the right order, every time." },
+          { label: "CRM / API", detail: "The workflow reads and writes real records, not a copy of them." },
+          { label: "Communication", detail: "The right message reaches the right person without manual sending." },
+          { label: "Action", detail: "A task is completed, a reminder is sent, a record is updated." },
+          { label: "Reporting", detail: "What ran, and what it produced, is visible without a manual roundup." },
         ],
         process: [
           { stage: "Discover", description: "We identify which repetitive tasks consume the most time and carry the highest risk of being missed." },
@@ -278,11 +414,32 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         ],
         technology: ["APIs and integrations", "Workflow automation", "Zoho CRM", "Internal notification systems"],
         timeline: "First automated workflows are typically live within 2–4 weeks, depending on complexity and how many existing tools need to be connected.",
+        portalPreview: {
+          title: "Automation Health",
+          caption: "Preview of the NairobiX operations workspace",
+          metrics: [
+            { label: "Manual Work", direction: "down" },
+            { label: "Response Time", direction: "down" },
+            { label: "Operational Capacity", direction: "up" },
+          ],
+          rows: [
+            { label: "Quote Follow-up", status: "Active" },
+            { label: "Client Onboarding", status: "Active" },
+            { label: "Weekly Reporting", status: "Automated" },
+            { label: "Workflow Health", status: "Healthy" },
+          ],
+        },
         outcomes: [
           "Less manual administrative work across the team",
           "Faster response times on quotes and follow-ups",
           "Fewer tasks falling through the cracks",
           "Operational capacity that scales without proportionally more headcount",
+        ],
+        outcomeMetrics: [
+          { label: "Manual Work", direction: "down" },
+          { label: "Response Time", direction: "down" },
+          { label: "Missed Tasks", direction: "down" },
+          { label: "Operational Capacity", direction: "up" },
         ],
         relatedCaseStudySlug: "lead-generation-sales-system",
         faqs: [
@@ -324,11 +481,21 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         imageAlt: "A sunlit modern office with people working quietly in the background.",
         businessChallenge:
           "Most businesses field the same handful of customer questions, and run the same handful of internal tasks, over and over. Handled manually every time, that repetition consumes hours that could go toward higher-value work — but many teams aren't sure where AI would actually be useful versus where it would just be a gimmick.",
+        problemFlow: ["Repetitive questions", "Manual answers", "Staff time consumed", "Slower response"],
         whatWeBuild: [
           "A business-specific AI assistant, in the spirit of NairobiX's own Nia, trained on your business",
           "Automated responses to common customer questions across web and WhatsApp",
           "AI-assisted internal workflows for research, drafting and routine information tasks",
           "Integration with your CRM and booking systems so AI actions connect to real records",
+        ],
+        systemFlow: [
+          { label: "Question or Task", detail: "A customer question or internal request comes in." },
+          { label: "AI Assistant", detail: "Scoped to the business, with clear guardrails on what it can answer." },
+          { label: "Knowledge Source", detail: "Grounded in real business information, not a generic model reply." },
+          { label: "CRM / Booking Lookup", detail: "The assistant can check or act on real records, not just talk." },
+          { label: "Response or Action", detail: "A direct answer, or a completed action — a booking, an update." },
+          { label: "Escalation", detail: "Anything outside its scope routes to a person, not a guess." },
+          { label: "Learning Loop", detail: "Real conversations are reviewed to refine responses over time." },
         ],
         process: [
           { stage: "Discover", description: "We identify the specific, repetitive questions and tasks where AI would create real time savings — not AI for its own sake." },
@@ -337,13 +504,34 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { stage: "Integrate", description: "The AI system connects to your CRM, booking and communication tools so it can act, not just answer." },
           { stage: "Optimize", description: "We review real conversations and outcomes to refine responses and expand scope over time." },
         ],
-        technology: ["AI assistants (Claude-based)", "AI-powered workflows", "Zoho CRM integration", "WhatsApp Business"],
+        technology: ["AI assistants (Claude-based)", "AI-powered workflows", "Zoho CRM", "WhatsApp Business"],
         timeline: "An initial AI assistant or workflow is typically live within 3–5 weeks; scope expands in phases from there.",
+        portalPreview: {
+          title: "AI Assistant Activity",
+          caption: "Preview of the NairobiX AI workspace",
+          metrics: [
+            { label: "Response Time", direction: "down" },
+            { label: "Repetitive Task Load", direction: "down" },
+            { label: "After-hours Coverage", direction: "up" },
+          ],
+          rows: [
+            { label: "Customer Conversations", status: "Handled" },
+            { label: "Escalated to Team", status: "Reviewed" },
+            { label: "Knowledge Sources", status: "Connected" },
+            { label: "CRM Integration", status: "Active" },
+          ],
+        },
         outcomes: [
           "Faster responses to routine customer questions, at any hour",
           "Less staff time spent on repetitive internal tasks",
           "A foundation for further AI use as the business grows",
           "AI actions that are grounded in real business data, not generic answers",
+        ],
+        outcomeMetrics: [
+          { label: "Response Time", direction: "down" },
+          { label: "Repetitive Task Load", direction: "down" },
+          { label: "After-hours Coverage", direction: "up" },
+          { label: "Answer Accuracy", direction: "up" },
         ],
         relatedCaseStudySlug: "patient-growth-experience-system",
         faqs: [
@@ -378,11 +566,21 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         imageAlt: "Two people exchanging phones to complete a digital payment at a retail counter.",
         businessChallenge:
           "A website that exists mainly to look presentable — rather than to capture leads, book appointments or support a sales process — is a missed asset. Many businesses have digital properties that predate their current growth systems, and those properties were never connected to the CRM, booking flow or marketing work built since.",
+        problemFlow: ["Disconnected website", "Manual data entry", "No conversion tracking", "Missed opportunities"],
         whatWeBuild: [
           "A modern marketing website or platform built for both customers and search engines",
           "Custom portals and dashboards for clients, partners or internal teams",
           "Landing pages built specifically for conversion, not just information",
           "Ongoing technical support so the platform keeps pace with the business",
+        ],
+        systemFlow: [
+          { label: "Visitor", detail: "A prospect arrives from search, ads or a referral." },
+          { label: "Website / Platform", detail: "Built around how real customers make decisions, not just aesthetics." },
+          { label: "Conversion Action", detail: "A form, booking or enquiry — the moment intent becomes a lead." },
+          { label: "Zoho CRM", detail: "The lead lands directly in the pipeline, with no manual re-entry." },
+          { label: "Sales Follow-up", detail: "The team acts on it immediately, with full context." },
+          { label: "Analytics", detail: "Real usage data shows what's working and what isn't." },
+          { label: "Iteration", detail: "Pages and flows are refined based on how people actually behave." },
         ],
         process: [
           { stage: "Discover", description: "We review the current site or platform against actual business goals — leads, bookings, sales — rather than aesthetics alone." },
@@ -391,13 +589,34 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { stage: "Integrate", description: "Forms, bookings and key actions connect directly into your CRM and marketing systems." },
           { stage: "Optimize", description: "We monitor real usage and performance data to refine pages and flows after launch." },
         ],
-        technology: ["Modern web applications (Next.js)", "Custom portals and dashboards", "Zoho CRM integration", "Analytics and conversion tracking"],
+        technology: ["Modern web applications (Next.js)", "Custom portals and dashboards", "Zoho CRM", "Analytics and conversion tracking"],
         timeline: "Focused landing pages typically ship within 2–3 weeks; a full platform or client portal usually takes 6–10 weeks.",
+        portalPreview: {
+          title: "Digital Platform",
+          caption: "Preview of the NairobiX web workspace",
+          metrics: [
+            { label: "Site-to-CRM Friction", direction: "down" },
+            { label: "Conversion Pathways", direction: "up" },
+            { label: "Manual Follow-up Steps", direction: "down" },
+          ],
+          rows: [
+            { label: "Discover", status: "Complete" },
+            { label: "Design", status: "Complete" },
+            { label: "Build", status: "In progress" },
+            { label: "Launch", status: "Scheduled" },
+          ],
+        },
         outcomes: [
           "A website or platform that actively supports growth, not just a digital brochure",
           "A stronger, more credible digital presence",
           "Fewer manual steps between a website visit and a CRM record",
           "A digital experience that matches the quality of the business behind it",
+        ],
+        outcomeMetrics: [
+          { label: "Digital Credibility", direction: "up" },
+          { label: "Site-to-CRM Friction", direction: "down" },
+          { label: "Conversion Pathways", direction: "up" },
+          { label: "Manual Follow-up Steps", direction: "down" },
         ],
         relatedCaseStudySlug: "customer-acquisition-retention-system",
         faqs: [
@@ -455,6 +674,23 @@ export const CASE_STUDIES = [
     description: "How a connected growth system could transform a modern healthcare business.",
     image: "/images/photography/pexels-tima-miroshnichenko-9574453.jpg",
     imageAlt: "A clean, modern clinical laboratory with diagnostic equipment and workstations.",
+    primarySolutionId: "crm-sales",
+    businessContext:
+      "A healthcare business where patient inquiries arrive through calls, walk-ins and WhatsApp — and where follow-up depends on whoever is at the front desk that day.",
+    growthProblemFlow: [
+      "Inquiries across calls, walk-ins, WhatsApp",
+      "Manual follow-up and reminders",
+      "Inconsistent booking conversion",
+      "Patients drift away unprompted",
+    ],
+    outcomeMetrics: [
+      { label: "Missed Follow-ups", direction: "down" as const },
+      { label: "Appointment Predictability", direction: "up" as const },
+      { label: "Front-desk Admin Load", direction: "down" as const },
+      { label: "Pipeline Visibility", direction: "up" as const },
+    ],
+    whyItMatters:
+      "In healthcare, the gap between an inquiry and a booked appointment is where trust is won or lost. A connected CRM and communication system closes that gap without adding headcount — freeing front-desk staff to handle judgment calls instead of repetitive follow-up.",
   },
   {
     slug: "customer-acquisition-retention-system",
@@ -463,6 +699,23 @@ export const CASE_STUDIES = [
     description: "How a connected growth system could transform a hospitality brand.",
     image: "/images/photography/case-hospitality.webp",
     imageAlt: "An elegant hotel lobby corridor with an arched doorway and patterned rug.",
+    primarySolutionId: "digital-marketing",
+    businessContext:
+      "A hospitality brand where guests book across direct, OTA, walk-in and phone channels — and where repeat-guest relationships depend on staff memory rather than a system.",
+    growthProblemFlow: [
+      "Bookings scattered across channels",
+      "Guest relationships live in staff memory",
+      "Slow periods go unmanaged",
+      "Loyal guests re-book elsewhere",
+    ],
+    outcomeMetrics: [
+      { label: "Calendar Consistency", direction: "up" as const },
+      { label: "Repeat-guest Rate", direction: "up" as const },
+      { label: "Manual Coordination", direction: "down" as const },
+      { label: "Guest Value Visibility", direction: "up" as const },
+    ],
+    whyItMatters:
+      "Hospitality revenue is won or lost in the gaps between stays — the slow season nobody targets, the loyal guest nobody follows up with. A connected guest CRM turns those gaps into a managed part of the calendar, not a seasonal accident.",
   },
   {
     slug: "lead-generation-sales-system",
@@ -471,6 +724,23 @@ export const CASE_STUDIES = [
     description: "How a connected growth system could transform a real-estate business.",
     image: "/images/photography/cytonn-photography-76JYlSoAYM4-unsplash.jpg",
     imageAlt: "A professionally staged modern living room interior in a Nairobi property.",
+    primarySolutionId: "crm-sales",
+    businessContext:
+      "A real-estate business generating inbound interest across property portals, social media and referrals — with response speed and follow-up left to individual agents.",
+    growthProblemFlow: [
+      "Inquiries across portals, social, referrals",
+      "Manual, inconsistent agent response",
+      "Hot leads cool before a viewing",
+      "No shared view of what converts",
+    ],
+    outcomeMetrics: [
+      { label: "Response Time", direction: "down" as const },
+      { label: "Pipeline Visibility per Listing", direction: "up" as const },
+      { label: "Lost Interest Before Viewing", direction: "down" as const },
+      { label: "Marketing Spend Efficiency", direction: "up" as const },
+    ],
+    whyItMatters:
+      "Real-estate interest is perishable — a hot lead ignored for even a day is often a lost deal. Structuring the pipeline around properties, not just people, gives agents and management the same shared view of what's converting and what needs attention.",
   },
 ];
 

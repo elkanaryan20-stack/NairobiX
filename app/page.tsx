@@ -369,7 +369,7 @@ export default function HomePage() {
                   </Heading>
                   <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
                   <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
-                    View Case Study →
+                    View Scenario →
                   </span>
                 </div>
               </Link>

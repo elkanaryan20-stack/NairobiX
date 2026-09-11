@@ -72,14 +72,16 @@ export default function SolutionsPage() {
 
               return (
                 <Section key={item.id} tone={isEven ? "surface" : "base"} spacing="compact">
-                  <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-                    <div className={isEven ? "lg:order-2" : ""}>
-                      <ImageFrame
-                        src={item.image}
-                        alt={item.imageAlt}
-                        aspect="wide"
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                      />
+                  <div className="group grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+                    <div className={`overflow-hidden rounded-[var(--radius-image)] ${isEven ? "lg:order-2" : ""}`}>
+                      <div className="transition duration-700 ease-out group-hover:scale-[1.03]">
+                        <ImageFrame
+                          src={item.image}
+                          alt={item.imageAlt}
+                          aspect="wide"
+                          sizes="(min-width: 1024px) 50vw, 100vw"
+                        />
+                      </div>
                     </div>
                     <div className={isEven ? "lg:order-1" : ""}>
                       <span className="font-display text-sm font-medium text-[var(--color-primary)]">
@@ -101,10 +103,10 @@ export default function SolutionsPage() {
                       </div>
                       <Link
                         href={`/solutions/${item.id}`}
-                        className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-white transition hover:text-[var(--color-primary)]"
+                        className="group/cta mt-7 inline-flex items-center gap-2 text-sm font-semibold text-white transition hover:text-[var(--color-primary)]"
                       >
-                        Learn More
-                        <span className="transition">→</span>
+                        Explore {item.title}
+                        <span className="transition group-hover/cta:translate-x-1">→</span>
                       </Link>
                     </div>
                   </div>
@@ -129,7 +131,7 @@ export default function SolutionsPage() {
                 Get Your Free Business Growth Assessment →
               </Button>
               <Link href="/case-studies" className="inline-flex items-center px-2 py-3 text-sm font-semibold text-white hover:text-[var(--color-primary)]">
-                See Case Studies →
+                See Scenarios →
               </Link>
             </div>
           </div>

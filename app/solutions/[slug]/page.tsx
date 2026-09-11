@@ -15,6 +15,12 @@ import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { breadcrumbJsonLd, faqPageJsonLd, webPageJsonLd } from "@/lib/structured-data";
 import { ALL_SOLUTIONS, BOOKING_URL, CASE_STUDIES } from "@/lib/site-data";
+import { ProblemFlow } from "@/components/solutions/ProblemFlow";
+import { SystemFlow } from "@/components/solutions/SystemFlow";
+import { ProcessTimeline } from "@/components/solutions/ProcessTimeline";
+import { TechnologyEcosystem } from "@/components/solutions/TechnologyEcosystem";
+import { PortalPreview } from "@/components/solutions/PortalPreview";
+import { OutcomeMetrics } from "@/components/solutions/OutcomeMetrics";
 
 export function generateStaticParams() {
   return ALL_SOLUTIONS.map((solution) => ({ slug: solution.id }));
@@ -99,7 +105,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
           </Container>
         </section>
 
-        {/* Business Challenge */}
+        {/* Overview / Business Challenge */}
         <Section tone="surface" border="top" spacing="compact">
           <div className="grid gap-8 lg:grid-cols-[0.4fr_0.6fr]">
             <div>
@@ -109,6 +115,9 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
               </Heading>
             </div>
             <p className="text-lg leading-8 text-[var(--text-secondary)]">{solution.businessChallenge}</p>
+          </div>
+          <div className="mt-10">
+            <ProblemFlow steps={solution.problemFlow} />
           </div>
         </Section>
 
@@ -129,89 +138,82 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
           </div>
         </Section>
 
-        {/* Process */}
+        {/* System Flow */}
         <Section tone="surface" border="top" spacing="compact">
           <div className="mb-10 max-w-2xl">
+            <Eyebrow>HOW THE SYSTEM CONNECTS</Eyebrow>
+            <Heading variant="display-md" className="mt-4" as="h2">
+              One connected system, not six separate tools.
+            </Heading>
+            <p className="mt-3 text-sm text-[var(--text-tertiary)]">Select a step to see what it does.</p>
+          </div>
+          <SystemFlow nodes={solution.systemFlow} />
+        </Section>
+
+        {/* Process */}
+        <Section border="top" spacing="compact">
+          <div className="mb-12 max-w-2xl">
             <Eyebrow>OUR PROCESS</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">
               Discover, design, implement, integrate, optimize.
             </Heading>
           </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
-            {solution.process.map((item, index) => (
-              <div key={item.stage} className={index > 0 ? "border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0" : ""}>
-                <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
-                  0{index + 1}
-                </div>
-                <Heading variant="heading-md" as="h3">
-                  {item.stage}
-                </Heading>
-                <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
-              </div>
-            ))}
-          </div>
+          <ProcessTimeline stages={solution.process} />
         </Section>
 
-        {/* Technology + Timeline */}
-        <Section border="top" spacing="compact">
-          <div className="grid gap-10 lg:grid-cols-2">
+        {/* Technology ecosystem + Portal preview — how the client experiences it */}
+        <Section tone="surface" border="top" spacing="compact">
+          <div className="mb-10 max-w-2xl">
+            <Eyebrow>TECHNOLOGY</Eyebrow>
+            <Heading variant="display-md" className="mt-4" as="h2">
+              Real tools, used for a real purpose.
+            </Heading>
+          </div>
+          <TechnologyEcosystem technology={solution.technology} />
+
+          <div className="mt-14 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
             <div>
-              <Eyebrow>TECHNOLOGY</Eyebrow>
+              <Eyebrow>HOW YOU&apos;LL SEE IT</Eyebrow>
               <Heading variant="heading-lg" as="h2" className="mt-4">
-                Real tools, used for a real purpose.
+                Inside the NairobiX workspace.
               </Heading>
-              <div className="mt-6 flex flex-wrap gap-2.5">
-                {solution.technology.map((tech) => (
-                  <span
-                    key={tech}
-                    className="rounded-full border border-white/10 bg-white/[0.02] px-4 py-2 text-sm text-[var(--text-secondary)]"
-                  >
-                    {tech}
-                  </span>
-                ))}
+              <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
+                Once this system is live, you see it here — not scattered across emails, ad
+                dashboards and someone&apos;s inbox.
+              </p>
+              <div className="mt-8 border-t border-white/10 pt-6">
+                <Eyebrow>TYPICAL TIMELINE</Eyebrow>
+                <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{solution.timeline}</p>
               </div>
             </div>
-            <div>
-              <Eyebrow>TYPICAL TIMELINE</Eyebrow>
-              <Heading variant="heading-lg" as="h2" className="mt-4">
-                What to expect, and when.
-              </Heading>
-              <p className="mt-6 text-base leading-7 text-[var(--text-secondary)]">{solution.timeline}</p>
-            </div>
+            <PortalPreview preview={solution.portalPreview} />
           </div>
         </Section>
 
         {/* Expected Outcomes */}
-        <Section tone="surface" border="top" spacing="compact">
+        <Section border="top" spacing="compact">
           <div className="mb-10 max-w-2xl">
             <Eyebrow>EXPECTED OUTCOMES</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">
               What a working system changes.
             </Heading>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {solution.outcomes.map((outcome) => (
-              <div key={outcome} className="flex items-start gap-3">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-primary)]" />
-                <p className="text-base leading-7 text-[var(--text-secondary)]">{outcome}</p>
-              </div>
-            ))}
-          </div>
+          <OutcomeMetrics metrics={solution.outcomeMetrics} outcomes={solution.outcomes} />
         </Section>
 
-        {/* Related Case Study */}
+        {/* Related Scenario */}
         {relatedCaseStudy ? (
-          <Section border="top" spacing="compact">
+          <Section tone="surface" border="top" spacing="compact">
             <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <ImageFrame src={relatedCaseStudy.image} alt={relatedCaseStudy.imageAlt} aspect="wide" />
               <div>
-                <Eyebrow>RELATED · {relatedCaseStudy.label.toUpperCase()}</Eyebrow>
+                <Eyebrow>RELATED · {relatedCaseStudy.label.toUpperCase()} SCENARIO</Eyebrow>
                 <Heading variant="heading-lg" as="h2" className="mt-4">
                   {relatedCaseStudy.title}
                 </Heading>
                 <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">{relatedCaseStudy.description}</p>
                 <Button href={`/case-studies/${relatedCaseStudy.slug}`} variant="secondary" className="mt-6">
-                  View Case Study →
+                  View Scenario →
                 </Button>
               </div>
             </div>
@@ -219,7 +221,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
         ) : null}
 
         {/* FAQ */}
-        <Section tone="surface" border="top">
+        <Section tone="base" border="top">
           <div className="mb-8 max-w-2xl">
             <Eyebrow>FAQ</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">
