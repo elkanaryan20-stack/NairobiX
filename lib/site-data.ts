@@ -659,8 +659,8 @@ export const HOME_SOLUTIONS = [
     title: "Build & Innovate",
     number: "03",
     description: "Build intelligent digital infrastructure for the next stage of growth.",
-    image: "/images/photography/pexels-divinetechygirl-1181345.jpg",
-    imageAlt: "A person studying a whiteboard mapped with a digital product's screen flow and wireframes.",
+    image: "/images/photography/build-and-innovate.jpg",
+    imageAlt: "A developer focused on code across dual monitors in a modern office.",
     href: "/solutions#build-innovate",
     cta: "Explore Solution →",
   },
@@ -817,6 +817,38 @@ export const WHY_NAIROBIX = [
     description:
       "Recommendations are implemented by the same team that made them, and reviewed against what the system actually produces — not handed off as a document and left.",
   },
+];
+
+// The connected system NairobiX builds when marketing, sales and operations
+// are joined up — used to contrast against the disconnected-tools reality
+// most businesses start from (see components/solutions/SystemComparison).
+export const CONNECTED_GROWTH_FLOW: { label: string; detail: string }[] = [
+  { label: "Marketing", detail: "Campaigns and content built to reach a specific, qualified audience." },
+  { label: "Lead Capture", detail: "Every inquiry is recorded automatically, wherever it comes from." },
+  { label: "CRM", detail: "One system of record the whole team can see and act on." },
+  { label: "Follow-up", detail: "Automated reminders make sure no inquiry sits untouched." },
+  { label: "Sales", detail: "The team works a visible, qualified pipeline instead of a cold list." },
+  { label: "Customer", detail: "A won deal becomes a tracked relationship, not a closed ticket." },
+  { label: "Reporting", detail: "What happened, and why, is visible without a manual roundup." },
+  { label: "Optimization", detail: "The system is refined based on what it actually produces." },
+];
+
+// Disconnected pairs — the default state before a connected system exists.
+export const DISCONNECTED_PAIRS: { from: string; to: string }[] = [
+  { from: "Marketing", to: "Website" },
+  { from: "WhatsApp", to: "Salesperson" },
+  { from: "Spreadsheet", to: "Follow-up" },
+  { from: "Website", to: "No visibility" },
+  { from: "CRM", to: "Underused" },
+];
+
+// How NairobiX thinks about growth beyond individual marketing activities.
+export const GROWTH_MINDSET_FLOW: { label: string; detail: string }[] = [
+  { label: "Attract", detail: "Reach the right audience, not just more traffic." },
+  { label: "Convert", detail: "Turn attention into qualified, trackable opportunities." },
+  { label: "Operate", detail: "Automate and organize the workflows behind growth." },
+  { label: "Measure", detail: "Understand what's actually working, and what isn't." },
+  { label: "Improve", detail: "Continuously refine the system based on real performance." },
 ];
 
 export const ENGAGEMENT_PROCESS = [
