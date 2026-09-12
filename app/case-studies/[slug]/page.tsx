@@ -7,10 +7,10 @@ import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { Button } from "@/components/ui/Button";
-import { ImageFrame } from "@/components/ui/ImageFrame";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
+import { ScenarioHero } from "@/components/solutions/ScenarioHero";
 import { ScenarioSection } from "@/components/solutions/ScenarioSection";
 import { ProblemFlow } from "@/components/solutions/ProblemFlow";
 import { SystemFlow } from "@/components/solutions/SystemFlow";
@@ -77,25 +77,13 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
       <SectionRail sections={railSections} />
       <main className="bg-[#0b0b0d] text-white">
         {/* Hero */}
-        <section className="border-b border-white/10">
-          <Container className="py-20 sm:py-24">
-            <div className="max-w-3xl">
-              <Eyebrow>{study.label} · Illustrative Scenario</Eyebrow>
-              <Heading as="h1" variant="display-lg" className="mt-4">
-                {study.title}
-              </Heading>
-              <p className="mt-6 text-lg leading-8 text-[var(--text-secondary)]">
-                An illustrative look at how a connected growth system could transform{" "}
-                {study.label.toLowerCase()} operations and customer experience — not documented
-                results from a named client.
-              </p>
-            </div>
-          </Container>
-        </section>
-
-        <div className="border-b border-white/10">
-          <ImageFrame src={study.image} alt={study.imageAlt} aspect="wide" preload treatment={false} />
-        </div>
+        <ScenarioHero
+          label={study.label}
+          title={study.title}
+          description={`An illustrative look at how a connected growth system could transform ${study.label.toLowerCase()} operations and customer experience — not documented results from a named client.`}
+          image={study.image}
+          imageAlt={study.imageAlt}
+        />
 
         {/* 01 Business Context */}
         <ScenarioSection id="context" number="01" eyebrow="Business Context" title={study.label} border="none">

@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
+import { Button } from "@/components/ui/Button";
 import { ImageFrame } from "@/components/ui/ImageFrame";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
@@ -19,10 +20,6 @@ const DESCRIPTION =
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/case-studies" });
 
 export default function CaseStudiesPage() {
-  const [featured, ...rest] = [...CASE_STUDIES].sort((a, b) =>
-    a.slug === "customer-acquisition-retention-system" ? -1 : b.slug === "customer-acquisition-retention-system" ? 1 : 0
-  );
-
   return (
     <>
       <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/case-studies" })} />
@@ -44,71 +41,77 @@ export default function CaseStudiesPage() {
           </Container>
         </section>
 
-        {/* Featured scenario */}
-        <Section spacing="default">
-          <div className="mb-8 flex items-baseline gap-4">
-            <span className="font-display text-sm font-medium text-[var(--color-primary)]">01</span>
-            <Eyebrow>Featured Scenario</Eyebrow>
-          </div>
-          <Link href={`/case-studies/${featured.slug}`} className="group grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-16">
-            <div className="overflow-hidden rounded-[var(--radius-image)]">
-              <div className="transition duration-700 ease-out group-hover:scale-[1.03]">
-                <ImageFrame src={featured.image} alt={featured.imageAlt} aspect="wide" preload />
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
-                {featured.label} · Illustrative Scenario
-              </p>
-              <Heading as="h2" variant="display-lg" className="mt-5">
-                {featured.title}
-              </Heading>
-              <p className="mt-5 max-w-lg text-lg leading-8 text-[var(--text-secondary)]">
-                {featured.description}
-              </p>
-              <span className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
-                View Scenario
-                <span className="transition group-hover:translate-x-1">→</span>
-              </span>
-            </div>
-          </Link>
-        </Section>
+        {/* Scenarios — full-width alternating editorial rows, matching the Solutions page grammar */}
+        {CASE_STUDIES.map((study, index) => {
+          const position = index + 1;
+          const isEven = position % 2 === 0;
+          const highlights = study.outcomeMetrics.slice(0, 3).map((metric) => metric.label);
 
-        {/* Secondary scenarios — asymmetric editorial pairing, not repeated cards */}
-        <Section tone="surface" border="top" spacing="default">
-          <div className="mb-10 flex items-baseline gap-4">
-            <span className="font-display text-sm font-medium text-[var(--color-primary)]">
-              02–{String(CASE_STUDIES.length).padStart(2, "0")}
-            </span>
-            <Eyebrow>More Scenarios</Eyebrow>
-          </div>
-          <div className="grid gap-x-10 gap-y-14 md:grid-cols-2">
-            {rest.map((study, index) => (
-              <Link
-                key={study.slug}
-                href={`/case-studies/${study.slug}`}
-                className={`group block ${index % 2 === 1 ? "md:mt-16" : ""}`}
-              >
-                <div className="overflow-hidden rounded-[var(--radius-image)]">
-                  <div className="transition duration-700 ease-out group-hover:scale-[1.05]">
-                    <ImageFrame src={study.image} alt={study.imageAlt} aspect="portrait" sizes="(min-width: 768px) 45vw, 100vw" />
+          return (
+            <Section
+              key={study.slug}
+              tone={isEven ? "surface" : "base"}
+              border={index === 0 ? "none" : "top"}
+              spacing="default"
+            >
+              <div className="group grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+                <div className={`overflow-hidden rounded-[var(--radius-image)] ${isEven ? "lg:order-2" : ""}`}>
+                  <div className="transition duration-700 ease-out group-hover:scale-[1.03]">
+                    <ImageFrame
+                      src={study.image}
+                      alt={study.imageAlt}
+                      aspect="wide"
+                      preload={index === 0}
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                    />
                   </div>
                 </div>
-                <div className="mt-6 border-t border-white/10 pt-5">
+                <div className={isEven ? "lg:order-1" : ""}>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]">
-                    0{index + 2} · {study.label}
+                    {String(position).padStart(2, "0")} · {study.label} · Illustrative Scenario
                   </p>
-                  <Heading as="h2" variant="heading-lg" className="mt-3">
+                  <Heading as="h2" variant="display-md" className="mt-4">
                     {study.title}
                   </Heading>
-                  <p className="mt-3 max-w-md text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
+                  <p className="mt-5 max-w-lg text-lg leading-8 text-[var(--text-secondary)]">
+                    {study.description}
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+                    {highlights.map((highlight) => (
+                      <span key={highlight} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                        <span className="h-1 w-1 shrink-0 rounded-full bg-[var(--color-primary)]" />
+                        {highlight}
+                      </span>
+                    ))}
+                  </div>
+                  <Link
+                    href={`/case-studies/${study.slug}`}
+                    className="group/cta mt-7 inline-flex items-center gap-2 text-sm font-semibold text-white transition hover:text-[var(--color-primary)]"
+                  >
                     View Scenario
-                    <span className="transition group-hover:translate-x-1">→</span>
-                  </span>
+                    <span className="transition group-hover/cta:translate-x-1">→</span>
+                  </Link>
                 </div>
-              </Link>
-            ))}
+              </div>
+            </Section>
+          );
+        })}
+
+        <Section border="top" tone="surface">
+          <div className="mx-auto max-w-2xl text-center">
+            <Eyebrow className="justify-center">NOT SURE WHICH SCENARIO FITS</Eyebrow>
+            <Heading variant="display-md" className="mt-4">
+              Start with the Business Growth Assessment.
+            </Heading>
+            <p className="mt-4 text-lg leading-8 text-[var(--text-secondary)]">
+              It identifies which systems matter most for your specific business — the fastest way
+              to see whether a scenario like these applies to you.
+            </p>
+            <div className="mt-8 flex justify-center">
+              <Button href="/business-growth-audit" variant="primary">
+                Get Your Free Business Growth Assessment →
+              </Button>
+            </div>
           </div>
         </Section>
       </main>

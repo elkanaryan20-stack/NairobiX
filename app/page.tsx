@@ -251,8 +251,8 @@ export default function HomePage() {
           <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div className="lg:sticky lg:top-28">
               <ImageFrame
-                src="/images/photography/executive-portrait.webp"
-                alt="A business professional leaning against a stone column in natural light."
+                src="/images/photography/why-nairobix.jpg"
+                alt="A dramatic upward view of glass office towers in Nairobi's central business district."
                 aspect="portrait"
                 sizes="(min-width: 1024px) 42vw, 100vw"
               />
