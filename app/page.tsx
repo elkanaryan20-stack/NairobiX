@@ -16,6 +16,9 @@ import { ImageFrame, GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
 import { CTASection } from "@/components/ui/CTASection";
 import { NiaMark } from "@/components/nia/NiaMark";
 import { JsonLd } from "@/components/JsonLd";
+import { ConnectedSystemStrip } from "@/components/home/ConnectedSystemStrip";
+import { SystemComparison } from "@/components/solutions/SystemComparison";
+import { PortalPreview } from "@/components/solutions/PortalPreview";
 import { HOME_TITLE, HOME_DESCRIPTION, homeMetadata } from "@/lib/seo";
 import { faqPageJsonLd, webPageJsonLd } from "@/lib/structured-data";
 import {
@@ -26,6 +29,8 @@ import {
   HERO_IMAGE,
   WHAT_WE_DO,
   PROBLEMS_WE_SOLVE,
+  DISCONNECTED_PAIRS,
+  CONNECTED_GROWTH_FLOW,
   GROWTH_APPROACH,
   WHY_NAIROBIX,
   ENGAGEMENT_PROCESS,
@@ -47,6 +52,25 @@ const WORKSPACE_FEATURE_ICONS: Record<string, ComponentType<{ className?: string
   reporting: TrendingUp,
   communication: Mail,
   nia: NiaMark,
+};
+
+// A homepage-only illustrative snapshot of the real NairobiX workspace UI —
+// rendered with the same PortalPreview component used on solution pages, so
+// the "infrastructure behind the service" claim is shown, not just described.
+const HOME_WORKSPACE_PREVIEW = {
+  title: "Growth Workspace",
+  caption: "Preview of the NairobiX client workspace",
+  metrics: [
+    { label: "Growth Visibility", direction: "up" as const },
+    { label: "Manual Follow-up", direction: "down" as const },
+    { label: "Reporting Effort", direction: "down" as const },
+  ],
+  rows: [
+    { label: "Active Projects", status: "3 in progress" },
+    { label: "Deliverables", status: "On track" },
+    { label: "Growth Reports", status: "Updated weekly" },
+    { label: "Open Requests", status: "2 pending" },
+  ],
 };
 
 export const metadata: Metadata = homeMetadata();
@@ -99,6 +123,7 @@ export default function HomePage() {
               <p className="mt-8 text-sm leading-6 text-[var(--text-tertiary)]">
                 Marketing, CRM, automation and AI — planned and delivered as one system.
               </p>
+              <ConnectedSystemStrip />
             </div>
           </Container>
         </section>
@@ -141,6 +166,16 @@ export default function HomePage() {
                 <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{problem.description}</p>
               </Card>
             ))}
+          </div>
+
+          <div className="mt-16 border-t border-white/10 pt-12">
+            <p className="max-w-2xl text-sm leading-6 text-[var(--text-tertiary)]">
+              Structurally, it looks like this — a handful of tools that don&apos;t talk to each
+              other, instead of one system that does.
+            </p>
+            <div className="mt-8">
+              <SystemComparison disconnected={DISCONNECTED_PAIRS} connected={CONNECTED_GROWTH_FLOW} />
+            </div>
           </div>
         </Section>
 
@@ -191,9 +226,9 @@ export default function HomePage() {
         {/* 5. The NairobiX connected-growth approach */}
         <Section tone="surface" border="top">
           <div className="max-w-2xl">
-            <Eyebrow>THE NAIROBIX APPROACH</Eyebrow>
+            <Eyebrow>HOW NAIROBIX WORKS</Eyebrow>
             <Heading variant="display-md" className="mt-4">
-              One growth system, built in four stages.
+              How the system above actually gets built.
             </Heading>
           </div>
           <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -266,8 +301,8 @@ export default function HomePage() {
           </div>
 
           <Card variant="surface" className="mt-12 p-6 sm:p-8">
-            <div className="grid gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10 lg:grid-cols-[0.95fr_0.85fr_1fr] lg:items-center lg:gap-10">
-              <div className="min-w-0 md:col-span-2 lg:col-span-1">
+            <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-12">
+              <div className="min-w-0">
                 <Eyebrow>{CLIENT_WORKSPACE.eyebrow}</Eyebrow>
                 <Heading variant="heading-md" as="h3" className="mt-4">
                   {CLIENT_WORKSPACE.title}
@@ -275,32 +310,17 @@ export default function HomePage() {
                 <p className="mt-3 max-w-[var(--max-width-prose)] text-base leading-7 text-[var(--text-secondary)]">
                   {CLIENT_WORKSPACE.description}
                 </p>
-              </div>
-
-              <div className="relative aspect-[1122/1223] w-full overflow-hidden rounded-[var(--radius-image)] shadow-[var(--shadow-elevated)]">
-                <Image
-                  src="/images/photography/pexels-darlene-alderson-7971343.jpg"
-                  alt="A professional working calmly at a minimalist desk with a laptop and coffee."
-                  fill
-                  sizes="(min-width: 1024px) 28vw, (min-width: 768px) 40vw, 100vw"
-                  className="object-cover object-center"
-                />
-                <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
-              </div>
-
-              <div className="min-w-0">
-                <Eyebrow>INSIDE YOUR WORKSPACE</Eyebrow>
-                <div className="mt-5 divide-y divide-white/10">
+                <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-6">
                   {WORKSPACE_FEATURES.map((feature) => {
                     const Icon = WORKSPACE_FEATURE_ICONS[feature.id];
                     return (
-                      <div key={feature.id} className="flex items-start gap-3 py-3.5 first:pt-0 last:pb-0">
-                        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
-                          <Icon className="h-4 w-4" />
+                      <div key={feature.id} className="flex items-start gap-2.5">
+                        <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+                          <Icon className="h-3.5 w-3.5" />
                         </span>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-sm font-semibold text-white">{feature.title}</p>
-                          <p className="mt-0.5 text-sm leading-6 text-[var(--text-secondary)]">
+                          <p className="mt-0.5 text-xs leading-5 text-[var(--text-secondary)]">
                             {feature.description}
                           </p>
                         </div>
@@ -308,6 +328,10 @@ export default function HomePage() {
                     );
                   })}
                 </div>
+              </div>
+
+              <div className="min-w-0">
+                <PortalPreview preview={HOME_WORKSPACE_PREVIEW} />
               </div>
             </div>
           </Card>
