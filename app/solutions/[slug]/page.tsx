@@ -15,12 +15,12 @@ import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { breadcrumbJsonLd, faqPageJsonLd, webPageJsonLd } from "@/lib/structured-data";
 import { ALL_SOLUTIONS, BOOKING_URL, CASE_STUDIES } from "@/lib/site-data";
-import { ProblemFlow } from "@/components/solutions/ProblemFlow";
-import { SystemFlow } from "@/components/solutions/SystemFlow";
+import { SystemTransformation } from "@/components/solutions/SystemTransformation";
 import { ProcessTimeline } from "@/components/solutions/ProcessTimeline";
 import { TechnologyEcosystem } from "@/components/solutions/TechnologyEcosystem";
 import { PortalPreview } from "@/components/solutions/PortalPreview";
 import { OutcomeMetrics } from "@/components/solutions/OutcomeMetrics";
+import { SectionRail } from "@/components/solutions/SectionRail";
 
 export function generateStaticParams() {
   return ALL_SOLUTIONS.map((solution) => ({ slug: solution.id }));
@@ -55,6 +55,16 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
 
   const relatedCaseStudy = CASE_STUDIES.find((study) => study.slug === solution.relatedCaseStudySlug);
 
+  const railSections = [
+    { id: "challenge", label: "Challenge" },
+    { id: "what-we-build", label: "What We Build" },
+    { id: "process", label: "Process" },
+    { id: "technology", label: "Technology" },
+    { id: "outcomes", label: "Outcomes" },
+    ...(relatedCaseStudy ? [{ id: "scenario", label: "Scenario" }] : []),
+    { id: "faq", label: "FAQ" },
+  ];
+
   return (
     <>
       <JsonLd data={webPageJsonLd({ name: solution.title, description: solution.description, path: `/solutions/${solution.id}` })} />
@@ -78,6 +88,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
       />
       <JsonLd data={faqPageJsonLd(solution.faqs)} />
       <SiteHeader />
+      <SectionRail sections={railSections} />
       <main className="bg-[#0b0b0d] text-white">
         {/* Hero */}
         <section className="border-b border-white/10">
@@ -105,8 +116,8 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
           </Container>
         </section>
 
-        {/* Overview / Business Challenge */}
-        <Section tone="surface" border="top" spacing="compact">
+        {/* Overview / Business Challenge -> the system transformation */}
+        <Section id="challenge" tone="surface" border="top" spacing="compact">
           <div className="grid gap-8 lg:grid-cols-[0.4fr_0.6fr]">
             <div>
               <Eyebrow>THE BUSINESS CHALLENGE</Eyebrow>
@@ -117,12 +128,12 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
             <p className="text-lg leading-8 text-[var(--text-secondary)]">{solution.businessChallenge}</p>
           </div>
           <div className="mt-10">
-            <ProblemFlow steps={solution.problemFlow} />
+            <SystemTransformation problemSteps={solution.problemFlow} systemNodes={solution.systemFlow} />
           </div>
         </Section>
 
         {/* What We Build */}
-        <Section border="top" spacing="compact">
+        <Section id="what-we-build" border="top" spacing="compact">
           <div className="mb-10 max-w-2xl">
             <Eyebrow>WHAT WE BUILD</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">
@@ -138,20 +149,8 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
           </div>
         </Section>
 
-        {/* System Flow */}
-        <Section tone="surface" border="top" spacing="compact">
-          <div className="mb-10 max-w-2xl">
-            <Eyebrow>HOW THE SYSTEM CONNECTS</Eyebrow>
-            <Heading variant="display-md" className="mt-4" as="h2">
-              One connected system, not six separate tools.
-            </Heading>
-            <p className="mt-3 text-sm text-[var(--text-tertiary)]">Select a step to see what it does.</p>
-          </div>
-          <SystemFlow nodes={solution.systemFlow} />
-        </Section>
-
         {/* Process */}
-        <Section border="top" spacing="compact">
+        <Section id="process" tone="surface" border="top" spacing="compact">
           <div className="mb-12 max-w-2xl">
             <Eyebrow>OUR PROCESS</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">
@@ -162,7 +161,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
         </Section>
 
         {/* Technology ecosystem + Portal preview — how the client experiences it */}
-        <Section tone="surface" border="top" spacing="compact">
+        <Section id="technology" border="top" spacing="compact">
           <div className="mb-10 max-w-2xl">
             <Eyebrow>TECHNOLOGY</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">
@@ -191,7 +190,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
         </Section>
 
         {/* Expected Outcomes */}
-        <Section border="top" spacing="compact">
+        <Section id="outcomes" tone="surface" border="top" spacing="compact">
           <div className="mb-10 max-w-2xl">
             <Eyebrow>EXPECTED OUTCOMES</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">
@@ -203,7 +202,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
 
         {/* Related Scenario */}
         {relatedCaseStudy ? (
-          <Section tone="surface" border="top" spacing="compact">
+          <Section id="scenario" border="top" spacing="compact">
             <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <ImageFrame src={relatedCaseStudy.image} alt={relatedCaseStudy.imageAlt} aspect="wide" />
               <div>
@@ -221,7 +220,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
         ) : null}
 
         {/* FAQ */}
-        <Section tone="base" border="top">
+        <Section id="faq" border="top">
           <div className="mb-8 max-w-2xl">
             <Eyebrow>FAQ</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">

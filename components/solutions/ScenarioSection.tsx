@@ -5,6 +5,7 @@ import { Heading } from "@/components/ui/Heading";
 
 /** A numbered, editorial section wrapper for the Scenario page (01 BUSINESS CONTEXT, 02 THE GROWTH PROBLEM, ...). */
 export function ScenarioSection({
+  id,
   number,
   title,
   eyebrow,
@@ -12,6 +13,7 @@ export function ScenarioSection({
   border = "top",
   children,
 }: {
+  id?: string;
   number: string;
   title: string;
   eyebrow?: string;
@@ -20,7 +22,7 @@ export function ScenarioSection({
   children: ReactNode;
 }) {
   return (
-    <Section tone={tone} border={border} spacing="compact">
+    <Section id={id} tone={tone} border={border} spacing="compact">
       <div className="mb-8 flex items-baseline gap-4">
         <span className="font-display text-sm font-medium text-[var(--color-primary)]">{number}</span>
         <div>

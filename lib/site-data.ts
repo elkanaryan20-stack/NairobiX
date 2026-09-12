@@ -842,13 +842,60 @@ export const DISCONNECTED_PAIRS: { from: string; to: string }[] = [
   { from: "CRM", to: "Underused" },
 ];
 
-// How NairobiX thinks about growth beyond individual marketing activities.
-export const GROWTH_MINDSET_FLOW: { label: string; detail: string }[] = [
-  { label: "Attract", detail: "Reach the right audience, not just more traffic." },
-  { label: "Convert", detail: "Turn attention into qualified, trackable opportunities." },
-  { label: "Operate", detail: "Automate and organize the workflows behind growth." },
-  { label: "Measure", detail: "Understand what's actually working, and what isn't." },
-  { label: "Improve", detail: "Continuously refine the system based on real performance." },
+// How NairobiX thinks about growth beyond individual marketing activities —
+// each stage's capabilities/technology are drawn from the same vocabulary
+// already used across SOLUTION_CATEGORIES, not invented for this view.
+export type GrowthStage = {
+  label: string;
+  detail: string;
+  capabilities: string[];
+  technology: string[];
+  outcome: string;
+};
+
+export const GROWTH_MINDSET_FLOW: GrowthStage[] = [
+  {
+    label: "Attract",
+    detail: "Reach the right audience, not just more traffic.",
+    capabilities: ["Paid search & social", "SEO foundations", "Content built around buyer intent"],
+    technology: ["Google Ads", "Meta Ads"],
+    outcome: "Qualified attention",
+  },
+  {
+    label: "Capture",
+    detail: "Turn attention into a recorded opportunity, not a lost visitor.",
+    capabilities: ["Conversion-focused landing pages", "Lead capture forms", "Tracking wired to real conversions"],
+    technology: ["Landing pages", "Lead capture forms"],
+    outcome: "Recorded opportunity",
+  },
+  {
+    label: "Convert",
+    detail: "Turn a recorded opportunity into a qualified, trackable pipeline.",
+    capabilities: ["CRM pipeline design", "Lead qualification", "Automated follow-up"],
+    technology: ["Zoho CRM", "WhatsApp Business"],
+    outcome: "Qualified pipeline",
+  },
+  {
+    label: "Operate",
+    detail: "Automate and organize the workflows behind growth.",
+    capabilities: ["Workflow automation", "Internal notifications", "Reduced manual data entry"],
+    technology: ["Workflow automation", "APIs & integrations"],
+    outcome: "Consistent execution",
+  },
+  {
+    label: "Measure",
+    detail: "Understand what's actually working, and what isn't.",
+    capabilities: ["KPI dashboards", "Conversion tracking", "Pipeline reporting"],
+    technology: ["KPI dashboards", "Google Analytics"],
+    outcome: "Decision clarity",
+  },
+  {
+    label: "Optimize",
+    detail: "Continuously refine the system based on real performance.",
+    capabilities: ["Regular performance reviews", "Budget reallocation", "Process refinement"],
+    technology: ["Performance reviews", "Reporting cadence"],
+    outcome: "Compounding improvement",
+  },
 ];
 
 export const ENGAGEMENT_PROCESS = [

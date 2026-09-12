@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BOOKING_URL, NAV_ITEMS } from "@/lib/site-data";
+import { ChevronDown } from "lucide-react";
+import { BOOKING_URL, NAV_ITEMS, SOLUTION_CATEGORIES } from "@/lib/site-data";
 import { SkipToContent } from "@/components/skip-to-content";
 
 const CTAS = [
@@ -43,14 +44,62 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
+            const linkClass = `relative text-sm font-medium transition after:absolute after:-bottom-1 after:left-0 after:h-px after:bg-[var(--color-primary)] after:transition-all after:duration-300 ${
+              isActive
+                ? "text-[var(--color-primary)] after:w-full"
+                : "text-[var(--text-secondary)] after:w-0 hover:text-white hover:after:w-full"
+            }`;
+
+            if (item.label === "Solutions") {
+              return (
+                <div key={item.label} className="group relative">
+                  <Link href={item.href} className={`inline-flex items-center gap-1 py-2 ${linkClass}`}>
+                    {item.label}
+                    <ChevronDown
+                      className="h-3.5 w-3.5 transition group-hover:rotate-180 group-focus-within:rotate-180"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                  <div className="invisible absolute left-1/2 top-full z-50 w-[640px] -translate-x-1/2 pt-3 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                    <div className="rounded-2xl border border-white/10 bg-[#0b0b0d] p-6 shadow-[var(--shadow-elevated)]">
+                      <div className="grid grid-cols-3 gap-6">
+                        {SOLUTION_CATEGORIES.map((category) => (
+                          <div key={category.id}>
+                            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
+                              {category.title}
+                            </p>
+                            <ul className="space-y-2.5">
+                              {category.items.map((solution) => (
+                                <li key={solution.id}>
+                                  <Link
+                                    href={`/solutions/${solution.id}`}
+                                    className="text-sm text-[var(--text-secondary)] transition hover:text-white"
+                                  >
+                                    {solution.title}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-5">
+                        <p className="text-sm text-[var(--text-secondary)]">Not sure where to start?</p>
+                        <Link
+                          href="/business-growth-audit"
+                          className="whitespace-nowrap text-sm font-semibold text-[var(--color-primary)] transition hover:text-white"
+                        >
+                          Get Your Free Growth Assessment →
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
             return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`text-sm font-medium transition ${
-                  isActive ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)] hover:text-white"
-                }`}
-              >
+              <Link key={item.label} href={item.href} className={linkClass}>
                 {item.label}
               </Link>
             );

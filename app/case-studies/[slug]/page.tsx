@@ -17,6 +17,7 @@ import { SystemFlow } from "@/components/solutions/SystemFlow";
 import { ProcessTimeline } from "@/components/solutions/ProcessTimeline";
 import { PortalPreview } from "@/components/solutions/PortalPreview";
 import { OutcomeMetrics } from "@/components/solutions/OutcomeMetrics";
+import { SectionRail } from "@/components/solutions/SectionRail";
 
 export function generateStaticParams() {
   return CASE_STUDIES.map((study) => ({ slug: study.slug }));
@@ -55,12 +56,25 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
     (item) => industry?.relevantSolutionIds.includes(item.id) && item.id !== primarySolution?.id
   );
 
+  const railSections = [
+    { id: "context", label: "Context" },
+    { id: "problem", label: "Problem" },
+    ...(industry ? [{ id: "requirements", label: "Requirements" }] : []),
+    ...(primarySolution ? [{ id: "system", label: "System" }] : []),
+    ...(primarySolution ? [{ id: "how-it-works", label: "How It Works" }] : []),
+    ...(primarySolution ? [{ id: "experience", label: "Experience" }] : []),
+    ...(industry ? [{ id: "outcomes", label: "Outcomes" }] : []),
+    { id: "why-it-matters", label: "Why It Matters" },
+    { id: "related", label: "Related Solution" },
+  ];
+
   return (
     <>
       <JsonLd
         data={webPageJsonLd({ name: study.title, description: study.description, path: `/case-studies/${study.slug}` })}
       />
       <SiteHeader />
+      <SectionRail sections={railSections} />
       <main className="bg-[#0b0b0d] text-white">
         {/* Hero */}
         <section className="border-b border-white/10">
@@ -84,18 +98,18 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
         </div>
 
         {/* 01 Business Context */}
-        <ScenarioSection number="01" eyebrow="Business Context" title={study.label} border="none">
+        <ScenarioSection id="context" number="01" eyebrow="Business Context" title={study.label} border="none">
           <p className="max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">{study.businessContext}</p>
         </ScenarioSection>
 
         {/* 02 The Growth Problem */}
-        <ScenarioSection number="02" eyebrow="The Growth Problem" title="What's actually broken." tone="surface">
+        <ScenarioSection id="problem" number="02" eyebrow="The Growth Problem" title="What's actually broken." tone="surface">
           <ProblemFlow steps={study.growthProblemFlow} />
         </ScenarioSection>
 
         {/* 03 What the Business Needs */}
         {industry ? (
-          <ScenarioSection number="03" eyebrow="What The Business Needs" title="Translating the problem into requirements.">
+          <ScenarioSection id="requirements" number="03" eyebrow="What The Business Needs" title="Translating the problem into requirements.">
             <div className="grid gap-4 sm:grid-cols-2">
               {industry.opportunities.map((point, index) => (
                 <div key={point} className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
@@ -109,7 +123,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
         {/* 04 NairobiX System */}
         {primarySolution ? (
-          <ScenarioSection number="04" eyebrow="The NairobiX System" title="The connected system proposed." tone="surface">
+          <ScenarioSection id="system" number="04" eyebrow="The NairobiX System" title="The connected system proposed." tone="surface">
             <p className="mb-10 max-w-2xl text-base leading-7 text-[var(--text-secondary)]">
               Built around {primarySolution.title} — the same system detailed on the{" "}
               <span className="text-white">{primarySolution.title}</span> solution page, applied to this scenario.
@@ -120,14 +134,14 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
         {/* 05 How It Works */}
         {primarySolution ? (
-          <ScenarioSection number="05" eyebrow="How It Works" title="Discover, design, implement, integrate, optimize.">
+          <ScenarioSection id="how-it-works" number="05" eyebrow="How It Works" title="Discover, design, implement, integrate, optimize.">
             <ProcessTimeline stages={primarySolution.process} />
           </ScenarioSection>
         ) : null}
 
         {/* 06 Client Experience */}
         {primarySolution ? (
-          <ScenarioSection number="06" eyebrow="Client Experience" title="How the business would see it." tone="surface">
+          <ScenarioSection id="experience" number="06" eyebrow="Client Experience" title="How the business would see it." tone="surface">
             <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
               <p className="text-base leading-7 text-[var(--text-secondary)]">
                 {industry?.approach ?? "The business gets a single, shared view of the system — not a set of disconnected tools and inboxes."}
@@ -139,18 +153,18 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
         {/* 07 Expected Outcomes */}
         {industry ? (
-          <ScenarioSection number="07" eyebrow="Expected Outcomes" title="Illustrative, directional outcomes.">
+          <ScenarioSection id="outcomes" number="07" eyebrow="Expected Outcomes" title="Illustrative, directional outcomes.">
             <OutcomeMetrics metrics={study.outcomeMetrics} outcomes={industry.outcomes} />
           </ScenarioSection>
         ) : null}
 
         {/* 08 Why This System Matters */}
-        <ScenarioSection number="08" eyebrow="Why This System Matters" title="The strategic read." tone="surface">
+        <ScenarioSection id="why-it-matters" number="08" eyebrow="Why This System Matters" title="The strategic read." tone="surface">
           <p className="max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">{study.whyItMatters}</p>
         </ScenarioSection>
 
         {/* 09 Related Solution */}
-        <ScenarioSection number="09" eyebrow="Related Solution" title="Explore the system behind this scenario.">
+        <ScenarioSection id="related" number="09" eyebrow="Related Solution" title="Explore the system behind this scenario.">
           <div className="flex flex-wrap gap-3">
             {primarySolution ? (
               <Button href={`/solutions/${primarySolution.id}`} variant="primary" size="md">

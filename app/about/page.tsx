@@ -32,6 +32,7 @@ import { SystemComparison } from "@/components/solutions/SystemComparison";
 import { ProcessTimeline } from "@/components/solutions/ProcessTimeline";
 import { TechnologyEcosystem } from "@/components/solutions/TechnologyEcosystem";
 import { SystemExplorer } from "@/components/solutions/SystemExplorer";
+import { GrowthSystemExplorer } from "@/components/solutions/GrowthSystemExplorer";
 
 const TITLE = "About";
 const DESCRIPTION =
@@ -232,12 +233,15 @@ export default function AboutPage() {
         {/* How we think about growth */}
         <Section border="top" spacing="compact">
           <div className="mb-10 max-w-2xl">
-            <Eyebrow>HOW WE THINK ABOUT GROWTH</Eyebrow>
+            <Eyebrow>THE GROWTH SYSTEM</Eyebrow>
             <Heading as="h2" variant="display-md" className="mt-4">
               We look past individual marketing activities.
             </Heading>
+            <p className="mt-3 text-sm text-[var(--text-tertiary)]">
+              Select a stage to see what happens, what it takes, and what it produces.
+            </p>
           </div>
-          <SystemFlow nodes={GROWTH_MINDSET_FLOW} />
+          <GrowthSystemExplorer stages={GROWTH_MINDSET_FLOW} />
         </Section>
 
         {/* Trust layer / see the system */}

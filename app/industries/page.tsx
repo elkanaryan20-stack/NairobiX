@@ -6,11 +6,11 @@ import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { Button } from "@/components/ui/Button";
-import { ImageFrame } from "@/components/ui/ImageFrame";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 import { INDUSTRIES } from "@/lib/site-data";
+import { IndustryExplorer } from "@/components/solutions/IndustryExplorer";
 
 const TITLE = "Industries";
 const DESCRIPTION =
@@ -41,33 +41,13 @@ export default function IndustriesPage() {
         </section>
 
         <Section>
-          <div className="grid gap-8 md:grid-cols-2">
-            {INDUSTRIES.map((industry) => (
-              <article
-                key={industry.slug}
-                className="overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-white/[0.02]"
-              >
-                <ImageFrame
-                  src={industry.heroImage}
-                  alt={industry.heroImageAlt}
-                  aspect="wide"
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                />
-                <div className="p-6 sm:p-8">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">
-                    {industry.eyebrow}
-                  </p>
-                  <Heading variant="heading-md" as="h2" className="mt-4">
-                    {industry.heading}
-                  </Heading>
-                  <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">{industry.challenge}</p>
-                  <Button href={`/industries/${industry.slug}`} variant="secondary" size="md" className="mt-6">
-                    Explore {industry.name} →
-                  </Button>
-                </div>
-              </article>
-            ))}
+          <div className="mb-10 max-w-2xl">
+            <Eyebrow>CHOOSE AN INDUSTRY</Eyebrow>
+            <Heading variant="display-md" className="mt-4" as="h2">
+              The same system, applied differently.
+            </Heading>
           </div>
+          <IndustryExplorer industries={INDUSTRIES} />
         </Section>
 
         <Section border="top" tone="surface">

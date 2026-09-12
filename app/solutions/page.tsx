@@ -12,6 +12,7 @@ import { ImageFrame } from "@/components/ui/ImageFrame";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd, serviceListJsonLd } from "@/lib/structured-data";
+import { SolutionSystemMap } from "@/components/solutions/SolutionSystemMap";
 
 const TITLE = "Solutions";
 const DESCRIPTION =
@@ -56,6 +57,20 @@ export default function SolutionsPage() {
             </div>
           </Container>
         </section>
+
+        {/* System architecture — how the six solutions connect */}
+        <Section border="top" spacing="compact">
+          <div className="mb-10 max-w-2xl">
+            <Eyebrow>SYSTEM ARCHITECTURE</Eyebrow>
+            <Heading variant="display-md" className="mt-4" as="h2">
+              How the six solutions connect.
+            </Heading>
+            <p className="mt-3 text-sm text-[var(--text-tertiary)]">
+              Select a solution to see the connected system behind it.
+            </p>
+          </div>
+          <SolutionSystemMap categories={SOLUTION_CATEGORIES} />
+        </Section>
 
         {SOLUTION_CATEGORIES.map((category) => (
           <div key={category.id} id={category.id} className="scroll-mt-24">
