@@ -15,10 +15,12 @@ import {
 } from "@/components/forms/LeadFormShell";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
+import { getLeadSource } from "@/lib/attribution";
 import {
   BUDGET_READINESS_OPTIONS as budgetOptions,
   GROWTH_GOAL_OPTIONS as growthGoalOptions,
   INDUSTRY_OPTIONS as industryOptions,
+  INVESTMENT_READINESS_OPTIONS as investmentReadinessOptions,
   MARKETING_CHANNEL_OPTIONS as marketingOptions,
   TIMELINE_OPTIONS as timelineOptions,
 } from "@/lib/forms/options";
@@ -38,6 +40,7 @@ const initialState = {
   Current_Marketing_Channels: [] as string[],
   Desired_Timeline: "",
   Trial_Advertisement_Budget_Readiness: "",
+  Investment_Readiness: "",
 };
 
 type FormState = typeof initialState;
@@ -54,7 +57,7 @@ const STEP_FIELDS: FieldName[][] = [
   ["First_Name", "Last_Name", "Company", "Email", "Phone"],
   ["Industry", "Website", "City", "Country"],
   ["Growth_Goal", "Business_Challenge", "Current_Marketing_Channels"],
-  ["Desired_Timeline", "Trial_Advertisement_Budget_Readiness"],
+  ["Desired_Timeline", "Trial_Advertisement_Budget_Readiness", "Investment_Readiness"],
 ];
 
 const REQUIRED_FIELDS: FieldName[] = [
@@ -69,6 +72,7 @@ const REQUIRED_FIELDS: FieldName[] = [
   "Growth_Goal",
   "Business_Challenge",
   "Desired_Timeline",
+  "Investment_Readiness",
 ];
 
 function stepForField(field: string): number {
@@ -238,6 +242,7 @@ export function BusinessGrowthAuditForm() {
           ...formData,
           Current_Marketing_Channels:
             formData.Current_Marketing_Channels,
+          Lead_Source: getLeadSource(),
         }),
       });
 
@@ -551,6 +556,19 @@ export function BusinessGrowthAuditForm() {
                 error={
                   errors.Trial_Advertisement_Budget_Readiness
                 }
+              />
+
+              <FormSelect
+                label="Investment Readiness"
+                name="Investment_Readiness"
+                value={formData.Investment_Readiness}
+                onChange={handleChange}
+                options={investmentReadinessOptions.map((option) => ({
+                  label: option,
+                  value: option,
+                }))}
+                required
+                error={errors.Investment_Readiness}
               />
             </div>
           </div>

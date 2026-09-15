@@ -5,6 +5,7 @@ import { FormInput, FormTextarea, SectionHeader } from "@/components/forms/FormF
 import { ErrorBanner, FormSuccessState, LeadFormShell } from "@/components/forms/LeadFormShell";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
+import { getLeadSource } from "@/lib/attribution";
 
 const initialState = {
   First_Name: "",
@@ -71,6 +72,7 @@ export function ContactForm() {
         body: JSON.stringify({
           formType: "contact",
           ...formData,
+          Lead_Source: getLeadSource(),
         }),
       });
 

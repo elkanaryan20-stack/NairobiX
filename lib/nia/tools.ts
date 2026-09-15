@@ -12,6 +12,7 @@ import {
   GROWTH_GOAL_OPTIONS,
   INDUSTRY_OPTIONS,
   INVESTMENT_OPTIONS,
+  INVESTMENT_READINESS_OPTIONS,
   MARKETING_CHANNEL_OPTIONS,
   PARTNER_TYPE_OPTIONS,
   PARTNERSHIP_INTEREST_OPTIONS,
@@ -141,6 +142,11 @@ export const NIA_TOOLS: Anthropic.Tool[] = [
           enum: BUDGET_READINESS_OPTIONS,
           description: "Optional — only include if discussed",
         },
+        Investment_Readiness: {
+          type: "string",
+          enum: INVESTMENT_READINESS_OPTIONS,
+          description: "How ready the visitor is to invest in a growth solution",
+        },
       },
       required: [
         ...CONFIRMED_REQUIRED,
@@ -156,6 +162,7 @@ export const NIA_TOOLS: Anthropic.Tool[] = [
         "Business_Challenge",
         "Current_Marketing_Channels",
         "Desired_Timeline",
+        "Investment_Readiness",
       ],
     },
   },

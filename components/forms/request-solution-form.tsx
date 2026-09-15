@@ -5,6 +5,7 @@ import { ChipGroup, FormInput, FormSelect, FormTextarea, SectionHeader } from "@
 import { ErrorBanner, FormSuccessState, LeadFormShell } from "@/components/forms/LeadFormShell";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
+import { getLeadSource } from "@/lib/attribution";
 import {
   INVESTMENT_OPTIONS as investmentOptions,
   SOLUTION_OPTIONS as solutionOptions,
@@ -104,6 +105,7 @@ export function RequestSolutionForm() {
         body: JSON.stringify({
           formType: "request-solution",
           ...formData,
+          Lead_Source: getLeadSource(),
         }),
       });
 

@@ -5,6 +5,7 @@ import { ChipGroup, FormInput, FormSelect, FormTextarea, SectionHeader } from "@
 import { ErrorBanner, FormSuccessState, LeadFormShell } from "@/components/forms/LeadFormShell";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
+import { getLeadSource } from "@/lib/attribution";
 import {
   PARTNER_TYPE_OPTIONS as partnerTypeOptions,
   PARTNERSHIP_INTEREST_OPTIONS as partnershipInterestOptions,
@@ -102,6 +103,7 @@ export function GrowthPartnerForm() {
         body: JSON.stringify({
           formType: "partner",
           ...formData,
+          Lead_Source: getLeadSource(),
         }),
       });
 

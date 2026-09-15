@@ -52,6 +52,13 @@ export const BUDGET_READINESS_OPTIONS = [
   "Not currently",
 ];
 
+export const INVESTMENT_READINESS_OPTIONS = [
+  "Ready to Invest",
+  "Wants to understand opportunity first",
+  "Interested in Growth Trial first",
+  "Not ready to invest",
+];
+
 export const SOLUTION_OPTIONS = [
   "Digital Marketing",
   "CRM & Sales Systems",

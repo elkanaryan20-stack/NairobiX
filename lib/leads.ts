@@ -1,4 +1,5 @@
 import { createZohoLead } from "@/lib/zoho";
+import { FALLBACK_LEAD_SOURCE } from "@/lib/attribution";
 
 export const VALID_FORM_TYPES = [
   "business-growth-audit",
@@ -72,6 +73,8 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
 
     Trial_Advertisement_Budget_Readiness: sanitizeString(data.Trial_Advertisement_Budget_Readiness),
 
+    Investment_Readiness: sanitizeString(data.Investment_Readiness),
+
     Estimated_Investment: sanitizeString(data.Estimated_Investment),
 
     Solution_Needed: Array.isArray(data.Solution_Needed)
@@ -85,14 +88,18 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
       : sanitizeString(data.Partnership_Interest),
 
     Partnership_Motivation: sanitizeString(data.Partnership_Motivation),
+
+    // The visitor's original acquisition channel (WhatsApp, Instagram, Google, etc.),
+    // captured client-side from UTM params/referrer on first landing — see lib/attribution.ts.
+    // Never assume "Website": that's where the lead converted, not where it came from.
+    Lead_Source: sanitizeString(data.Lead_Source) || FALLBACK_LEAD_SOURCE,
   };
 
   if (formType === "business-growth-audit") {
     return {
       ...base,
       Growth_Audit_Status: "New",
-      Lead_Type: "Business Assessment",
-      Lead_Source: "Website",
+      Lead_Type: "Business Growth Audit",
       Rating: "Active",
       Trial_Eligibility: "Not Assessed",
     };
@@ -102,7 +109,6 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
     return {
       ...base,
       Lead_Type: "Service Request",
-      Lead_Source: "Website",
       Rating: "Active",
     };
   }
@@ -112,7 +118,6 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
       ...base,
       Partner_Qualification: "Unreviewed",
       Lead_Type: "Partner Application",
-      Lead_Source: "Website",
       Rating: "Active",
     };
   }
@@ -120,7 +125,6 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
   return {
     ...base,
     Lead_Type: "Contact",
-    Lead_Source: "Website",
     Rating: "Active",
   };
 }
@@ -142,6 +146,7 @@ function getValidationRules(formType: string) {
           "Business_Challenge",
           "Current_Marketing_Channels",
           "Desired_Timeline",
+          "Investment_Readiness",
         ],
       };
 

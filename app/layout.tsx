@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import { NiaWidget } from "@/components/nia/NiaWidget";
 import { JsonLd } from "@/components/JsonLd";
+import { AttributionTracker } from "@/components/AttributionTracker";
 import { SITE_URL, HOME_TITLE, HOME_DESCRIPTION } from "@/lib/seo";
 import { localBusinessJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 import "./globals.css";
@@ -58,6 +59,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
         <JsonLd data={localBusinessJsonLd()} />
+
+        <AttributionTracker />
 
         {/* Google Analytics */}
         <Script
