@@ -44,6 +44,7 @@ function isWeekend(date: Date): boolean {
   return day === 0 || day === 6;
 }
 
+/** Only weekdays — NairobiX is available Monday–Friday, so weekends never appear in the calendar at all. */
 function buildUpcomingDates(count: number): Date[] {
   const dates: Date[] = [];
   const today = new Date();
@@ -52,7 +53,7 @@ function buildUpcomingDates(count: number): Date[] {
   for (let i = 1; dates.length < count; i += 1) {
     const candidate = new Date(today);
     candidate.setDate(today.getDate() + i);
-    dates.push(candidate);
+    if (!isWeekend(candidate)) dates.push(candidate);
   }
 
   return dates;
@@ -351,28 +352,11 @@ export function BookingFlow() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 lg:grid-cols-7">
+                <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
                   {upcomingDates.map((date) => {
                     const iso = toISODate(date);
                     const isSelected = selectedDateISO === iso;
-                    const weekend = isWeekend(date);
                     const isExhausted = exhaustedDates.has(iso) && !isSelected;
-
-                    if (weekend) {
-                      return (
-                        <span
-                          key={iso}
-                          aria-disabled="true"
-                          title="NairobiX is available Monday–Friday"
-                          className="cursor-not-allowed rounded-2xl border border-white/5 bg-white/[0.01] px-2 py-3 text-center text-sm text-[var(--text-tertiary)] opacity-40"
-                        >
-                          <span className="block text-[11px] uppercase tracking-wide">
-                            {DATE_FORMATTER.format(date).split(" ")[0]}
-                          </span>
-                          <span className="mt-1 block text-base font-semibold">{date.getDate()}</span>
-                        </span>
-                      );
-                    }
 
                     return (
                       <button
