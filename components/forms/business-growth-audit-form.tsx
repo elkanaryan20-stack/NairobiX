@@ -14,6 +14,7 @@ import { AssessmentReceived } from "@/components/forms/AssessmentReceived";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
 import { getLeadSource } from "@/lib/attribution";
+import { wait, prefersReducedMotion } from "@/lib/motion";
 import {
   BUDGET_READINESS_OPTIONS as budgetOptions,
   GROWTH_GOAL_OPTIONS as growthGoalOptions,
@@ -79,15 +80,6 @@ const REQUIRED_FIELDS: FieldName[] = [
 function stepForField(field: string): number {
   const index = STEP_FIELDS.findIndex((fields) => fields.includes(field as FieldName));
   return index === -1 ? 0 : index;
-}
-
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 /**

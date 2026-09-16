@@ -4,6 +4,7 @@ import { Heading } from "@/components/ui/Heading";
 import { GrowthSystemVisualization } from "@/components/forms/GrowthSystemVisualization";
 import { GrowthReviewTimeline } from "@/components/forms/GrowthReviewTimeline";
 import { AssessmentNextSteps } from "@/components/forms/AssessmentNextSteps";
+import { BrandSignature } from "@/components/shared/BrandSignature";
 
 function personalize(firstName: string, companyName: string): string {
   const name = firstName.trim();
@@ -97,15 +98,7 @@ export function AssessmentReceived({
         <AssessmentNextSteps />
       </Section>
 
-      <Section tone="surface" border="top" spacing="compact">
-        <div className="mx-auto max-w-xl text-center">
-          <p className="font-display text-xl text-[var(--text-secondary)]">Growth doesn&apos;t happen by accident.</p>
-          <p className="mt-1 font-display text-2xl font-medium text-white sm:text-3xl">It is built.</p>
-          <div className="mx-auto mt-8 h-px w-12 bg-white/15" aria-hidden="true" />
-          <p className="mt-8 text-sm font-semibold uppercase tracking-[0.3em] text-white">NairobiX</p>
-          <p className="mt-2 text-sm text-[var(--text-tertiary)]">Growth Systems for Ambitious Businesses.</p>
-        </div>
-      </Section>
+      <BrandSignature />
     </div>
   );
 }

@@ -3,7 +3,10 @@ import Image from "next/image";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingFlow } from "@/components/booking/BookingFlow";
+import { ConsultationInfoPanel } from "@/components/booking/ConsultationInfoPanel";
+import { WhatToExpect } from "@/components/booking/WhatToExpect";
 import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Heading } from "@/components/ui/Heading";
 import { GRAIN_DATA_URI } from "@/components/ui/ImageFrame";
@@ -17,22 +20,17 @@ const DESCRIPTION =
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/book" });
 
-const EXPECTATIONS = [
-  {
-    title: "No fixed pitch",
-    text: "A working conversation about your business, not a scripted sales call.",
-  },
-  {
-    title: "Direct access",
-    text: "You speak with the NairobiX team directly — not an intake coordinator.",
-  },
-  {
-    title: "A clear next step",
-    text: "You leave knowing what would actually move your business forward, in plain terms.",
-  },
-];
+export default async function BookPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  // The only signal this page has that a specific visitor actually completed
+  // a Growth Assessment — set when they arrive via AssessmentNextSteps'
+  // ?ref=assessment link. Never assumed otherwise (see WhatToExpect).
+  const fromAssessment = params.ref === "assessment";
 
-export default function BookPage() {
   return (
     <>
       <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/book" })} />
@@ -55,29 +53,30 @@ export default function BookPage() {
             />
           </div>
 
-          <Container className="relative py-20 sm:py-24">
+          <Container className="relative py-20 sm:py-28">
             <div className="max-w-2xl">
               <Eyebrow>NAIROBIX · CONSULTATION</Eyebrow>
-              <Heading as="h1" variant="display-lg" className="mt-4">
-                A focused conversation about your growth — not a sales pitch.
+              <Heading as="h1" variant="display-xl" className="mt-4">
+                Business Growth Consultation
               </Heading>
               <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--text-secondary)]">
-                Thirty minutes with the NairobiX team to understand your business, where growth is
-                being held back, and which systems — marketing, CRM, automation, AI or web — would
-                actually move it forward.
+                A focused 30-minute conversation about where your business is today, where you want
+                it to go, and what systems can help you get there.
               </p>
-            </div>
-
-            <div className="mt-12 grid gap-8 border-t border-white/10 pt-10 sm:grid-cols-3">
-              {EXPECTATIONS.map((item) => (
-                <div key={item.title}>
-                  <p className="text-sm font-semibold text-white">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{item.text}</p>
-                </div>
-              ))}
+              <p className="mt-6 text-sm font-medium uppercase tracking-[0.14em] text-[var(--text-tertiary)]">
+                Available Monday–Friday · 9:00 AM–5:00 PM EAT · 30 minutes
+              </p>
             </div>
           </Container>
         </section>
+
+        <Section tone="base">
+          <ConsultationInfoPanel />
+        </Section>
+
+        <Section tone="surface" border="top">
+          <WhatToExpect fromAssessment={fromAssessment} />
+        </Section>
 
         <BookingFlow />
       </main>
