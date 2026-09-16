@@ -8,11 +8,9 @@ import {
   FormTextarea,
   SectionHeader,
 } from "@/components/forms/FormField";
-import {
-  ErrorBanner,
-  FormSuccessState,
-  LeadFormShell,
-} from "@/components/forms/LeadFormShell";
+import { ErrorBanner, LeadFormShell } from "@/components/forms/LeadFormShell";
+import { AssessmentSubmissionTransition } from "@/components/forms/AssessmentSubmissionTransition";
+import { AssessmentReceived } from "@/components/forms/AssessmentReceived";
 import { Button } from "@/components/ui/Button";
 import { trackConversion } from "@/lib/analytics";
 import { getLeadSource } from "@/lib/attribution";
@@ -28,36 +26,39 @@ import {
 const initialState = {
   First_Name: "",
   Last_Name: "",
-  Company: "",
-  Industry: "",
   Email: "",
   Phone: "",
+  Company: "",
+  Industry: "",
   Website: "",
   City: "",
   Country: "",
   Growth_Goal: "",
   Business_Challenge: "",
   Current_Marketing_Channels: [] as string[],
-  Desired_Timeline: "",
-  Trial_Advertisement_Budget_Readiness: "",
   Investment_Readiness: "",
+  Trial_Advertisement_Budget_Readiness: "",
+  Desired_Timeline: "",
+  Description: "",
 };
 
 type FormState = typeof initialState;
 type FieldName = keyof FormState;
 
 const STEPS = [
-  { title: "About Your Business", description: "Who we're speaking with." },
-  { title: "Your Business", description: "Where and what industry you operate in." },
+  { title: "About You", description: "Who we're speaking with." },
+  { title: "About Your Business", description: "Where and what industry you operate in." },
   { title: "Your Growth", description: "What you're trying to achieve." },
-  { title: "Readiness", description: "Timeline and budget readiness." },
+  { title: "Growth Readiness", description: "Your investment, budget and timeline readiness." },
+  { title: "Final Details", description: "Anything else that helps us prepare your assessment." },
 ] as const;
 
 const STEP_FIELDS: FieldName[][] = [
-  ["First_Name", "Last_Name", "Company", "Email", "Phone"],
-  ["Industry", "Website", "City", "Country"],
+  ["First_Name", "Last_Name", "Email", "Phone"],
+  ["Company", "Industry", "Website", "City", "Country"],
   ["Growth_Goal", "Business_Challenge", "Current_Marketing_Channels"],
-  ["Desired_Timeline", "Trial_Advertisement_Budget_Readiness", "Investment_Readiness"],
+  ["Investment_Readiness", "Trial_Advertisement_Budget_Readiness", "Desired_Timeline"],
+  ["Description"],
 ];
 
 const REQUIRED_FIELDS: FieldName[] = [
@@ -80,13 +81,30 @@ function stepForField(field: string): number {
   return index === -1 ? 0 : index;
 }
 
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/**
+ * "submitting": the request is in flight but we're still showing the form,
+ * with the submit button in its brief processing state (section 4 of the
+ * brief) before handing off to the full-screen connection sequence.
+ * "transition": AssessmentSubmissionTransition is shown — gated on the real
+ * API response, never a fixed timer alone (see handleSubmit).
+ */
+type Phase = "form" | "submitting" | "transition" | "success";
+
 export function BusinessGrowthAuditForm() {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState(initialState);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [phase, setPhase] = useState<Phase>("form");
 
   const selectedChannels = useMemo(
     () => formData.Current_Marketing_Channels,
@@ -229,31 +247,51 @@ export function BusinessGrowthAuditForm() {
       return;
     }
 
-    setIsSubmitting(true);
+    setPhase("submitting");
+
+    const reduceMotion = prefersReducedMotion();
+    const buttonHoldMs = reduceMotion ? 0 : 450;
+    const minTransitionMs = reduceMotion ? 0 : 900;
+
+    // Kick off the real request immediately so the button's brief processing
+    // state and the full-screen transition never add latency of their own —
+    // they only ever wait on this promise, never simulate it.
+    const submission = fetch("/api/leads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        formType: "business-growth-audit",
+        ...formData,
+        Current_Marketing_Channels: formData.Current_Marketing_Channels,
+        Lead_Source: getLeadSource(),
+      }),
+    }).then(async (response) => ({
+      ok: response.ok,
+      payload: await response.json(),
+    }));
+
+    await wait(buttonHoldMs);
+    setPhase("transition");
+
+    const start = Date.now();
 
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          formType: "business-growth-audit",
-          ...formData,
-          Current_Marketing_Channels:
-            formData.Current_Marketing_Channels,
-          Lead_Source: getLeadSource(),
-        }),
-      });
+      const { ok, payload } = await submission;
 
-      const payload = await response.json();
-
-      if (!response.ok || !payload.success) {
+      if (!ok || !payload.success) {
         setSubmitError(
           payload.error ||
             "We couldn't submit your request right now."
         );
+        setPhase("form");
         return;
+      }
+
+      const elapsed = Date.now() - start;
+      if (elapsed < minTransitionMs) {
+        await wait(minTransitionMs - elapsed);
       }
 
       trackConversion("generate_lead", {
@@ -270,7 +308,7 @@ export function BusinessGrowthAuditForm() {
         });
       }
 
-      setIsSuccess(true);
+      setPhase("success");
     } catch (error) {
       console.error(
         "Assessment submission failed",
@@ -280,47 +318,45 @@ export function BusinessGrowthAuditForm() {
       setSubmitError(
         "We couldn't submit your request right now. Your information hasn't been lost. Please try again."
       );
-    } finally {
-      setIsSubmitting(false);
+      setPhase("form");
     }
   };
 
-  if (isSuccess) {
+  if (phase === "success") {
     return (
-      <LeadFormShell
-        icon="A"
-        eyebrow="GROWTH ASSESSMENT"
-        title="Business Growth Assessment"
-        description="A premium review of your business opportunities, bottlenecks and growth priorities."
-      >
-        <FormSuccessState
-          title="Thank you — your Growth Assessment has been received."
-          description="Your information is now with the NairobiX team. We'll review it and identify the areas where we can create the greatest growth opportunity."
-          actionLabel="Return to NairobiX"
-          actionHref="/"
-        />
-      </LeadFormShell>
+      <AssessmentReceived
+        firstName={formData.First_Name}
+        companyName={formData.Company}
+      />
     );
   }
 
   const isLastStep = step === STEPS.length - 1;
+  const isLocked = phase === "submitting";
 
   return (
     <LeadFormShell
       icon="A"
       eyebrow="GROWTH ASSESSMENT"
       title="Business Growth Assessment"
-      description="A short, four-step assessment of your business, growth challenges and current marketing so we can identify the right next step."
+      description="A short, five-step assessment of your business, growth challenges and current marketing so we can identify the right next step."
     >
-      <StepProgress step={step} />
+      {phase === "transition" ? (
+        <AssessmentSubmissionTransition />
+      ) : (
+        <>
+          <StepProgress step={step} />
 
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 space-y-10"
-      >
-        {submitError ? (
-          <ErrorBanner message={submitError} />
-        ) : null}
+          <form
+            onSubmit={handleSubmit}
+            className="mt-8 space-y-10"
+            aria-busy={isLocked}
+          >
+            {submitError ? (
+              <ErrorBanner message={submitError} />
+            ) : null}
+
+            <fieldset disabled={isLocked} className="m-0 min-w-0 space-y-10 border-0 p-0">
 
         {step === 0 && (
           <div>
@@ -350,15 +386,6 @@ export function BusinessGrowthAuditForm() {
               />
 
               <FormInput
-                label="Business Name"
-                name="Company"
-                value={formData.Company}
-                onChange={handleChange}
-                required
-                error={errors.Company}
-              />
-
-              <FormInput
                 label="Email"
                 name="Email"
                 type="email"
@@ -369,18 +396,16 @@ export function BusinessGrowthAuditForm() {
                 error={errors.Email}
               />
 
-              <div className="md:col-span-2">
-                <FormInput
-                  label="Phone / WhatsApp"
-                  name="Phone"
-                  type="tel"
-                  value={formData.Phone}
-                  onChange={handleChange}
-                  placeholder="+254..."
-                  required
-                  error={errors.Phone}
-                />
-              </div>
+              <FormInput
+                label="Phone / WhatsApp"
+                name="Phone"
+                type="tel"
+                value={formData.Phone}
+                onChange={handleChange}
+                placeholder="+254..."
+                required
+                error={errors.Phone}
+              />
             </div>
           </div>
         )}
@@ -394,6 +419,17 @@ export function BusinessGrowthAuditForm() {
             />
 
             <div className="grid gap-5 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <FormInput
+                  label="Business Name"
+                  name="Company"
+                  value={formData.Company}
+                  onChange={handleChange}
+                  required
+                  error={errors.Company}
+                />
+              </div>
+
               <FormSelect
                 label="Industry"
                 name="Industry"
@@ -525,22 +561,24 @@ export function BusinessGrowthAuditForm() {
             <SectionHeader
               number={`0${step + 1}`}
               title={STEPS[3].title}
-              description="This helps us shape the right growth plan and timeline for your business."
+              description="This helps us shape the right growth plan, offer and timeline for your business."
             />
 
             <div className="grid gap-5 md:grid-cols-2">
-              <FormSelect
-                label="Desired Timeline"
-                name="Desired_Timeline"
-                value={formData.Desired_Timeline}
-                onChange={handleChange}
-                options={timelineOptions.map((option) => ({
-                  label: option,
-                  value: option,
-                }))}
-                required
-                error={errors.Desired_Timeline}
-              />
+              <div className="md:col-span-2">
+                <FormSelect
+                  label="Investment Readiness"
+                  name="Investment_Readiness"
+                  value={formData.Investment_Readiness}
+                  onChange={handleChange}
+                  options={investmentReadinessOptions.map((option) => ({
+                    label: option,
+                    value: option,
+                  }))}
+                  required
+                  error={errors.Investment_Readiness}
+                />
+              </div>
 
               <FormSelect
                 label="Trial Advertisement Budget Readiness"
@@ -559,59 +597,93 @@ export function BusinessGrowthAuditForm() {
               />
 
               <FormSelect
-                label="Investment Readiness"
-                name="Investment_Readiness"
-                value={formData.Investment_Readiness}
+                label="Desired Timeline"
+                name="Desired_Timeline"
+                value={formData.Desired_Timeline}
                 onChange={handleChange}
-                options={investmentReadinessOptions.map((option) => ({
+                options={timelineOptions.map((option) => ({
                   label: option,
                   value: option,
                 }))}
                 required
-                error={errors.Investment_Readiness}
+                error={errors.Desired_Timeline}
               />
             </div>
           </div>
         )}
 
-        <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          {step > 0 ? (
-            <button
-              type="button"
-              onClick={goToPreviousStep}
-              disabled={isSubmitting}
-              className="text-sm font-medium text-[var(--text-secondary)] hover:text-white disabled:opacity-50"
-            >
-              ← Back
-            </button>
-          ) : (
-            <p className="text-sm text-[var(--text-tertiary)]">
-              Your information is secure and only used for
-              NairobiX review.
-            </p>
-          )}
+        {step === 4 && (
+          <div>
+            <SectionHeader
+              number={`0${step + 1}`}
+              title={STEPS[4].title}
+              description="Anything else you'd like us to know before we prepare your assessment."
+            />
 
-          {isLastStep ? (
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              variant="primary"
-            >
-              {isSubmitting
-                ? "Submitting Assessment..."
-                : "Submit Growth Assessment →"}
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              onClick={goToNextStep}
-              variant="primary"
-            >
-              Continue →
-            </Button>
-          )}
-        </div>
-      </form>
+            <FormTextarea
+              label="Description / Additional Information"
+              name="Description"
+              value={formData.Description}
+              onChange={handleChange}
+              placeholder="Share any other context about your business, goals or growth priorities (optional)."
+              error={errors.Description}
+            />
+          </div>
+        )}
+
+            </fieldset>
+
+            <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+              {step > 0 ? (
+                <button
+                  type="button"
+                  onClick={goToPreviousStep}
+                  disabled={isLocked}
+                  className="text-sm font-medium text-[var(--text-secondary)] hover:text-white disabled:opacity-50"
+                >
+                  ← Back
+                </button>
+              ) : (
+                <p className="text-sm text-[var(--text-tertiary)]">
+                  Your information is secure and only used for
+                  NairobiX review.
+                </p>
+              )}
+
+              {isLastStep ? (
+                <Button
+                  key="submit"
+                  type="submit"
+                  disabled={isLocked}
+                  variant="primary"
+                >
+                  {isLocked ? (
+                    <span className="inline-flex items-center gap-2">
+                      Submitting Assessment
+                      <span className="inline-flex gap-0.5" aria-hidden="true">
+                        <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "0ms" }} />
+                        <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "150ms" }} />
+                        <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "300ms" }} />
+                      </span>
+                    </span>
+                  ) : (
+                    "Submit Growth Assessment →"
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  key="continue"
+                  type="button"
+                  onClick={goToNextStep}
+                  variant="primary"
+                >
+                  Continue →
+                </Button>
+              )}
+            </div>
+          </form>
+        </>
+      )}
     </LeadFormShell>
   );
 }

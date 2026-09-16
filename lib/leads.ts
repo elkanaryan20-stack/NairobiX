@@ -1,5 +1,5 @@
 import { createZohoLead } from "@/lib/zoho";
-import { FALLBACK_LEAD_SOURCE } from "@/lib/attribution";
+import { FALLBACK_LEAD_SOURCE, isLeadSource } from "@/lib/attribution";
 
 export const VALID_FORM_TYPES = [
   "business-growth-audit",
@@ -92,7 +92,13 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
     // The visitor's original acquisition channel (WhatsApp, Instagram, Google, etc.),
     // captured client-side from UTM params/referrer on first landing — see lib/attribution.ts.
     // Never assume "Website": that's where the lead converted, not where it came from.
-    Lead_Source: sanitizeString(data.Lead_Source) || FALLBACK_LEAD_SOURCE,
+    // Re-validated here (not just trusted from the client) so nothing outside
+    // Zoho's Lead_Source picklist — a raw referrer domain in particular — can
+    // ever reach the CRM, even from a stale client build or a direct API call.
+    Lead_Source: (() => {
+      const value = sanitizeString(data.Lead_Source);
+      return value && isLeadSource(value) ? value : FALLBACK_LEAD_SOURCE;
+    })(),
   };
 
   if (formType === "business-growth-audit") {
@@ -287,7 +293,7 @@ export async function submitLead(
 
   console.log("Zoho CRM submission successful", {
     formType,
-    leadId: result.data?.data?.[0]?.id,
+    leadId: result.data?.data?.[0]?.details?.id,
   });
 
   return { success: true };

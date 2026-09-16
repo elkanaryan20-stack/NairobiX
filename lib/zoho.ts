@@ -122,8 +122,29 @@ export async function createZohoLead(data: ZohoLeadPayload) {
     } as const;
   }
 
-  const responseData = await crmResponse.json();
+  const responseData = (await crmResponse.json()) as {
+    data?: Array<{ status?: string; code?: string; message?: string; details?: { id?: string } }>;
+  };
   console.log("Zoho CRM response:", JSON.stringify(responseData, null, 2));
+
+  // The Leads API can return an overall HTTP 200/201 while the individual
+  // record entry reports status: "error" (e.g. INVALID_DATA, MANDATORY_NOT_FOUND,
+  // DUPLICATE_DATA) — HTTP success alone does not mean the record, or every
+  // field on it, was actually accepted by Zoho.
+  const record = responseData.data?.[0];
+
+  if (record && record.status !== "success") {
+    console.error("Zoho CRM rejected the lead record", {
+      code: record.code,
+      message: record.message,
+      details: record.details,
+    });
+
+    return {
+      ok: false,
+      error: `Zoho rejected the lead record (${record.code ?? "UNKNOWN"}): ${record.message ?? "no message"}.`,
+    } as const;
+  }
 
   return {
     ok: true,
