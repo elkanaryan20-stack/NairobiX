@@ -49,11 +49,13 @@ export function GrowthSessionConfirmed({
   formattedTime,
   email,
   discussionTopic,
+  firstName,
 }: {
   formattedDate: string;
   formattedTime: string;
   email: string;
   discussionTopic: string;
+  firstName: string;
 }) {
   return (
     <div className="bg-[#0b0b0d] text-white">
@@ -73,7 +75,13 @@ export function GrowthSessionConfirmed({
               Your session is confirmed.
             </Heading>
 
-            <p className="mt-6 text-base leading-7 text-[var(--text-secondary)]">
+            {firstName ? (
+              <p className="mt-6 text-base leading-7 text-[var(--text-secondary)]">
+                Good to have you with us, {firstName}.
+              </p>
+            ) : null}
+
+            <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
               We&apos;re looking forward to the conversation.
             </p>
             <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">

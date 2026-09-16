@@ -17,7 +17,8 @@ const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export type ConsultationBookingInput = {
-  fullName: unknown;
+  firstName: unknown;
+  lastName: unknown;
   businessName: unknown;
   email: unknown;
   phone: unknown;
@@ -56,7 +57,8 @@ function toZohoFromTime(isoDate: string, time: string): string | null {
 export async function submitConsultationBooking(
   input: ConsultationBookingInput
 ): Promise<ConsultationBookingResult> {
-  const fullName = sanitizeString(input.fullName);
+  const firstName = sanitizeString(input.firstName);
+  const lastName = sanitizeString(input.lastName);
   const businessName = sanitizeString(input.businessName);
   const email = sanitizeString(input.email);
   const phone = sanitizeString(input.phone);
@@ -67,7 +69,8 @@ export async function submitConsultationBooking(
   const time = sanitizeString(input.time);
 
   const missing: string[] = [];
-  if (!fullName) missing.push("full name");
+  if (!firstName) missing.push("first name");
+  if (!lastName) missing.push("last name");
   if (!businessName) missing.push("business name");
   if (!email) missing.push("email");
   if (!phone) missing.push("phone number");
@@ -128,13 +131,20 @@ export async function submitConsultationBooking(
     additionalFields.Website = website;
   }
 
+  // Zoho Bookings' appointment-creation API only accepts a single
+  // customer_details.name field — there is no first_name/last_name split at
+  // this boundary (verified against Zoho's Book Appointment API and Deluge
+  // createAppointment docs, both of which document name/email/phone_number
+  // as the only allowed customer_details keys). First and last name stay
+  // separate everywhere else in this flow; they're combined only here,
+  // where Zoho's own integration requires it.
   const result = await createZohoBookingsAppointment({
     serviceId: NAIROBIX_CONSULTATION_SERVICE_ID,
     staffId: NAIROBIX_CONSULTATION_STAFF_ID,
     fromTime,
     timezone: NAIROBIX_BOOKINGS_TIMEZONE,
     customer: {
-      name: fullName,
+      name: `${firstName} ${lastName}`.trim(),
       email,
       phone_number: phone,
     },

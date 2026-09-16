@@ -252,7 +252,8 @@ export const NIA_TOOLS: Anthropic.Tool[] = [
       type: "object",
       properties: {
         ...CONFIRMED_FIELD,
-        fullName: { type: "string" },
+        firstName: { type: "string" },
+        lastName: { type: "string" },
         businessName: { type: "string" },
         email: { type: "string" },
         phone: { type: "string" },
@@ -264,7 +265,8 @@ export const NIA_TOOLS: Anthropic.Tool[] = [
       },
       required: [
         ...CONFIRMED_REQUIRED,
-        "fullName",
+        "firstName",
+        "lastName",
         "businessName",
         "email",
         "phone",

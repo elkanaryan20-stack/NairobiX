@@ -67,7 +67,8 @@ function formatTime12h(time: string): string {
 }
 
 const initialFormState = {
-  fullName: "",
+  firstName: "",
+  lastName: "",
   businessName: "",
   email: "",
   phone: "",
@@ -153,7 +154,8 @@ export function BookingFlow() {
   const validateAbout = () => {
     const errors: Record<string, string> = {};
 
-    if (!formData.fullName.trim()) errors.fullName = "This field is required.";
+    if (!formData.firstName.trim()) errors.firstName = "This field is required.";
+    if (!formData.lastName.trim()) errors.lastName = "This field is required.";
     if (!formData.businessName.trim()) errors.businessName = "This field is required.";
     if (!formData.email.trim()) {
       errors.email = "This field is required.";
@@ -204,7 +206,8 @@ export function BookingFlow() {
       body: JSON.stringify({
         date: selectedDateISO,
         time: selectedTime,
-        fullName: formData.fullName.trim(),
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
         businessName: formData.businessName.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
@@ -251,6 +254,7 @@ export function BookingFlow() {
         formattedTime={formatTime12h(selectedTime)}
         email={formData.email}
         discussionTopic={formData.discussionTopic}
+        firstName={formData.firstName.trim()}
       />
     );
   }
@@ -275,13 +279,12 @@ export function BookingFlow() {
                 />
 
                 <div className="grid gap-5 md:grid-cols-2">
-                  <FormInput label="Full Name" name="fullName" value={formData.fullName} onChange={handleFieldChange} required error={formErrors.fullName} />
+                  <FormInput label="First Name" name="firstName" value={formData.firstName} onChange={handleFieldChange} required error={formErrors.firstName} />
+                  <FormInput label="Last Name" name="lastName" value={formData.lastName} onChange={handleFieldChange} required error={formErrors.lastName} />
                   <FormInput label="Business Name" name="businessName" value={formData.businessName} onChange={handleFieldChange} required error={formErrors.businessName} />
                   <FormInput label="Email" name="email" type="email" value={formData.email} onChange={handleFieldChange} placeholder="you@example.com" required error={formErrors.email} />
                   <FormInput label="Phone / WhatsApp" name="phone" type="tel" value={formData.phone} onChange={handleFieldChange} placeholder="+254..." required error={formErrors.phone} />
-                  <div className="md:col-span-2">
-                    <FormInput label="Website" name="website" type="url" value={formData.website} onChange={handleFieldChange} placeholder="https:// (optional)" error={formErrors.website} />
-                  </div>
+                  <FormInput label="Website" name="website" type="url" value={formData.website} onChange={handleFieldChange} placeholder="https:// (optional)" error={formErrors.website} />
                 </div>
 
                 <div className="mt-6">
@@ -458,6 +461,7 @@ export function BookingFlow() {
                   <SummaryRow label="Date" value={DATE_FORMATTER_LONG.format(new Date(`${selectedDateISO}T00:00:00`))} />
                   <SummaryRow label="Time" value={`${formatTime12h(selectedTime)} (Africa/Nairobi, EAT)`} />
                   <SummaryRow label="Duration" value="30 minutes" />
+                  <SummaryRow label="Name" value={`${formData.firstName} ${formData.lastName}`.trim()} />
                   <SummaryRow label="Business" value={formData.businessName} />
                   <SummaryRow label="Email" value={formData.email} />
                   <SummaryRow label="Phone" value={formData.phone} />
