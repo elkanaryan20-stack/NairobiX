@@ -206,7 +206,7 @@ export const NIA_TOOLS: Anthropic.Tool[] = [
   {
     name: "submit_partner_application",
     description:
-      "Submit a Growth Partner application to the NairobiX CRM. Business action — only call after explicit visitor confirmation.",
+      "Submit a NairobiX Opportunities Network application to the CRM. Business action — only call after explicit visitor confirmation.",
     input_schema: {
       type: "object",
       properties: {
@@ -226,7 +226,7 @@ export const NIA_TOOLS: Anthropic.Tool[] = [
         },
         Partnership_Motivation: {
           type: "string",
-          description: "Why a partnership with NairobiX would create value, in the visitor's own context",
+          description: "Why joining the NairobiX Opportunities Network would create value, in the visitor's own context",
         },
       },
       required: [

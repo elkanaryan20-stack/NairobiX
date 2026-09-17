@@ -103,7 +103,7 @@ export function GrowthPartnerForm() {
         body: JSON.stringify({
           formType: "partner",
           ...formData,
-          Lead_Source: getLeadSource(),
+          Marketing_Channel: getLeadSource(),
         }),
       });
 
@@ -117,7 +117,7 @@ export function GrowthPartnerForm() {
       trackConversion("generate_lead", { form_type: "partner" });
       setIsSuccess(true);
     } catch (error) {
-      console.error("Partner application failed", error);
+      console.error("Network application failed", error);
       setSubmitError("We couldn't submit your request right now. Your information hasn't been lost. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -127,13 +127,13 @@ export function GrowthPartnerForm() {
   if (isSuccess) {
     return (
       <LeadFormShell
-        icon="P"
-        eyebrow="GROWTH PARTNER"
-        title="Growth Partner Application"
-        description="Partner with NairobiX to create value for businesses and long-term growth opportunities."
+        icon="N"
+        eyebrow="NAIROBIX OPPORTUNITIES NETWORK"
+        title="Network Application"
+        description="Join the NairobiX Opportunities Network to create value for businesses and long-term growth opportunities."
       >
         <FormSuccessState
-          title="Your Growth Partner application has been received."
+          title="Your Network application has been received."
           description="Our team will review your application and follow up with the next steps."
           actionLabel="Return to NairobiX"
           actionHref="/"
@@ -144,10 +144,10 @@ export function GrowthPartnerForm() {
 
   return (
     <LeadFormShell
-      icon="P"
-      eyebrow="GROWTH PARTNER"
-      title="Growth Partner Application"
-      description="Join the NairobiX Growth Partner Network and help businesses access strategic growth solutions and long-term value."
+      icon="N"
+      eyebrow="NAIROBIX OPPORTUNITIES NETWORK"
+      title="Network Application"
+      description="Join the NairobiX Opportunities Network and help businesses access strategic growth solutions and long-term value."
     >
       <form onSubmit={handleSubmit} className="space-y-10">
         {submitError ? <ErrorBanner message={submitError} /> : null}
@@ -167,10 +167,10 @@ export function GrowthPartnerForm() {
         </div>
 
         <div>
-          <SectionHeader number="02" title="Partnership Profile" description="We want to understand how you work with businesses and what kind of value you can bring to the partnership." />
+          <SectionHeader number="02" title="Network Profile" description="We want to understand how you work with businesses and what kind of value you can bring to the NairobiX Opportunities Network." />
           <div className="grid gap-5 md:grid-cols-2">
             <FormSelect
-              label="Partner Type"
+              label="Network Member Type"
               name="Partner_Type"
               value={formData.Partner_Type}
               onChange={handleChange}
@@ -180,26 +180,26 @@ export function GrowthPartnerForm() {
             />
             <div className="md:col-span-2">
               <ChipGroup
-                label="Partnership Interest"
+                label="Network Engagement"
                 name="Partnership_Interest"
                 options={partnershipInterestOptions}
                 selected={formData.Partnership_Interest}
                 onSelect={toggleSelection}
                 error={errors.Partnership_Interest}
-                helperText="Select the areas you’d like to explore with NairobiX."
+                helperText="Select how you’d like to engage with the NairobiX Opportunities Network."
               />
             </div>
           </div>
 
           <div className="mt-6">
             <FormTextarea
-              label="Partnership Motivation"
+              label="Network Motivation"
               name="Partnership_Motivation"
               value={formData.Partnership_Motivation}
               onChange={handleChange}
-              placeholder="Tell us about the businesses or clients you work with, what you bring, and why a partnership with NairobiX would create value."
+              placeholder="Tell us about the businesses or clients you work with, what you bring, and why joining the NairobiX Opportunities Network would create value."
               required
-              helperText="Tell us about the businesses or clients you work with, what you bring to the partnership, and why you believe working with NairobiX would create value."
+              helperText="Tell us about the businesses or clients you work with, what you bring to the Network, and why you believe joining would create value."
               error={errors.Partnership_Motivation}
             />
           </div>

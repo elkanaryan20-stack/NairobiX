@@ -72,7 +72,7 @@ export function ContactForm() {
         body: JSON.stringify({
           formType: "contact",
           ...formData,
-          Lead_Source: getLeadSource(),
+          Marketing_Channel: getLeadSource(),
         }),
       });
 

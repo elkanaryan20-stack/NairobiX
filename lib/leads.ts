@@ -81,6 +81,13 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
       ? data.Solution_Needed.map((entry) => sanitizeString(entry)).filter(Boolean)
       : sanitizeString(data.Solution_Needed),
 
+    // Partner_Type/Partnership_Interest/Partnership_Motivation and
+    // Partner_Qualification (below) are unchanged Zoho custom field API
+    // names, from before the public "NairobiX Opportunities Network"
+    // rename. Renaming these keys would point the submission at fields that
+    // no longer exist in Zoho, silently dropping the data — public-facing
+    // wording changed instead (see the /partner and /partnership pages, and
+    // PARTNERSHIP_INTEREST_OPTIONS' four engagement-type values).
     Partner_Type: sanitizeString(data.Partner_Type),
 
     Partnership_Interest: Array.isArray(data.Partnership_Interest)
@@ -89,23 +96,32 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
 
     Partnership_Motivation: sanitizeString(data.Partnership_Motivation),
 
-    // The visitor's original acquisition channel (WhatsApp, Instagram, Google, etc.),
-    // captured client-side from UTM params/referrer on first landing — see lib/attribution.ts.
-    // Never assume "Website": that's where the lead converted, not where it came from.
-    // Re-validated here (not just trusted from the client) so nothing outside
-    // Zoho's Lead_Source picklist — a raw referrer domain in particular — can
-    // ever reach the CRM, even from a stale client build or a direct API call.
-    Lead_Source: (() => {
-      const value = sanitizeString(data.Lead_Source);
+    // The visitor's original acquisition CHANNEL (WhatsApp, Instagram, Google,
+    // etc.), captured client-side from UTM params/referrer on first landing —
+    // see lib/attribution.ts. This is marketing attribution, kept separate
+    // from — and never written into — Zoho's Lead_Source below, which is now
+    // a closed business/opportunity classification, not a channel. Never
+    // assume "Website" for this: that's where the lead converted, not where
+    // it came from. Re-validated here (not just trusted from the client) so
+    // nothing outside the known channel list — a raw referrer domain in
+    // particular — can ever reach the CRM, even from a stale client build or
+    // a direct API call.
+    Marketing_Channel: (() => {
+      const value = sanitizeString(data.Marketing_Channel);
       return value && isLeadSource(value) ? value : FALLBACK_LEAD_SOURCE;
     })(),
   };
 
+  // Lead_Source is now a closed 4-value CRM classification (Business
+  // Opportunity / Network Opportunity / General Inquiry / Other) — fixed per
+  // form, never derived from visitor input. The detailed acquisition channel
+  // above (Marketing_Channel) is what varies per visitor.
   if (formType === "business-growth-audit") {
     return {
       ...base,
       Growth_Audit_Status: "New",
       Lead_Type: "Business Growth Audit",
+      Lead_Source: "Business Opportunity",
       Rating: "Active",
       Trial_Eligibility: "Not Assessed",
     };
@@ -114,7 +130,11 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
   if (formType === "request-solution") {
     return {
       ...base,
-      Lead_Type: "Service Request",
+      // Not one of the 9 finalized Lead Type values (no "Service Request"
+      // entry) — this form isn't named in the finalized mapping, so "Other"
+      // is used rather than leaving a now-invalid picklist value in place.
+      Lead_Type: "Other",
+      Lead_Source: "Business Opportunity",
       Rating: "Active",
     };
   }
@@ -123,14 +143,16 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
     return {
       ...base,
       Partner_Qualification: "Unreviewed",
-      Lead_Type: "Partner Application",
+      Lead_Type: "Network Application",
+      Lead_Source: "Network Opportunity",
       Rating: "Active",
     };
   }
 
   return {
     ...base,
-    Lead_Type: "Contact",
+    Lead_Type: "Website Inquiry",
+    Lead_Source: "General Inquiry",
     Rating: "Active",
   };
 }

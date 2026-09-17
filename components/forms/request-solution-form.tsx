@@ -105,7 +105,7 @@ export function RequestSolutionForm() {
         body: JSON.stringify({
           formType: "request-solution",
           ...formData,
-          Lead_Source: getLeadSource(),
+          Marketing_Channel: getLeadSource(),
         }),
       });
 

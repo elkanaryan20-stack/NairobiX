@@ -5,13 +5,18 @@
 // is never the acquisition source, it's the conversion destination. This
 // captures the UTM parameters (or a referrer-based guess) present on a
 // visitor's FIRST page view and persists them, so a lead form submitted
-// several pages later still reports the original channel to Zoho.
+// several pages later still reports the original channel.
 //
-// Zoho's Lead_Source picklist is a closed, finite list (LEAD_SOURCES below).
-// Nothing outside that list — and in particular no raw referrer domain —
-// may ever be sent to Zoho. Anything we can't confidently map to a named
-// channel is normalized to "Referral" (we know it's an external link, just
-// not one of our named channels) rather than leaking the raw host.
+// This channel list (LEAD_SOURCES below) is sent to Zoho as Marketing_Channel
+// — detailed marketing attribution, kept separate from Zoho's actual
+// Lead_Source field, which is now a closed 4-value business/opportunity
+// classification (Business Opportunity / Network Opportunity / General
+// Inquiry / Other) assigned per form type in lib/leads.ts, not derived from
+// attribution. The type/constant names here predate that split; nothing
+// outside this list — and in particular no raw referrer domain — may ever
+// reach Zoho. Anything we can't confidently map to a named channel is
+// normalized to "Referral" (we know it's an external link, just not one of
+// our named channels) rather than leaking the raw host.
 
 const STORAGE_KEY = "nx_lead_source";
 const MEDIUM_KEY = "nx_lead_source_medium";

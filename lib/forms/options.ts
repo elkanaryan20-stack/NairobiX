@@ -84,13 +84,15 @@ export const PARTNER_TYPE_OPTIONS = [
   "Printing / Branding Centre",
 ];
 
+// The four canonical NairobiX Opportunities Network engagement types. Kept
+// as this exported name (imported by the application form and Nia's tool
+// schema) even though the field/variable name predates the Network rename —
+// see lib/leads.ts for why the underlying Zoho field API name is unchanged.
 export const PARTNERSHIP_INTEREST_OPTIONS = [
-  "Refer Businesses to NairobiX",
-  "Offer NairobiX Solutions to Your Clients",
-  "Collaborate on Client Projects",
-  "White-Label NairobiX Solutions",
-  "Strategic Business Partnership",
-  "Explore a Custom Partnership",
+  "Generate Opportunities",
+  "Collaborate on Projects",
+  "Provide Expertise",
+  "Build Strategic Relationships",
 ];
 
 export const DISCUSSION_TOPIC_OPTIONS = [

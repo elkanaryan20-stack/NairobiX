@@ -23,7 +23,7 @@ export const FOOTER_LINKS = {
     { label: "Industries", href: "/industries" },
     { label: "Case Studies", href: "/case-studies" },
     { label: "Insights", href: "/insights" },
-    { label: "Partnership", href: "/partnership" },
+    { label: "Opportunities Network", href: "/partnership" },
     { label: "Contact", href: "/contact" },
   ],
   start: [
@@ -1151,7 +1151,7 @@ export const CLIENT_WORKSPACE = {
   eyebrow: "THE NAIROBIX WORKSPACE",
   title: "A shared space for the work itself, not just the emails about it.",
   description:
-    "Once an engagement begins, clients and partners get access to a dedicated NairobiX workspace — a single place to track project visibility, deliverables, growth reports and open requests, so collaboration doesn't depend on scattered emails and calls. It's part of how NairobiX works day to day, not a separate product.",
+    "Once an engagement begins, clients and Network members get access to a dedicated NairobiX workspace — a single place to track project visibility, deliverables, growth reports and open requests, so collaboration doesn't depend on scattered emails and calls. It's part of how NairobiX works day to day, not a separate product.",
 };
 
 export const WORKSPACE_FEATURES = [
@@ -1177,8 +1177,11 @@ export const WORKSPACE_FEATURES = [
   },
 ];
 
+// Name kept as-is (internal identifier) — see app/partnership/page.tsx, its
+// only importer. Public-facing content updated to the NairobiX Network
+// Workspace.
 export const PARTNER_PORTAL_NOTE =
-  "Active partners get access to the NairobiX Partner Portal — a shared space for tracking referrals, requests and updates, so collaboration stays organized as the partnership grows.";
+  "Active Network members get access to the NairobiX Network Workspace — a shared space for tracking referrals, requests and updates, so collaboration stays organized as the Network grows.";
 
 export const CONTACT_EMAIL = "hello@nairobix.com";
 

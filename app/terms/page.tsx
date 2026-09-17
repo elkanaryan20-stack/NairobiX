@@ -93,7 +93,7 @@ const SECTIONS: LegalSection[] = [
     title: "Client engagements",
     body: [
       {
-        p: "No client relationship, service agreement, or obligation on NairobiX's part arises from browsing the Website, submitting a Business Growth Assessment, requesting a solution, applying as a partner, booking a consultation, or chatting with Nia. A client engagement begins only once NairobiX and the client have agreed on scope and terms in a separate written proposal, agreement or SOW.",
+        p: "No client relationship, service agreement, or obligation on NairobiX's part arises from browsing the Website, submitting a Business Growth Assessment, requesting a solution, submitting a NairobiX Opportunities Network application, booking a consultation, or chatting with Nia. A client engagement begins only once NairobiX and the client have agreed on scope and terms in a separate written proposal, agreement or SOW.",
       },
     ],
   },

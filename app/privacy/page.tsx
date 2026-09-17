@@ -21,13 +21,13 @@ const SECTIONS: LegalSection[] = [
     title: "Information we collect",
     body: [
       {
-        p: "We collect information you provide directly, through the Business Growth Assessment, the Request a Solution form, the Growth Partner application, the general Contact form, the consultation booking flow, and conversations with Nia when you choose to submit a request through her. Depending on which form or flow you use, this can include:",
+        p: "We collect information you provide directly, through the Business Growth Assessment, the Request a Solution form, the NairobiX Opportunities Network application, the general Contact form, the consultation booking flow, and conversations with Nia when you choose to submit a request through her. Depending on which form or flow you use, this can include:",
       },
       {
         ul: [
           "Contact details — name, email address, and phone / WhatsApp number",
           "Business details — company name, industry, website, city and country",
-          "Enquiry details — your growth goals, business challenges, current marketing channels, desired timeline, budget readiness, and the specific solution, service, or partnership you're interested in",
+          "Enquiry details — your growth goals, business challenges, current marketing channels, desired timeline, budget readiness, and the specific solution, service, or Network opportunity you're interested in",
           "Consultation details — the topic you'd like to discuss and a brief description of your current priority, when booking a NairobiX Business Growth Consultation",
         ],
       },
@@ -104,7 +104,7 @@ const SECTIONS: LegalSection[] = [
         ul: [
           "Your messages are sent to Anthropic's API to generate a response. Anthropic processes this data in accordance with its own privacy and data-handling practices.",
           "Nia can look up real consultation availability at any time without submitting any of your information.",
-          "Nia can only submit a Business Growth Assessment, service request, partner application, or consultation booking on your behalf after you have explicitly confirmed, in your own words, that you want it submitted. Once confirmed, that information is sent to Zoho CRM or Zoho Bookings in exactly the same way it would be if you had used the corresponding form directly.",
+          "Nia can only submit a Business Growth Assessment, service request, Network application, or consultation booking on your behalf after you have explicitly confirmed, in your own words, that you want it submitted. Once confirmed, that information is sent to Zoho CRM or Zoho Bookings in exactly the same way it would be if you had used the corresponding form directly.",
           "Your conversation with Nia lives in your browser for the duration of your visit. NairobiX does not save your full chat transcript in a database — it is not retained once you close or refresh the page, other than the specific fields you choose to submit as described above.",
           "To help prevent abuse, we apply a short-term, automatic rate limit based on your network address. This is held in server memory only, is not linked to your identity, and does not persist beyond a short rolling window.",
         ],

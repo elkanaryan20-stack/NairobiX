@@ -257,7 +257,7 @@ export function BusinessGrowthAuditForm() {
         formType: "business-growth-audit",
         ...formData,
         Current_Marketing_Channels: formData.Current_Marketing_Channels,
-        Lead_Source: getLeadSource(),
+        Marketing_Channel: getLeadSource(),
       }),
     }).then(async (response) => ({
       ok: response.ok,

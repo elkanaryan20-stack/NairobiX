@@ -14,17 +14,17 @@ import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 
-const TITLE = "Partnership";
+const TITLE = "NairobiX Opportunities Network";
 const DESCRIPTION =
-  "Partner with NairobiX to deliver growth systems, digital transformation, and strategic solutions to more businesses.";
+  "Join the NairobiX Opportunities Network to deliver growth systems, digital transformation, and strategic solutions to more businesses.";
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/partnership" });
 
 const BENEFITS = [
-  { title: "Refer", text: "Introduce businesses that could benefit from a stronger growth system." },
-  { title: "Collaborate", text: "Work with NairobiX on strategy, implementation and customer journeys." },
-  { title: "Earn", text: "Create additional value through trusted referrals and partnership opportunities." },
-  { title: "Grow", text: "Expand your reach with a growth partner network behind you." },
+  { title: "Generate Opportunities", text: "Introduce businesses that could benefit from a stronger growth system." },
+  { title: "Collaborate on Projects", text: "Work with NairobiX on strategy, implementation and customer journeys." },
+  { title: "Provide Expertise", text: "Bring specialized skills and insight to NairobiX engagements." },
+  { title: "Build Strategic Relationships", text: "Build long-term relationships within the NairobiX Opportunities Network." },
 ];
 
 const WHO_ITS_FOR = [
@@ -34,10 +34,10 @@ const WHO_ITS_FOR = [
 ];
 
 const APPLICATION_STEPS = [
-  { number: "01", title: "Apply", text: "Tell us about your business, network and partnership interests." },
-  { number: "02", title: "Review", text: "NairobiX reviews the application and evaluates partnership fit." },
-  { number: "03", title: "Connect", text: "Qualified partners are contacted for a conversation." },
-  { number: "04", title: "Activate", text: "Approved partners receive the information and support required to begin working with NairobiX." },
+  { number: "01", title: "Apply", text: "Tell us about your business and Network interests." },
+  { number: "02", title: "Review", text: "NairobiX reviews the application and evaluates Network fit." },
+  { number: "03", title: "Connect", text: "Qualified Network members are contacted for a conversation." },
+  { number: "04", title: "Activate", text: "Approved Network members receive the information and support required to begin working with NairobiX." },
 ];
 
 export default function PartnershipPage() {
@@ -64,17 +64,17 @@ export default function PartnershipPage() {
           </div>
           <Container className="relative py-20">
             <div className="max-w-3xl">
-              <Eyebrow>NAIROBIX · PARTNERSHIP</Eyebrow>
+              <Eyebrow>NAIROBIX · OPPORTUNITIES NETWORK</Eyebrow>
               <Heading as="h1" variant="display-lg" className="mt-4">
                 Grow With NairobiX
               </Heading>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">
-                Partner with NairobiX to bring connected growth systems and digital transformation
-                to more businesses.
+                Join the NairobiX Opportunities Network to bring connected growth systems and
+                digital transformation to more businesses.
               </p>
               <div className="mt-8">
                 <Button href="/partner" variant="primary">
-                  Become a NairobiX Partner →
+                  Join the Network →
                 </Button>
               </div>
             </div>
@@ -83,9 +83,9 @@ export default function PartnershipPage() {
 
         <Section>
           <div className="mb-10 max-w-2xl">
-            <Eyebrow>WHY PARTNER WITH NAIROBIX</Eyebrow>
+            <Eyebrow>WHY JOIN THE NETWORK</Eyebrow>
             <Heading as="h2" variant="display-md" className="mt-4">
-              A partnership built for long-term growth.
+              A network built for long-term growth.
             </Heading>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -123,7 +123,7 @@ export default function PartnershipPage() {
           <div className="mb-8 max-w-2xl">
             <Eyebrow>APPLICATION PROCESS</Eyebrow>
             <Heading as="h2" variant="display-md" className="mt-4">
-              A simple and thoughtful partnership flow.
+              A simple and thoughtful Network application flow.
             </Heading>
           </div>
           <div className="grid gap-6 lg:grid-cols-4">
