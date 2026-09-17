@@ -44,13 +44,20 @@ function isWeekend(date: Date): boolean {
   return day === 0 || day === 6;
 }
 
-/** Only weekdays — NairobiX is available Monday–Friday, so weekends never appear in the calendar at all. */
+/**
+ * Only weekdays — NairobiX is available Monday–Friday, so weekends never
+ * appear in the calendar at all. Starts from today (i = 0): Zoho Bookings is
+ * the source of truth for whether any slots remain today, so the calendar
+ * must offer it rather than assuming it's always exhausted — the
+ * availability fetch for that date already renders "not available" if Zoho
+ * returns no remaining times.
+ */
 function buildUpcomingDates(count: number): Date[] {
   const dates: Date[] = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  for (let i = 1; dates.length < count; i += 1) {
+  for (let i = 0; dates.length < count; i += 1) {
     const candidate = new Date(today);
     candidate.setDate(today.getDate() + i);
     if (!isWeekend(candidate)) dates.push(candidate);
