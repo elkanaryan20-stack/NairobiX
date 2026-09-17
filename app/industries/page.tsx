@@ -11,6 +11,7 @@ import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 import { INDUSTRIES } from "@/lib/site-data";
 import { IndustryExplorer } from "@/components/solutions/IndustryExplorer";
+import { NiaSectionCue } from "@/components/nia/NiaSectionCue";
 
 const TITLE = "Industries";
 const DESCRIPTION =
@@ -41,6 +42,7 @@ export default function IndustriesPage() {
         </section>
 
         <Section>
+          <NiaSectionCue reaction="tilt" />
           <div className="mb-10 max-w-2xl">
             <Eyebrow>CHOOSE AN INDUSTRY</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">

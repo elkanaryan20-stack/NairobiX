@@ -129,4 +129,82 @@
   .animate-flow-travel {
     animation: flow-travel 5s ease-in-out infinite;
   }
+
+  /* Section entrance — see components/ui/Reveal.tsx. Starts pre-painted
+     invisible via [data-reveal="hidden"] so there's no flash of the final
+     state before JS can observe the section's scroll position. */
+  @keyframes fade-up-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  [data-reveal="hidden"] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  [data-reveal="visible"] {
+    animation: fade-up-in 550ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Nia idle personality micro-movements — see lib/useNiaPersonality.ts.
+     Deliberately small: this is a resting business tool getting an
+     occasional sign of life, not a mascot performing. */
+  @keyframes nia-tilt {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-6deg); }
+  }
+  @keyframes nia-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes nia-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+  }
+  @keyframes nia-nudge {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+  }
+  @keyframes nia-roll {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes nia-roll-half {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(180deg); }
+  }
+  @keyframes nia-attentive-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  .animate-nia-tilt { animation: nia-tilt 900ms ease-in-out; }
+  .animate-nia-bounce { animation: nia-bounce 700ms ease-in-out; }
+  .animate-nia-shake { animation: nia-shake 500ms ease-in-out; }
+  .animate-nia-nudge { animation: nia-nudge 600ms ease-in-out; }
+  .animate-nia-roll { animation: nia-roll 700ms cubic-bezier(0.4, 0, 0.2, 1); }
+  .animate-nia-roll-half { animation: nia-roll-half 500ms cubic-bezier(0.4, 0, 0.2, 1); }
+  .animate-nia-attentive { animation: nia-attentive-pulse 900ms ease-in-out; }
+
+  /* The N mark wipes out edge-to-edge then back in — see NiaMark.tsx. The
+     circle never moves or changes; only the glyph's visible region does,
+     via clip-path, so it never shifts position mid-wipe. */
+  @keyframes nia-wipe-out {
+    from { clip-path: inset(0 0 0 0); }
+    to { clip-path: inset(0 100% 0 0); }
+  }
+  @keyframes nia-wipe-in {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+  .animate-nia-wipe-out { animation: nia-wipe-out 1400ms cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+  .animate-nia-wipe-in { animation: nia-wipe-in 1400ms cubic-bezier(0.65, 0, 0.35, 1) forwards; }
 }

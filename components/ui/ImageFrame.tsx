@@ -34,7 +34,14 @@ export function ImageFrame({
     <div
       className={`relative overflow-hidden rounded-[var(--radius-image)] ${ASPECT_CLASSES[aspect]} ${className}`}
     >
-      <Image src={src} alt={alt} fill preload={preload} sizes={sizes} className="object-cover" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        preload={preload}
+        sizes={sizes}
+        className="object-cover transition-transform duration-500 ease-out hover:scale-[1.015]"
+      />
       {treatment ? (
         <>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/15 to-transparent" />

@@ -19,6 +19,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { ConnectedSystemStrip } from "@/components/home/ConnectedSystemStrip";
 import { SystemComparison } from "@/components/solutions/SystemComparison";
 import { PortalPreview } from "@/components/solutions/PortalPreview";
+import { Reveal } from "@/components/ui/Reveal";
+import { NiaSectionCue } from "@/components/nia/NiaSectionCue";
 import { HOME_TITLE, HOME_DESCRIPTION, homeMetadata } from "@/lib/seo";
 import { faqPageJsonLd, webPageJsonLd } from "@/lib/structured-data";
 import {
@@ -131,124 +133,145 @@ export default function HomePage() {
         {/* 2. What NairobiX actually does */}
         <Section spacing="default">
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
-            <div>
-              <Eyebrow>{WHAT_WE_DO.eyebrow}</Eyebrow>
-              <Heading variant="display-md" className="mt-4">
-                {WHAT_WE_DO.title}
-              </Heading>
-              <p className="mt-6 max-w-[var(--max-width-prose)] text-lg leading-8 text-[var(--text-secondary)]">
-                {WHAT_WE_DO.body}
-              </p>
-            </div>
-            <ImageFrame
-              src="/images/photography/modern-office.webp"
-              alt="Two colleagues working together at a bright, plant-filled office table."
-              aspect="square"
-              sizes="(min-width: 1024px) 40vw, 100vw"
-            />
+            <Reveal>
+              <div>
+                <Eyebrow>{WHAT_WE_DO.eyebrow}</Eyebrow>
+                <Heading variant="display-md" className="mt-4">
+                  {WHAT_WE_DO.title}
+                </Heading>
+                <p className="mt-6 max-w-[var(--max-width-prose)] text-lg leading-8 text-[var(--text-secondary)]">
+                  {WHAT_WE_DO.body}
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={120}>
+              <ImageFrame
+                src="/images/photography/modern-office.webp"
+                alt="Two colleagues working together at a bright, plant-filled office table."
+                aspect="square"
+                sizes="(min-width: 1024px) 40vw, 100vw"
+              />
+            </Reveal>
           </div>
         </Section>
 
         {/* 3. The problems we solve */}
         <Section tone="surface" border="top">
-          <div className="max-w-2xl">
-            <Eyebrow>WHERE GROWTH GETS STUCK</Eyebrow>
-            <Heading variant="display-md" className="mt-4">
-              If any of this sounds familiar, you&apos;re not alone.
-            </Heading>
-          </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2">
-            {PROBLEMS_WE_SOLVE.map((problem) => (
-              <Card key={problem.title} variant="outline" className="p-6 sm:p-7">
-                <Heading variant="heading-md" as="h3">
-                  {problem.title}
-                </Heading>
-                <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{problem.description}</p>
-              </Card>
-            ))}
-          </div>
-
-          <div className="mt-16 border-t border-white/10 pt-12">
-            <p className="max-w-2xl text-sm leading-6 text-[var(--text-tertiary)]">
-              Structurally, it looks like this — a handful of tools that don&apos;t talk to each
-              other, instead of one system that does.
-            </p>
-            <div className="mt-8">
-              <SystemComparison disconnected={DISCONNECTED_PAIRS} connected={CONNECTED_GROWTH_FLOW} />
+          <Reveal>
+            <div className="max-w-2xl">
+              <Eyebrow>WHERE GROWTH GETS STUCK</Eyebrow>
+              <Heading variant="display-md" className="mt-4">
+                If any of this sounds familiar, you&apos;re not alone.
+              </Heading>
             </div>
-          </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2">
+              {PROBLEMS_WE_SOLVE.map((problem) => (
+                <Card key={problem.title} variant="outline" className="p-6 sm:p-7">
+                  <Heading variant="heading-md" as="h3">
+                    {problem.title}
+                  </Heading>
+                  <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{problem.description}</p>
+                </Card>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <div className="mt-16 border-t border-white/10 pt-12">
+              <p className="max-w-2xl text-sm leading-6 text-[var(--text-tertiary)]">
+                Structurally, it looks like this — a handful of tools that don&apos;t talk to each
+                other, instead of one system that does.
+              </p>
+              <div className="mt-8">
+                <SystemComparison disconnected={DISCONNECTED_PAIRS} connected={CONNECTED_GROWTH_FLOW} />
+              </div>
+            </div>
+          </Reveal>
         </Section>
 
         {/* 4. Solutions overview */}
         <Section border="top">
-          <div className="mb-10 max-w-2xl">
-            <Eyebrow>SOLUTIONS</Eyebrow>
-            <Heading variant="display-md" className="mt-4">
-              Three ways we help businesses grow.
-            </Heading>
-          </div>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {HOME_SOLUTIONS.map((solution) => (
-              <Link
-                key={solution.title}
-                href={solution.href}
-                className="group relative isolate flex min-h-[430px] flex-col justify-end overflow-hidden rounded-[var(--radius-card)] border border-white/10 p-6 sm:min-h-[460px] sm:p-8"
-              >
-                <Image
-                  src={solution.image}
-                  alt={solution.imageAlt}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, 100vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#030304] via-[#030304]/55 to-[#030304]/10" />
-                <div
-                  className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
-                  style={{ backgroundImage: `url("${GRAIN_DATA_URI}")` }}
-                />
-                <div className="relative">
-                  <div className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
-                    {solution.number}
+          <Reveal>
+            <div className="mb-10 max-w-2xl">
+              <Eyebrow>SOLUTIONS</Eyebrow>
+              <Heading variant="display-md" className="mt-4">
+                Three ways we help businesses grow.
+              </Heading>
+            </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="grid gap-6 lg:grid-cols-3">
+              {HOME_SOLUTIONS.map((solution) => (
+                <Link
+                  key={solution.title}
+                  href={solution.href}
+                  className="group relative isolate flex min-h-[430px] flex-col justify-end overflow-hidden rounded-[var(--radius-card)] border border-white/10 p-6 sm:min-h-[460px] sm:p-8"
+                >
+                  <Image
+                    src={solution.image}
+                    alt={solution.imageAlt}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                    className="object-cover transition duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#030304] via-[#030304]/55 to-[#030304]/10" />
+                  <div
+                    className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
+                    style={{ backgroundImage: `url("${GRAIN_DATA_URI}")` }}
+                  />
+                  <div className="relative">
+                    <div className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
+                      {solution.number}
+                    </div>
+                    <Heading variant="heading-md" as="h3">
+                      {solution.title}
+                    </Heading>
+                    <p className="mt-3 max-w-xs text-base leading-7 text-slate-200">{solution.description}</p>
+                    <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
+                      {solution.cta}
+                    </span>
                   </div>
-                  <Heading variant="heading-md" as="h3">
-                    {solution.title}
-                  </Heading>
-                  <p className="mt-3 max-w-xs text-base leading-7 text-slate-200">{solution.description}</p>
-                  <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
-                    {solution.cta}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          </Reveal>
         </Section>
 
         {/* 5. The NairobiX connected-growth approach */}
         <Section tone="surface" border="top">
-          <div className="max-w-2xl">
-            <Eyebrow>HOW NAIROBIX WORKS</Eyebrow>
-            <Heading variant="display-md" className="mt-4">
-              How the system above actually gets built.
-            </Heading>
-          </div>
-          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {GROWTH_APPROACH.map((item, index) => (
-              <div key={item.step} className={index > 0 ? "border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0" : ""}>
-                <div className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
-                  0{index + 1}
+          <Reveal>
+            <div className="max-w-2xl">
+              <Eyebrow>HOW NAIROBIX WORKS</Eyebrow>
+              <Heading variant="display-md" className="mt-4">
+                How the system above actually gets built.
+              </Heading>
+            </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+              {GROWTH_APPROACH.map((item, index) => (
+                <div key={item.step} className={index > 0 ? "border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0" : ""}>
+                  <div className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
+                    0{index + 1}
+                  </div>
+                  <Heading variant="heading-md" as="h3">
+                    {item.step}
+                  </Heading>
+                  <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
                 </div>
-                <Heading variant="heading-md" as="h3">
-                  {item.step}
-                </Heading>
-                <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </Reveal>
         </Section>
 
         {/* 6. Why NairobiX */}
         <Section border="top">
           <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+            {/* Not wrapped in Reveal: its own lg:sticky positioning would be
+                affected by an ancestor carrying a transform during the
+                reveal animation. */}
             <div className="lg:sticky lg:top-28">
               <ImageFrame
                 src="/images/photography/why-nairobix.jpg"
@@ -257,49 +280,56 @@ export default function HomePage() {
                 sizes="(min-width: 1024px) 42vw, 100vw"
               />
             </div>
-            <div>
-              <Eyebrow>WHY NAIROBIX</Eyebrow>
-              <Heading variant="display-md" className="mt-4">
-                A connected system beats a pile of vendors.
-              </Heading>
-              <div className="mt-10 space-y-8">
-                {WHY_NAIROBIX.map((reason) => (
-                  <div key={reason.title} className="border-t border-white/10 pt-6 first:border-t-0 first:pt-0">
-                    <Heading variant="heading-md" as="h3">
-                      {reason.title}
-                    </Heading>
-                    <p className="mt-3 max-w-[var(--max-width-prose)] text-base leading-7 text-[var(--text-secondary)]">
-                      {reason.description}
-                    </p>
-                  </div>
-                ))}
+            <Reveal>
+              <div>
+                <Eyebrow>WHY NAIROBIX</Eyebrow>
+                <Heading variant="display-md" className="mt-4">
+                  A connected system beats a pile of vendors.
+                </Heading>
+                <div className="mt-10 space-y-8">
+                  {WHY_NAIROBIX.map((reason) => (
+                    <div key={reason.title} className="border-t border-white/10 pt-6 first:border-t-0 first:pt-0">
+                      <Heading variant="heading-md" as="h3">
+                        {reason.title}
+                      </Heading>
+                      <p className="mt-3 max-w-[var(--max-width-prose)] text-base leading-7 text-[var(--text-secondary)]">
+                        {reason.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </Reveal>
           </div>
         </Section>
 
         {/* 7. How we work */}
         <Section tone="surface" border="top">
-          <div className="max-w-2xl">
-            <Eyebrow>HOW WE WORK</Eyebrow>
-            <Heading variant="display-md" className="mt-4">
-              What happens after you reach out.
-            </Heading>
-          </div>
-          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {ENGAGEMENT_PROCESS.map((item) => (
-              <div key={item.number}>
-                <div className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
-                  {item.number}
+          <Reveal>
+            <div className="max-w-2xl">
+              <Eyebrow>HOW WE WORK</Eyebrow>
+              <Heading variant="display-md" className="mt-4">
+                What happens after you reach out.
+              </Heading>
+            </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+              {ENGAGEMENT_PROCESS.map((item) => (
+                <div key={item.number}>
+                  <div className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
+                    {item.number}
+                  </div>
+                  <Heading variant="heading-md" as="h3">
+                    {item.title}
+                  </Heading>
+                  <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
                 </div>
-                <Heading variant="heading-md" as="h3">
-                  {item.title}
-                </Heading>
-                <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </Reveal>
 
+          <Reveal delay={200}>
           <Card variant="surface" className="mt-12 p-6 sm:p-8">
             <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-12">
               <div className="min-w-0">
@@ -335,33 +365,38 @@ export default function HomePage() {
               </div>
             </div>
           </Card>
+          </Reveal>
         </Section>
 
         {/* 8. Trust — industries + illustrative case studies */}
         <Section border="top">
-          <div className="mb-10 max-w-2xl">
-            <Eyebrow>INDUSTRIES WE UNDERSTAND</Eyebrow>
-            <Heading variant="display-md" className="mt-4">
-              Growth systems designed around your industry&apos;s realities.
-            </Heading>
-          </div>
-          <div className="mb-16 flex flex-wrap gap-3">
-            {INDUSTRIES_SERVED.map((industry) => {
-              const slug = INDUSTRY_SLUGS[industry];
-              const className =
-                "rounded-full border border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition hover:border-[var(--color-primary)]/40 hover:text-white";
+          <Reveal>
+            <div className="mb-10 max-w-2xl">
+              <Eyebrow>INDUSTRIES WE UNDERSTAND</Eyebrow>
+              <Heading variant="display-md" className="mt-4">
+                Growth systems designed around your industry&apos;s realities.
+              </Heading>
+            </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="mb-16 flex flex-wrap gap-3">
+              {INDUSTRIES_SERVED.map((industry) => {
+                const slug = INDUSTRY_SLUGS[industry];
+                const className =
+                  "rounded-full border border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition hover:border-[var(--color-primary)]/40 hover:text-white";
 
-              return slug ? (
-                <Link key={industry} href={`/industries/${slug}`} className={className}>
-                  {industry}
-                </Link>
-              ) : (
-                <span key={industry} className={className}>
-                  {industry}
-                </span>
-              );
-            })}
-          </div>
+                return slug ? (
+                  <Link key={industry} href={`/industries/${slug}`} className={className}>
+                    {industry}
+                  </Link>
+                ) : (
+                  <span key={industry} className={className}>
+                    {industry}
+                  </span>
+                );
+              })}
+            </div>
+          </Reveal>
 
           <div className="mb-8 flex flex-col gap-3 border-t border-white/10 pt-12 md:flex-row md:items-end md:justify-between">
             <div className="max-w-xl">
@@ -375,69 +410,74 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {CASE_STUDIES.map((study) => (
-              <Link key={study.slug} href={`/case-studies/${study.slug}`} className="group block">
-                <ImageFrame
-                  src={study.image}
-                  alt={study.imageAlt}
-                  aspect="wide"
-                  sizes="(min-width: 1024px) 33vw, 100vw"
-                />
-                <div className="mt-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
-                    {study.label} · Concept Case Study
-                  </p>
-                  <Heading variant="heading-md" as="h3" className="mt-3">
-                    {study.title}
-                  </Heading>
-                  <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
-                  <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
-                    View Scenario →
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <Reveal>
+            <div className="grid gap-6 lg:grid-cols-3">
+              {CASE_STUDIES.map((study) => (
+                <Link key={study.slug} href={`/case-studies/${study.slug}`} className="group block">
+                  <ImageFrame
+                    src={study.image}
+                    alt={study.imageAlt}
+                    aspect="wide"
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                  />
+                  <div className="mt-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
+                      {study.label} · Concept Case Study
+                    </p>
+                    <Heading variant="heading-md" as="h3" className="mt-3">
+                      {study.title}
+                    </Heading>
+                    <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
+                    <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
+                      View Scenario →
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </Reveal>
         </Section>
 
         {/* 9. Business Growth Assessment */}
         <Section tone="surface" border="top">
-          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-            <div>
-              <Eyebrow>GROWTH ASSESSMENT</Eyebrow>
-              <Heading variant="display-md" className="mt-4">
-                Find the opportunities your business is leaving on the table.
-              </Heading>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--text-secondary)]">
-                The Business Growth Assessment is a structured review of your acquisition, sales
-                process and operational systems — designed to identify gaps, priorities and the
-                most practical next step for your business.
-              </p>
-              <div className="mt-8">
-                <Button href="/business-growth-audit" variant="primary">
-                  Get Your Free Business Growth Assessment →
-                </Button>
+          <NiaSectionCue reaction="attentive" />
+          <Reveal>
+            <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+              <div>
+                <Eyebrow>GROWTH ASSESSMENT</Eyebrow>
+                <Heading variant="display-md" className="mt-4">
+                  Find the opportunities your business is leaving on the table.
+                </Heading>
+                <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--text-secondary)]">
+                  The Business Growth Assessment is a structured review of your acquisition, sales
+                  process and operational systems — designed to identify gaps, priorities and the
+                  most practical next step for your business.
+                </p>
+                <div className="mt-8">
+                  <Button href="/business-growth-audit" variant="primary">
+                    Get Your Free Business Growth Assessment →
+                  </Button>
+                </div>
               </div>
-            </div>
 
-            <Card variant="outline" className="p-7">
-              <div className="space-y-5">
-                {[
-                  { title: "Identify", text: "Growth opportunities and bottlenecks specific to your business." },
-                  { title: "Prioritize", text: "The systems that matter most right now, not a generic checklist." },
-                  { title: "Plan", text: "A practical next step, explained in plain terms before anything begins." },
-                ].map((item) => (
-                  <Card key={item.title} variant="surface" className="p-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
-                      {item.title}
-                    </p>
-                    <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{item.text}</p>
-                  </Card>
-                ))}
-              </div>
-            </Card>
-          </div>
+              <Card variant="outline" className="p-7">
+                <div className="space-y-5">
+                  {[
+                    { title: "Identify", text: "Growth opportunities and bottlenecks specific to your business." },
+                    { title: "Prioritize", text: "The systems that matter most right now, not a generic checklist." },
+                    { title: "Plan", text: "A practical next step, explained in plain terms before anything begins." },
+                  ].map((item) => (
+                    <Card key={item.title} variant="surface" className="p-5">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]">
+                        {item.title}
+                      </p>
+                      <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{item.text}</p>
+                    </Card>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          </Reveal>
         </Section>
 
         {/* 10. Final CTA + FAQ */}

@@ -13,6 +13,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd, serviceListJsonLd } from "@/lib/structured-data";
 import { SolutionSystemMap } from "@/components/solutions/SolutionSystemMap";
+import { NiaSectionCue } from "@/components/nia/NiaSectionCue";
 
 const TITLE = "Solutions";
 const DESCRIPTION =
@@ -60,6 +61,7 @@ export default function SolutionsPage() {
 
         {/* System architecture — how the six solutions connect */}
         <Section border="top" spacing="compact">
+          <NiaSectionCue reaction="bounce" />
           <div className="mb-10 max-w-2xl">
             <Eyebrow>SYSTEM ARCHITECTURE</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">

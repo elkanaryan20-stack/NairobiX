@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import { NiaChat } from "@/components/nia/NiaChat";
 import { NiaMark } from "@/components/nia/NiaMark";
+import { useNiaPersonality } from "@/lib/useNiaPersonality";
 
 export function NiaLauncher() {
   const [isOpen, setIsOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const { markAnimationClass, wipePhase, isRolling, triggerHoverNudge, triggerClickRoll } =
+    useNiaPersonality({ active: !isOpen && !mobileNavOpen });
 
   // Hide the floating bubble while the site header's mobile menu is open —
   // see the matching dispatch in components/site-header.tsx.
@@ -46,12 +49,16 @@ export function NiaLauncher() {
       ) : mobileNavOpen ? null : (
         <button
           type="button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => triggerClickRoll(() => setIsOpen(true))}
+          onMouseEnter={triggerHoverNudge}
           aria-label="Open Nia, the NairobiX Growth Assistant"
           aria-expanded={false}
           className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-[0_12px_32px_rgba(249,115,22,0.35)] transition hover:bg-[var(--color-primary-strong)] sm:bottom-6 sm:right-6"
         >
-          <NiaMark className="h-6 w-6" />
+          <NiaMark
+            wipePhase={wipePhase}
+            className={`h-6 w-6 ${isRolling ? "animate-nia-roll" : markAnimationClass}`}
+          />
         </button>
       )}
     </>
