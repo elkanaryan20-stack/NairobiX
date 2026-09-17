@@ -8,6 +8,26 @@ import { DISCUSSION_TOPIC_OPTIONS } from "@/lib/forms/options";
 
 export const DISCUSSION_TOPICS = DISCUSSION_TOPIC_OPTIONS;
 
+/**
+ * Maps NairobiX's "What would you like to discuss?" labels to the exact
+ * option strings configured on that dropdown in Zoho Bookings. Zoho's
+ * appointment API rejects the request outright ("given option not there in
+ * allowed field options") unless the value is a byte-for-byte match against
+ * its configured options — which, on the live workspace, differ from our
+ * labels in wording (and, for "CRM & Sales Sytem", a typo already baked into
+ * the Zoho configuration). Confirmed against the live custom-field config
+ * fetched via the public booking widget's own API. This translates only the
+ * value sent to Zoho; the labels shown on the website are unchanged.
+ */
+const ZOHO_DISCUSSION_TOPIC_OPTIONS: Record<(typeof DISCUSSION_TOPICS)[number], string> = {
+  "Growth Strategy": "Business Growth Strategy",
+  "Digital Marketing": "Digital Marketing",
+  "CRM & Sales Systems": "CRM & Sales Sytem",
+  "Business Automation": "Business Automation",
+  "AI Solutions": "AI Solutions",
+  "Website & Digital Solutions": "Web & Digital Presence",
+};
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[+()\d\s-]{7,20}$/;
 const URL_REGEX = /^https?:\/\/.+/i;
@@ -123,7 +143,8 @@ export async function submitConsultationBooking(
 
   const additionalFields: Record<string, string> = {
     "Business Name": businessName,
-    "What would you like to discuss?": discussionTopic,
+    "What would you like to discuss?":
+      ZOHO_DISCUSSION_TOPIC_OPTIONS[discussionTopic as (typeof DISCUSSION_TOPICS)[number]],
     "Tell us briefly about your current priority": priority,
   };
 
