@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAutoAdvance } from "@/lib/useAutoAdvance";
 
 type FlowNode = { label: string; detail: string };
 
@@ -8,14 +9,22 @@ type FlowNode = { label: string; detail: string };
  * The connected-system diagram (e.g. Traffic → Meta/Google → Landing Page →
  * ... → Analytics). Each node is a real button so the detail is reachable by
  * keyboard and touch, not just mouse hover. Horizontal with a connecting
- * line on desktop; a vertical stack on mobile.
+ * line on desktop; a vertical stack on mobile. Advances through the nodes on
+ * its own — see useAutoAdvance — so the system reads as continuously moving
+ * rather than waiting to be clicked.
  */
 export function SystemFlow({ nodes }: { nodes: FlowNode[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = nodes[activeIndex];
 
+  const { containerRef, containerHandlers } = useAutoAdvance({
+    itemCount: nodes.length,
+    activeIndex,
+    onAdvance: setActiveIndex,
+  });
+
   return (
-    <div>
+    <div ref={containerRef} {...containerHandlers}>
       <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-0">
         <div
           aria-hidden="true"

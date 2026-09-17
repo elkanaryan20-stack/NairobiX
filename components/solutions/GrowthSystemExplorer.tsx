@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { GrowthStage } from "@/lib/site-data";
+import { useAutoAdvance } from "@/lib/useAutoAdvance";
 
 /**
  * A spatial, architecture-style view of the six-stage growth system (Attract
@@ -9,14 +10,21 @@ import type { GrowthStage } from "@/lib/site-data";
  * a persistent outcome tag on the connecting line so the shape of the system
  * reads at a glance; selecting a stage expands what happens, the relevant
  * capabilities and the technology involved — closer to a systems map than a
- * generic step-by-step card list.
+ * generic step-by-step card list. Progresses through the stages on its own
+ * — see useAutoAdvance.
  */
 export function GrowthSystemExplorer({ stages }: { stages: GrowthStage[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = stages[activeIndex];
 
+  const { containerRef, containerHandlers } = useAutoAdvance({
+    itemCount: stages.length,
+    activeIndex,
+    onAdvance: setActiveIndex,
+  });
+
   return (
-    <div>
+    <div ref={containerRef} {...containerHandlers}>
       <div className="relative">
         <div
           aria-hidden="true"

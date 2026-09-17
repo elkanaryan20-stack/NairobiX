@@ -4,21 +4,29 @@ import { useState } from "react";
 import { SystemFlow } from "@/components/solutions/SystemFlow";
 import { PortalPreview } from "@/components/solutions/PortalPreview";
 import type { SolutionDetail } from "@/lib/site-data";
+import { useAutoAdvance } from "@/lib/useAutoAdvance";
 
 /**
  * "See the system" — pick a solution area and see the real connected system
  * and workspace preview behind it. Reuses the exact systemFlow/portalPreview
  * data already authored for the Solutions pages; no separate content to
- * keep in sync.
+ * keep in sync. Cycles through the solutions on its own — see useAutoAdvance.
  */
 export function SystemExplorer({ solutions }: { solutions: SolutionDetail[] }) {
   const [activeId, setActiveId] = useState(solutions[0]?.id);
-  const active = solutions.find((solution) => solution.id === activeId) ?? solutions[0];
+  const activeIndex = Math.max(0, solutions.findIndex((solution) => solution.id === activeId));
+  const active = solutions[activeIndex] ?? solutions[0];
+
+  const { containerRef, containerHandlers } = useAutoAdvance({
+    itemCount: solutions.length,
+    activeIndex,
+    onAdvance: (nextIndex) => setActiveId(solutions[nextIndex]?.id),
+  });
 
   if (!active) return null;
 
   return (
-    <div>
+    <div ref={containerRef} {...containerHandlers}>
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="Explore what NairobiX builds">
         {solutions.map((solution) => {
           const isActive = solution.id === active.id;

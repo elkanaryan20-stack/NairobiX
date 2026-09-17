@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAutoAdvance } from "@/lib/useAutoAdvance";
 
 type GrowthArea = { label: string; detail: string };
 
@@ -23,8 +24,14 @@ export function GrowthSystemVisualization() {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = GROWTH_AREAS[activeIndex];
 
+  const { containerRef, containerHandlers } = useAutoAdvance({
+    itemCount: GROWTH_AREAS.length,
+    activeIndex,
+    onAdvance: setActiveIndex,
+  });
+
   return (
-    <div>
+    <div ref={containerRef} {...containerHandlers}>
       <div className="flex flex-col items-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/10 px-4 py-2">
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]" aria-hidden="true" />

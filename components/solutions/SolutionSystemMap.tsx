@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { SolutionDetail } from "@/lib/site-data";
+import { useAutoAdvance } from "@/lib/useAutoAdvance";
 
 type Category = { id: string; title: string; items: SolutionDetail[] };
 
@@ -11,17 +12,25 @@ type Category = { id: string; title: string; items: SolutionDetail[] };
  * their three capability categories. Selecting a solution reveals its own
  * authored systemFlow — the same connections already described on its
  * detail page — so the map proves "one system" using real content rather
- * than a new diagram invented for this view.
+ * than a new diagram invented for this view. Cycles through the six
+ * solutions on its own — see useAutoAdvance.
  */
 export function SolutionSystemMap({ categories }: { categories: Category[] }) {
   const allSolutions = categories.flatMap((category) => category.items);
   const [activeId, setActiveId] = useState(allSolutions[0]?.id);
-  const active = allSolutions.find((solution) => solution.id === activeId) ?? allSolutions[0];
+  const activeIndex = Math.max(0, allSolutions.findIndex((solution) => solution.id === activeId));
+  const active = allSolutions[activeIndex] ?? allSolutions[0];
+
+  const { containerRef, containerHandlers } = useAutoAdvance({
+    itemCount: allSolutions.length,
+    activeIndex,
+    onAdvance: (nextIndex) => setActiveId(allSolutions[nextIndex]?.id),
+  });
 
   if (!active) return null;
 
   return (
-    <div>
+    <div ref={containerRef} {...containerHandlers}>
       <div className="relative">
         <div aria-hidden="true" className="absolute left-4 right-4 top-4 hidden h-px bg-white/10 lg:block" />
         <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-3 lg:flex lg:items-start lg:justify-between lg:gap-0">

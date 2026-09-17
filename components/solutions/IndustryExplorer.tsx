@@ -5,20 +5,29 @@ import { Heading } from "@/components/ui/Heading";
 import { Button } from "@/components/ui/Button";
 import { ImageFrame } from "@/components/ui/ImageFrame";
 import type { IndustryDetail } from "@/lib/site-data";
+import { useAutoAdvance } from "@/lib/useAutoAdvance";
 
 /**
  * A tabbed industry explorer in place of five near-identical cards — one
  * industry shown at a time, at full size, so its photography and business
- * challenge get real room instead of competing in a grid.
+ * challenge get real room instead of competing in a grid. Cycles through
+ * the industries on its own — see useAutoAdvance.
  */
 export function IndustryExplorer({ industries }: { industries: IndustryDetail[] }) {
   const [activeSlug, setActiveSlug] = useState(industries[0]?.slug);
-  const active = industries.find((industry) => industry.slug === activeSlug) ?? industries[0];
+  const activeIndex = Math.max(0, industries.findIndex((industry) => industry.slug === activeSlug));
+  const active = industries[activeIndex] ?? industries[0];
+
+  const { containerRef, containerHandlers } = useAutoAdvance({
+    itemCount: industries.length,
+    activeIndex,
+    onAdvance: (nextIndex) => setActiveSlug(industries[nextIndex]?.slug),
+  });
 
   if (!active) return null;
 
   return (
-    <div>
+    <div ref={containerRef} {...containerHandlers}>
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="Choose an industry">
         {industries.map((industry) => {
           const isActive = industry.slug === active.slug;
