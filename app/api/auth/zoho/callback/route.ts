@@ -3,14 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 const ZOHO_ACCOUNTS_URL =
   process.env.ZOHO_ACCOUNTS_URL || "https://accounts.zoho.com";
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
@@ -78,37 +70,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TEMPORARY, one-time setup display — see the note below. Never logged
-    // (console.log/console.error) anywhere in this handler, so it exists
-    // only in this single HTTP response, not in Vercel function logs. This
-    // route performs the token exchange itself, so — unlike the Bookings
-    // callback, which isn't live yet — there's no way to intercept the
-    // authorization code before it's spent; showing the result here, to
-    // whoever's browser just completed the Zoho consent redirect, is the
-    // only place this value is ever recoverable.
-    const html = `<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Zoho CRM authorization successful</title>
-  </head>
-  <body style="font-family: system-ui, sans-serif; max-width: 640px; margin: 48px auto; padding: 0 20px; color: #111;">
-    <h1 style="font-size: 20px;">Zoho CRM authorization successful</h1>
-    <p>Copy this refresh token into Vercel now as <code>ZOHO_REFRESH_TOKEN</code>, then close this tab. It will not be shown again.</p>
-    <pre style="background:#f4f4f4; border:1px solid #ddd; border-radius:6px; padding:14px; word-break:break-all; white-space:pre-wrap;">${escapeHtml(tokenData.refresh_token)}</pre>
-    <p style="color:#b00; font-size: 14px;">Treat this like a password. Don't paste it into chat, a ticket, or version control — only into Vercel's environment variable settings.</p>
-    <p style="font-size: 13px; color:#555;">Reminder: revert this route to not display the token once setup is done (see the comment above this response in app/api/auth/zoho/callback/route.ts).</p>
-  </body>
-</html>`;
-
-    return new NextResponse(html, {
-      status: 200,
-      headers: {
-        "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "no-store, must-revalidate",
-      },
-    });
+    return new NextResponse(
+      "Zoho authorization successful. The refresh token has been generated. Add it to Vercel as ZOHO_REFRESH_TOKEN.",
+      { status: 200 }
+    );
   } catch (err) {
     console.error("Zoho OAuth error:", err);
 
