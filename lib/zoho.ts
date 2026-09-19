@@ -244,6 +244,30 @@ export function getProposalLink(deal: ZohoDeal): string | undefined {
   return typeof value === "string" && value.trim() ? value : undefined;
 }
 
+/**
+ * TEMPORARY diagnostic — fetches an arbitrary, caller-supplied field list
+ * for a Deal, isolated from getZohoDeal's fixed field list so a wrong guess
+ * here can't break the real response flow. Used once to confirm real Deal
+ * field API names (e.g. Desired_Outcomes/Solution_Family) against a live
+ * record instead of guessing. Revert once confirmed.
+ */
+export async function getZohoDealRawFields(
+  dealId: string,
+  fields: string[]
+): Promise<ZohoCrmResult<Record<string, unknown>>> {
+  const result = await zohoCrmRequest<{ data?: Array<Record<string, unknown>> }>(
+    "GET",
+    `Deals/${encodeURIComponent(dealId)}?fields=${encodeURIComponent(fields.join(","))}`
+  );
+
+  if (!result.ok) {
+    return result;
+  }
+
+  const record = result.data.data?.[0];
+  return record ? { ok: true, data: record } : { ok: false, error: "Deal not found." };
+}
+
 /** GET /crm/v2/Deals/{id} — fetches only the fields the proposal response flow needs. */
 export async function getZohoDeal(dealId: string): Promise<ZohoCrmResult<ZohoDeal> & { notFound?: boolean }> {
   const fields = ["Stage", "Next_Step", "Owner", "Contact_Name", PROPOSAL_LINK_FIELD].join(",");
