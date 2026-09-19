@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { signProposalToken } from "@/lib/proposal-token";
-import { getProposalLink, getZohoDeal, getZohoDealRawFields } from "@/lib/zoho";
+import { getProposalLink, getZohoDeal, getZohoDealRawFields, getZohoDealStagePicklistValues } from "@/lib/zoho";
 import { SITE_URL } from "@/lib/seo";
 
 // TEMPORARY — candidate API names for the two custom fields referenced by
@@ -90,6 +90,7 @@ export async function POST(request: Request) {
     const token = signProposalToken(dealId);
     const respondUrl = `${baseUrl.replace(/\/$/, "")}/proposal/respond?token=${encodeURIComponent(token)}`;
     const fieldNameProbe = await probeFieldNames(dealId);
+    const stagePicklistResult = await getZohoDealStagePicklistValues();
 
     return NextResponse.json({
       dealId,
@@ -109,6 +110,7 @@ export async function POST(request: Request) {
         stageMatches: dealResult.data.Stage === "Proposal/Price Quote",
         nextStep: dealResult.data.Next_Step ?? null,
         fieldNameProbe,
+        stagePicklistValues: stagePicklistResult.ok ? stagePicklistResult.data : `error: ${stagePicklistResult.error}`,
       },
     });
   } catch (error) {

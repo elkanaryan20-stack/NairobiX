@@ -245,6 +245,34 @@ export function getProposalLink(deal: ZohoDeal): string | undefined {
 }
 
 /**
+ * TEMPORARY diagnostic — fetches the Deals module's field metadata and
+ * returns the Stage field's full picklist (every valid Deal Stage value,
+ * exactly as stored — not as displayed). Settles all 7 Deal Stage strings
+ * in one authoritative call instead of guessing formatting one at a time.
+ * Revert once confirmed.
+ */
+export async function getZohoDealStagePicklistValues(): Promise<ZohoCrmResult<string[]>> {
+  const result = await zohoCrmRequest<{
+    fields?: Array<{ api_name?: string; pick_list_values?: Array<{ actual_value?: string }> }>;
+  }>("GET", "settings/fields?module=Deals");
+
+  if (!result.ok) {
+    return result;
+  }
+
+  const stageField = result.data.fields?.find((field) => field.api_name === "Stage");
+
+  if (!stageField?.pick_list_values) {
+    return { ok: false, error: "Stage field not found in Deals metadata." };
+  }
+
+  return {
+    ok: true,
+    data: stageField.pick_list_values.map((v) => v.actual_value ?? "").filter(Boolean),
+  };
+}
+
+/**
  * TEMPORARY diagnostic — fetches an arbitrary, caller-supplied field list
  * for a Deal, isolated from getZohoDeal's fixed field list so a wrong guess
  * here can't break the real response flow. Used once to confirm real Deal
