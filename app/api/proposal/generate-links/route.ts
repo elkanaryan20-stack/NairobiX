@@ -69,6 +69,19 @@ export async function POST(request: Request) {
       proceedUrl: `${respondUrl}&action=proceed`,
       discussUrl: `${respondUrl}&action=discuss`,
       changesUrl: `${respondUrl}&action=changes`,
+      // TEMPORARY diagnostic — not sensitive (Deal Stage/Next Step, not a
+      // credential), added only to debug a wrong_stage mismatch. Revert once
+      // resolved (see conversation around 2026-09-19/20).
+      debug: {
+        stage: dealResult.data.Stage ?? null,
+        stageCharCodes:
+          typeof dealResult.data.Stage === "string"
+            ? Array.from(dealResult.data.Stage).map((c) => c.charCodeAt(0))
+            : null,
+        expectedStage: "Proposal / Price Quote",
+        stageMatches: dealResult.data.Stage === "Proposal / Price Quote",
+        nextStep: dealResult.data.Next_Step ?? null,
+      },
     });
   } catch (error) {
     console.error("Proposal link generation route error", error);
