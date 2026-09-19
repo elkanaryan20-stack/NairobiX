@@ -14,18 +14,20 @@ function isProposalAction(value: unknown): value is ProposalAction {
   return typeof value === "string" && (PROPOSAL_ACTIONS as readonly string[]).includes(value);
 }
 
-// NairobiX's finalized Deal Stage pipeline (do not rename/add/remove/
-// substitute any of these — they're the exact CRM picklist values):
-//   Qualification → Discovery → Proposal / Price Quote →
-//   Negotiation / Review → Verbal Agreement → Closed Won / Closed Lost
+// NairobiX's finalized Deal Stage pipeline — confirmed against the Deals
+// module's actual Stage picklist metadata (do not rename/add/remove/
+// substitute any of these; note none of the "X/Y" values have spaces around
+// the slash, unlike their conversational/display names):
+//   Qualification → Needs Analysis → Proposal/Price Quote →
+//   Negotiation/Review → Verbal Agreement → Closed Won / Closed Lost
 // A proposal response is only ever accepted while the Deal is in
-// "Proposal / Price Quote". "Agreement" is a commercial process that
-// happens inside "Negotiation / Review" / "Verbal Agreement", not a Deal
-// Stage of its own — this handler never sets Verbal Agreement or Closed Won.
-const PROPOSAL_STAGE = "Proposal / Price Quote";
+// "Proposal/Price Quote". "Agreement" is a commercial process that happens
+// inside "Negotiation/Review" / "Verbal Agreement", not a Deal Stage of its
+// own — this handler never sets Verbal Agreement or Closed Won.
+const PROPOSAL_STAGE = "Proposal/Price Quote";
 
 type ActionConfig = {
-  /** Only "proceed" advances the Deal Stage — discuss/changes stay in Proposal / Price Quote. */
+  /** Only "proceed" advances the Deal Stage — discuss/changes stay in Proposal/Price Quote. */
   stage?: string;
   nextStep: string;
   taskSubject: string;
@@ -39,7 +41,7 @@ type ActionConfig = {
 // below.
 const ACTION_CONFIG: Record<ProposalAction, ActionConfig> = {
   proceed: {
-    stage: "Negotiation / Review",
+    stage: "Negotiation/Review",
     nextStep: "Prepare Agreement",
     taskSubject: "Client Proceeded With Proposal",
     taskDescription:

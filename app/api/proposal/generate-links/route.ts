@@ -1,35 +1,8 @@
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { signProposalToken } from "@/lib/proposal-token";
-import { getProposalLink, getZohoDeal, getZohoDealRawFields, getZohoDealStagePicklistValues } from "@/lib/zoho";
+import { getProposalLink, getZohoDeal } from "@/lib/zoho";
 import { SITE_URL } from "@/lib/seo";
-
-// TEMPORARY — candidate API names for the two custom fields referenced by
-// the Proposal Delivery email, tried individually (not in one request) so a
-// wrong guess can't take down the whole diagnostic. Revert once confirmed.
-const FIELD_NAME_CANDIDATES: Record<string, string[]> = {
-  accountName: ["Account_Name"],
-  desiredOutcomes: ["Desired_Outcomes", "Desired_Outcome", "Growth_Objective"],
-  solutionFamily: ["Solution_Family", "Recommended_Solution", "Solution_Type"],
-};
-
-async function probeFieldNames(dealId: string) {
-  const results: Record<string, Array<{ field: string; value: unknown; ok: boolean; error?: string }>> = {};
-
-  for (const [label, candidates] of Object.entries(FIELD_NAME_CANDIDATES)) {
-    results[label] = [];
-    for (const field of candidates) {
-      const result = await getZohoDealRawFields(dealId, [field]);
-      results[label].push(
-        result.ok
-          ? { field, value: result.data[field] ?? null, ok: true }
-          : { field, value: null, ok: false, error: result.error }
-      );
-    }
-  }
-
-  return results;
-}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -89,8 +62,6 @@ export async function POST(request: Request) {
 
     const token = signProposalToken(dealId);
     const respondUrl = `${baseUrl.replace(/\/$/, "")}/proposal/respond?token=${encodeURIComponent(token)}`;
-    const fieldNameProbe = await probeFieldNames(dealId);
-    const stagePicklistResult = await getZohoDealStagePicklistValues();
 
     return NextResponse.json({
       dealId,
@@ -98,20 +69,6 @@ export async function POST(request: Request) {
       proceedUrl: `${respondUrl}&action=proceed`,
       discussUrl: `${respondUrl}&action=discuss`,
       changesUrl: `${respondUrl}&action=changes`,
-      // TEMPORARY diagnostic — not sensitive (Deal Stage/Next Step/custom
-      // field values, not credentials). Revert once the Deluge function's
-      // field names are confirmed (see conversation around 2026-09-19/20).
-      debug: {
-        stage: dealResult.data.Stage ?? null,
-        stageCharCodes:
-          typeof dealResult.data.Stage === "string"
-            ? Array.from(dealResult.data.Stage).map((c) => c.charCodeAt(0))
-            : null,
-        stageMatches: dealResult.data.Stage === "Proposal/Price Quote",
-        nextStep: dealResult.data.Next_Step ?? null,
-        fieldNameProbe,
-        stagePicklistValues: stagePicklistResult.ok ? stagePicklistResult.data : `error: ${stagePicklistResult.error}`,
-      },
     });
   } catch (error) {
     console.error("Proposal link generation route error", error);
