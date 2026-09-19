@@ -43,6 +43,34 @@ real values.
 - `ZOHO_BOOKINGS_WORKSPACE_ID` — Optional, local discovery only (see
   `discover-zoho-bookings.sh`). Not read by any deployed application code.
 
+### Proposal Response
+
+Server-side only — never expose these to the browser. Powers the Proposal
+Response experience at `app/proposal/respond/page.tsx` and
+`app/api/proposal/*`, which lets a client respond to a Growth Proposal
+(Proceed / Discuss / Request Changes) and records the response on the
+existing Zoho CRM Deal — see `lib/proposal-token.ts`, `lib/proposal-response.ts`.
+
+- `PROPOSAL_RESPONSE_SECRET` — Signing secret for the response links'
+  HMAC-SHA256 token. Generate a long random value (e.g. `openssl rand -hex 32`)
+  and never reuse it elsewhere. Rotating it invalidates every link already
+  sent.
+- `PROPOSAL_LINKS_INTERNAL_SECRET` — Shared secret required (as the
+  `x-internal-secret` header) to call `POST /api/proposal/generate-links`,
+  which signs the three response URLs for a given Deal ID. Used by
+  `generate-proposal-links.sh` today; a Zoho workflow/custom function could
+  call it later to automate sending.
+- `ZOHO_PROPOSAL_LINK_FIELD` — Optional. The Deals module API field name
+  that holds the "Growth Proposal Link" (the repurposed, relabeled Website
+  field per the current Zoho configuration). Defaults to `Website`; only set
+  this if that field turns out to have its own distinct API name.
+
+Reuses the existing CRM OAuth app's `ZOHO_CLIENT_ID` / `ZOHO_CLIENT_SECRET` /
+`ZOHO_REFRESH_TOKEN` (see `lib/zoho.ts`) — that grant must include Deals and
+Tasks module scope, which may require re-consenting via
+`/api/auth/zoho/callback` with a broader scope if it was only ever granted
+Leads access.
+
 ### Nia (Claude API)
 
 Server-side only — never expose this to the browser. Powers the native Nia
