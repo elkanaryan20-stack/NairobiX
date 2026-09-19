@@ -4,7 +4,7 @@ import {
   findZohoDealTaskBySubject,
   getProposalLink,
   getZohoDeal,
-  updateZohoDealNextStep,
+  updateZohoDealFields,
 } from "@/lib/zoho";
 
 export const PROPOSAL_ACTIONS = ["proceed", "discuss", "changes"] as const;
@@ -14,9 +14,19 @@ function isProposalAction(value: unknown): value is ProposalAction {
   return typeof value === "string" && (PROPOSAL_ACTIONS as readonly string[]).includes(value);
 }
 
-const PROPOSAL_STAGE = "Proposal";
+// NairobiX's finalized Deal Stage pipeline (do not rename/add/remove/
+// substitute any of these — they're the exact CRM picklist values):
+//   Qualification → Discovery → Proposal / Price Quote →
+//   Negotiation / Review → Verbal Agreement → Closed Won / Closed Lost
+// A proposal response is only ever accepted while the Deal is in
+// "Proposal / Price Quote". "Agreement" is a commercial process that
+// happens inside "Negotiation / Review" / "Verbal Agreement", not a Deal
+// Stage of its own — this handler never sets Verbal Agreement or Closed Won.
+const PROPOSAL_STAGE = "Proposal / Price Quote";
 
 type ActionConfig = {
+  /** Only "proceed" advances the Deal Stage — discuss/changes stay in Proposal / Price Quote. */
+  stage?: string;
   nextStep: string;
   taskSubject: string;
   taskDescription: string;
@@ -29,10 +39,11 @@ type ActionConfig = {
 // below.
 const ACTION_CONFIG: Record<ProposalAction, ActionConfig> = {
   proceed: {
-    nextStep: "Proceed to Agreement",
+    stage: "Negotiation / Review",
+    nextStep: "Prepare Agreement",
     taskSubject: "Client Proceeded With Proposal",
     taskDescription:
-      'The client selected "Proceed With Proposal" from the NairobiX Growth Proposal communication. This does not constitute a signed agreement — confirm commercial terms and move the deal toward an Agreement.',
+      'The client selected "Proceed With Proposal" from the NairobiX Growth Proposal communication. This does not constitute a signed agreement — prepare the Agreement and continue the commercial process toward Verbal Agreement and Closed Won.',
     priority: "Normal",
   },
   discuss: {
@@ -149,8 +160,14 @@ export async function processProposalResponse(
     }
   }
 
-  if (deal.Next_Step !== config.nextStep) {
-    const updateResult = await updateZohoDealNextStep(deal.id, config.nextStep);
+  const needsStageUpdate = config.stage !== undefined && deal.Stage !== config.stage;
+  const needsNextStepUpdate = deal.Next_Step !== config.nextStep;
+
+  if (needsStageUpdate || needsNextStepUpdate) {
+    const updateResult = await updateZohoDealFields(deal.id, {
+      ...(needsNextStepUpdate ? { Next_Step: config.nextStep } : {}),
+      ...(needsStageUpdate ? { Stage: config.stage } : {}),
+    });
 
     if (!updateResult.ok) {
       return { status: "error", code: "crm_error" };

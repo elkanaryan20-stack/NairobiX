@@ -265,11 +265,18 @@ export async function getZohoDeal(dealId: string): Promise<ZohoCrmResult<ZohoDea
   return { ok: true, data: record as unknown as ZohoDeal };
 }
 
-/** PUT /crm/v2/Deals/{id} — updates only the Next Step field. */
-export async function updateZohoDealNextStep(dealId: string, nextStep: string): Promise<ZohoCrmResult<true>> {
+/**
+ * PUT /crm/v2/Deals/{id} — updates only the given fields (Stage and/or
+ * Next Step for the proposal response flow — see lib/proposal-response.ts).
+ * Never touches any other field on the Deal.
+ */
+export async function updateZohoDealFields(
+  dealId: string,
+  fields: { Stage?: string; Next_Step?: string }
+): Promise<ZohoCrmResult<true>> {
   const result = await zohoCrmRequest<{
     data?: Array<{ status?: string; code?: string; message?: string }>;
-  }>("PUT", `Deals/${encodeURIComponent(dealId)}`, { data: [{ id: dealId, Next_Step: nextStep }] });
+  }>("PUT", `Deals/${encodeURIComponent(dealId)}`, { data: [{ id: dealId, ...fields }] });
 
   if (!result.ok) {
     return result;
