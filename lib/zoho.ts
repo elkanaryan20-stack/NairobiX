@@ -244,12 +244,13 @@ export function getProposalLink(deal: ZohoDeal): string | undefined {
   return typeof value === "string" && value.trim() ? value : undefined;
 }
 
-/** GET /crm/v2/Deals/{id} — fetches only the fields the proposal response flow needs. */
-export async function getZohoDeal(dealId: string): Promise<ZohoCrmResult<ZohoDeal> & { notFound?: boolean }> {
-  const fields = ["Stage", "Next_Step", "Owner", "Contact_Name", PROPOSAL_LINK_FIELD].join(",");
+async function fetchZohoDeal(
+  dealId: string,
+  fields: string[]
+): Promise<ZohoCrmResult<ZohoDeal> & { notFound?: boolean }> {
   const result = await zohoCrmRequest<{ data?: Array<Record<string, unknown>> }>(
     "GET",
-    `Deals/${encodeURIComponent(dealId)}?fields=${encodeURIComponent(fields)}`
+    `Deals/${encodeURIComponent(dealId)}?fields=${encodeURIComponent(fields.join(","))}`
   );
 
   if (!result.ok) {
@@ -263,6 +264,31 @@ export async function getZohoDeal(dealId: string): Promise<ZohoCrmResult<ZohoDea
   }
 
   return { ok: true, data: record as unknown as ZohoDeal };
+}
+
+/** GET /crm/v2/Deals/{id} — fetches only the fields the proposal response flow needs. */
+export async function getZohoDeal(dealId: string): Promise<ZohoCrmResult<ZohoDeal> & { notFound?: boolean }> {
+  return fetchZohoDeal(dealId, ["Stage", "Next_Step", "Owner", "Contact_Name", PROPOSAL_LINK_FIELD]);
+}
+
+/**
+ * GET /crm/v2/Deals/{id} — the wider field set the proposal-send flow needs
+ * to build the email body. Kept separate from getZohoDeal so the response
+ * flow's field list (and therefore its behavior) is untouched.
+ */
+export async function getZohoDealForProposalEmail(
+  dealId: string
+): Promise<ZohoCrmResult<ZohoDeal> & { notFound?: boolean }> {
+  return fetchZohoDeal(dealId, [
+    "Stage",
+    "Next_Step",
+    "Owner",
+    "Contact_Name",
+    "Account_Name",
+    "Desired_Outcomes",
+    "Solution_Family",
+    PROPOSAL_LINK_FIELD,
+  ]);
 }
 
 /**
@@ -358,4 +384,86 @@ export async function createZohoTask(params: {
   }
 
   return { ok: true, data: { taskId: record.details?.id } };
+}
+
+/**
+ * GET /crm/v2/Contacts/{id}?fields=Email — the Deal's Contact_Name lookup
+ * only carries id/name, so the proposal-send flow needs this second call to
+ * reach the actual recipient address.
+ */
+export async function getZohoContactEmail(
+  contactId: string
+): Promise<ZohoCrmResult<string | undefined> & { notFound?: boolean }> {
+  const result = await zohoCrmRequest<{ data?: Array<{ Email?: string }> }>(
+    "GET",
+    `Contacts/${encodeURIComponent(contactId)}?fields=Email`
+  );
+
+  if (!result.ok) {
+    return result;
+  }
+
+  const record = result.data.data?.[0];
+
+  if (!record) {
+    return { ok: false, error: "Contact not found.", notFound: true };
+  }
+
+  return { ok: true, data: record.Email?.trim() || undefined };
+}
+
+const DEFAULT_ZOHO_MAIL_API_URL = "https://mail.zoho.com";
+const PROPOSAL_SENDER_ADDRESS = "hello@nairobix.com";
+
+/**
+ * POST /api/accounts/{accountId}/messages — Zoho Mail's own send-email API.
+ * Used instead of Deluge's `sendmail` because CRM Plus doesn't expose
+ * Custom Functions; sends through the same `hello@nairobix.com` mailbox via
+ * the Zoho Mail account tied to ZOHO_MAIL_ACCOUNT_ID. Reuses the CRM OAuth
+ * token — the underlying refresh token must additionally be granted
+ * ZohoMail.messages.CREATE scope, since Zoho access tokens carry whatever
+ * scopes the refresh token was originally consented with.
+ */
+export async function sendZohoMail(params: {
+  to: string;
+  subject: string;
+  html: string;
+}): Promise<ZohoCrmResult<true>> {
+  const accountId = process.env.ZOHO_MAIL_ACCOUNT_ID;
+
+  if (!accountId) {
+    return { ok: false, error: "ZOHO_MAIL_ACCOUNT_ID is not configured." };
+  }
+
+  const tokenResult = await getZohoAccessToken();
+
+  if (!tokenResult.ok) {
+    return tokenResult;
+  }
+
+  const mailApiUrl = process.env.ZOHO_MAIL_API_URL || DEFAULT_ZOHO_MAIL_API_URL;
+  const response = await fetch(`${mailApiUrl}/api/accounts/${encodeURIComponent(accountId)}/messages`, {
+    method: "POST",
+    headers: {
+      Authorization: `Zoho-oauthtoken ${tokenResult.token}`,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      fromAddress: PROPOSAL_SENDER_ADDRESS,
+      toAddress: params.to,
+      subject: params.subject,
+      content: params.html,
+      mailFormat: "html",
+    }),
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    console.error("Zoho Mail send failed", { status: response.status, data });
+    return { ok: false, error: `Zoho Mail send failed (${response.status}).` };
+  }
+
+  return { ok: true, data: true };
 }

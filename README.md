@@ -64,12 +64,29 @@ existing Zoho CRM Deal — see `lib/proposal-token.ts`, `lib/proposal-response.t
   that holds the "Growth Proposal Link" URL. Defaults to `Growth_Proposal_Link`
   (confirmed against a live Deal record); only set this if the field's API
   name ever changes.
+- `PROPOSAL_WEBHOOK_SECRET` — Shared secret required (as the
+  `X-NairobiX-Webhook-Secret` header) to call `POST /api/proposal/send`.
+  This is the target of the Zoho CRM "Proposal Sent" Workflow Rule's Webhook
+  action (CRM Plus doesn't expose Custom Functions, so this endpoint — not a
+  Deluge function — builds the fresh response URLs, looks up the Deal's
+  proposal link and Contact email, and sends the Growth Proposal email via
+  the Zoho Mail API). Distinct from `PROPOSAL_LINKS_INTERNAL_SECRET` so it
+  can be rotated independently of the human-triggered link-generation path.
+- `ZOHO_MAIL_ACCOUNT_ID` — The Zoho Mail account ID for `hello@nairobix.com`,
+  used by `/api/proposal/send` to call the Zoho Mail API's send-message
+  endpoint. Look this up once via Zoho Mail's account settings or
+  `GET /api/accounts`.
+- `ZOHO_MAIL_API_URL` — Optional. Defaults to `https://mail.zoho.com`; only
+  set this if the account's data center requires a different regional
+  endpoint (mirrors `ZOHO_API_URL`'s pattern).
 
 Reuses the existing CRM OAuth app's `ZOHO_CLIENT_ID` / `ZOHO_CLIENT_SECRET` /
 `ZOHO_REFRESH_TOKEN` (see `lib/zoho.ts`) — that grant must include Deals and
 Tasks module scope, which may require re-consenting via
 `/api/auth/zoho/callback` with a broader scope if it was only ever granted
-Leads access.
+Leads access. `/api/proposal/send`'s Zoho Mail call additionally requires
+the `ZohoMail.messages.CREATE` scope on that same grant — re-consent with
+both scopes together.
 
 ### Nia (Claude API)
 
