@@ -61,9 +61,9 @@ existing Zoho CRM Deal — see `lib/proposal-token.ts`, `lib/proposal-response.t
   `generate-proposal-links.sh` today; a Zoho workflow/custom function could
   call it later to automate sending.
 - `ZOHO_PROPOSAL_LINK_FIELD` — Optional. The Deals module API field name
-  that holds the "Growth Proposal Link" (the repurposed, relabeled Website
-  field per the current Zoho configuration). Defaults to `Website`; only set
-  this if that field turns out to have its own distinct API name.
+  that holds the "Growth Proposal Link" URL. Defaults to `Growth_Proposal_Link`
+  (confirmed against a live Deal record); only set this if the field's API
+  name ever changes.
 
 Reuses the existing CRM OAuth app's `ZOHO_CLIENT_ID` / `ZOHO_CLIENT_SECRET` /
 `ZOHO_REFRESH_TOKEN` (see `lib/zoho.ts`) — that grant must include Deals and

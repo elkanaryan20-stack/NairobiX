@@ -185,12 +185,12 @@ export async function createZohoLead(data: ZohoLeadPayload) {
   } as const;
 }
 
-// The Deal field that carries the proposal URL is a repurposed field (the
-// unused "Website" field on Deals, relabeled "Growth Proposal Link" in the
-// Zoho UI) — its underlying API name can't be confirmed without CRM admin
-// access, so it's read from an env override rather than hardcoded, in case
-// the relabel turns out to have created a genuinely new API name instead.
-const PROPOSAL_LINK_FIELD = process.env.ZOHO_PROPOSAL_LINK_FIELD || "Website";
+// The Deal field that carries the proposal URL — confirmed against a live
+// Deal record (not the "Website" field, despite the "Growth Proposal Link"
+// label suggesting a repurposed field; it's a distinct custom field). Still
+// read from an env override so it can be corrected without a redeploy if
+// the API name ever changes.
+const PROPOSAL_LINK_FIELD = process.env.ZOHO_PROPOSAL_LINK_FIELD || "Growth_Proposal_Link";
 
 type ZohoCrmResult<T> = { ok: true; data: T } | { ok: false; error: string };
 
