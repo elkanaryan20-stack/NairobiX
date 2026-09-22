@@ -1,11 +1,5 @@
 import { verifyProposalToken } from "@/lib/proposal-token";
-import {
-  createZohoTask,
-  findZohoDealTaskBySubject,
-  getProposalLink,
-  getZohoDeal,
-  updateZohoDealFields,
-} from "@/lib/zoho";
+import { getProposalLink, getZohoDeal, updateZohoDealFields } from "@/lib/zoho";
 
 export const PROPOSAL_ACTIONS = ["proceed", "discuss", "changes"] as const;
 export type ProposalAction = (typeof PROPOSAL_ACTIONS)[number];
@@ -30,37 +24,23 @@ type ActionConfig = {
   /** Only "proceed" advances the Deal Stage — discuss/changes stay in Proposal/Price Quote. */
   stage?: string;
   nextStep: string;
-  taskSubject: string;
-  taskDescription: string;
-  priority: "High" | "Normal";
 };
 
-// Next Step values and Task subjects/descriptions are the operational record
-// of the client's response — no new CRM field is created for this (see
-// AGENTS brief section 21). Next Step also doubles as the idempotency marker
-// below.
+// Next Step is the operational record of the client's response and also
+// doubles as the idempotency marker below. This handler only identifies the
+// Deal and updates its fields — it does not create CRM Tasks. Zoho CRM
+// workflows watch for these Deal states and create any internal Tasks
+// separately.
 const ACTION_CONFIG: Record<ProposalAction, ActionConfig> = {
   proceed: {
     stage: "Negotiation/Review",
     nextStep: "Prepare Agreement",
-    taskSubject: "Client Proceeded With Proposal",
-    taskDescription:
-      'The client selected "Proceed With Proposal" from the NairobiX Growth Proposal communication. This does not constitute a signed agreement — prepare the Agreement and continue the commercial process toward Verbal Agreement and Closed Won.',
-    priority: "Normal",
   },
   discuss: {
     nextStep: "Discuss Proposal",
-    taskSubject: "Discuss Proposal With Client",
-    taskDescription:
-      'The client selected "Discuss the Proposal" from the NairobiX Growth Proposal communication and would like to talk through it before deciding.',
-    priority: "High",
   },
   changes: {
-    nextStep: "Review Requested Changes",
-    taskSubject: "Review Requested Proposal Changes",
-    taskDescription:
-      'The client selected "Request Changes" from the NairobiX Growth Proposal communication. Review their proposal and follow up with adjustments.',
-    priority: "High",
+    nextStep: "Review Requested Proposal Changes",
   },
 };
 
@@ -85,17 +65,14 @@ export type ProposalResponseResult =
   | { status: "error"; code: ProposalErrorCode };
 
 /**
- * Validates and processes a signed proposal response, per AGENTS brief
- * section 7's validation order and sections 8–10's per-action CRM effects.
+ * Validates and processes a signed proposal response: token validation,
+ * Deal identification, action validation, and the Deal Stage/Next Step
+ * update for the given action. Does not create CRM Tasks — Zoho CRM
+ * workflows detect the resulting Deal state and create any Task separately.
  *
- * Idempotency has two layers so a retry after a partial failure self-heals
- * instead of silently dropping the Task or creating a duplicate one:
- *  1. Next Step already matching one of the three known values means a
- *     response was already fully recorded (cheap, no extra CRM reads).
- *  2. Even when Next Step doesn't match yet, the Deal's related Tasks are
- *     checked for the current action's exact Subject before creating one —
- *     covers the case where a prior attempt created the Task but the Next
- *     Step update that should have followed it failed.
+ * Idempotency: Next Step already matching one of the three known values
+ * means a response was already fully recorded, so no further update is
+ * attempted.
  */
 export async function processProposalResponse(
   token: string,
@@ -140,25 +117,6 @@ export async function processProposalResponse(
 
     if (!getProposalLink(deal)) {
       return { status: "error", code: "missing_proposal_link" };
-    }
-  }
-
-  const taskExistsResult = await findZohoDealTaskBySubject(deal.id, config.taskSubject);
-  const taskAlreadyExists = taskExistsResult.ok && taskExistsResult.data;
-
-  if (!taskAlreadyExists) {
-    const ownerId = typeof deal.Owner === "object" && deal.Owner ? deal.Owner.id : undefined;
-
-    const taskResult = await createZohoTask({
-      subject: config.taskSubject,
-      description: `${config.taskDescription}\n\nResponse recorded: ${new Date().toISOString()}.`,
-      dealId: deal.id,
-      ownerId,
-      priority: config.priority,
-    });
-
-    if (!taskResult.ok) {
-      return { status: "error", code: "crm_error" };
     }
   }
 
