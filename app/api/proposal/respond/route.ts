@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { processProposalResponse, type ProposalErrorCode } from "@/lib/proposal-response";
+import { processProposalResponse, processProposalResponseByDealId, type ProposalErrorCode } from "@/lib/proposal-response";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -28,15 +28,18 @@ export async function POST(request: Request) {
     }
 
     const token = sanitizeString(json.token);
+    const dealId = sanitizeString(json.dealId);
     const action = sanitizeString(json.action);
 
-    if (!token) {
+    if (!token && !dealId) {
       return NextResponse.json({ status: "error", code: "invalid_token" }, { status: 400 });
     }
 
-    const result = await processProposalResponse(token, action);
-    const status = result.status === "error" ? ERROR_STATUS[result.code] : 200;
+    const result = token
+      ? await processProposalResponse(token, action)
+      : await processProposalResponseByDealId(dealId, action);
 
+    const status = result.status === "error" ? ERROR_STATUS[result.code] : 200;
     return NextResponse.json(result, { status });
   } catch (error) {
     console.error("Proposal response route error", error);
