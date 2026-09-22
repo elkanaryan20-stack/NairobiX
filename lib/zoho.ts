@@ -257,7 +257,7 @@ async function fetchZohoDeal(
     return result;
   }
 
-  const record = result.data.data?.[0];
+  const record = result.data?.data?.[0];
 
   if (!record) {
     return { ok: false, error: "Deal not found.", notFound: true };
@@ -308,7 +308,7 @@ export async function updateZohoDealFields(
     return result;
   }
 
-  const record = result.data.data?.[0];
+  const record = result.data?.data?.[0];
 
   if (record && record.status !== "success") {
     console.error("Zoho Deal update rejected", record);
@@ -340,7 +340,7 @@ export async function findZohoDealTaskBySubject(
     return { ok: true, data: false };
   }
 
-  const found = (result.data.data ?? []).some((task) => task.Subject === subject);
+  const found = (result.data?.data ?? []).some((task) => task.Subject === subject);
   return { ok: true, data: found };
 }
 
@@ -376,7 +376,7 @@ export async function createZohoTask(params: {
     return result;
   }
 
-  const record = result.data.data?.[0];
+  const record = result.data?.data?.[0];
 
   if (!record || record.status !== "success") {
     console.error("Zoho Task creation rejected", record);
@@ -403,7 +403,7 @@ export async function getZohoContactEmail(
     return result;
   }
 
-  const record = result.data.data?.[0];
+  const record = result.data?.data?.[0];
 
   if (!record) {
     return { ok: false, error: "Contact not found.", notFound: true };
