@@ -97,6 +97,54 @@ export type ProposalResponseResult =
  *     covers the case where a prior attempt created the Task but the Next
  *     Step update that should have followed it failed.
  */
+export async function processProposalResponseByDealId(
+  dealId: string,
+  actionParam: string
+): Promise<ProposalResponseResult> {
+  const normalizedDealId = dealId.trim();
+  if (!normalizedDealId) return { status: "error", code: "invalid_token" };
+  if (!isProposalAction(actionParam)) return { status: "error", code: "invalid_action" };
+
+  const action = actionParam;
+  const config = ACTION_CONFIG[action];
+  const dealResult = await getZohoDeal(normalizedDealId);
+  if (!dealResult.ok) return { status: "error", code: dealResult.notFound ? "deal_not_found" : "crm_error" };
+
+  const deal = dealResult.data;
+  const recordedAction = findRecordedAction(deal.Next_Step);
+  if (recordedAction && recordedAction !== action) return { status: "duplicate", action: recordedAction };
+
+  if (!recordedAction) {
+    if (deal.Stage !== PROPOSAL_STAGE) return { status: "error", code: "wrong_stage" };
+    if (!getProposalLink(deal)) return { status: "error", code: "missing_proposal_link" };
+  }
+
+  const taskExistsResult = await findZohoDealTaskBySubject(deal.id, config.taskSubject);
+  if (!(taskExistsResult.ok && taskExistsResult.data)) {
+    const ownerId = typeof deal.Owner === "object" && deal.Owner ? deal.Owner.id : undefined;
+    const taskResult = await createZohoTask({
+      subject: config.taskSubject,
+      description: config.taskDescription + "\\n\\nResponse recorded: " + new Date().toISOString() + ".",
+      dealId: deal.id,
+      ownerId,
+      priority: config.priority,
+    });
+    if (!taskResult.ok) return { status: "error", code: "crm_error" };
+  }
+
+  const needsStageUpdate = config.stage !== undefined && deal.Stage !== config.stage;
+  const needsNextStepUpdate = deal.Next_Step !== config.nextStep;
+  if (needsStageUpdate || needsNextStepUpdate) {
+    const updateResult = await updateZohoDealFields(deal.id, {
+      ...(needsNextStepUpdate ? { Next_Step: config.nextStep } : {}),
+      ...(needsStageUpdate ? { Stage: config.stage } : {}),
+    });
+    if (!updateResult.ok) return { status: "error", code: "crm_error" };
+  }
+
+  return { status: recordedAction === action ? "duplicate" : "success", action };
+}
+
 export async function processProposalResponse(
   token: string,
   actionParam: string
