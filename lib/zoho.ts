@@ -319,6 +319,37 @@ export async function updateZohoDealFields(
 }
 
 /**
+ * PUT /crm/v2/Deals/{id} — writes the signed proposal-response link onto the
+ * Deal's Proposal_Response_Link field (see
+ * app/api/proposal/generate-response-link/route.ts). Kept separate from
+ * updateZohoDealFields so the response flow's mutation surface stays
+ * limited to exactly Stage/Next Step.
+ */
+export async function setProposalResponseLink(
+  dealId: string,
+  responseLink: string
+): Promise<ZohoCrmResult<true>> {
+  const result = await zohoCrmRequest<{
+    data?: Array<{ status?: string; code?: string; message?: string }>;
+  }>("PUT", `Deals/${encodeURIComponent(dealId)}`, {
+    data: [{ id: dealId, Proposal_Response_Link: responseLink }],
+  });
+
+  if (!result.ok) {
+    return result;
+  }
+
+  const record = result.data?.data?.[0];
+
+  if (record && record.status !== "success") {
+    console.error("Zoho Proposal_Response_Link update rejected", record);
+    return { ok: false, error: `Zoho rejected the response-link update (${record.code ?? "UNKNOWN"}).` };
+  }
+
+  return { ok: true, data: true };
+}
+
+/**
  * GET /crm/v2/Deals/{id}/Tasks — the Deal's related Tasks, scanned for one
  * with the given Subject. Used to make Task creation idempotent (a new
  * custom field to mark "already responded" isn't available — see
