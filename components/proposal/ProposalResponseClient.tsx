@@ -22,14 +22,14 @@ type ClientState = ProposalResponseResult | null;
  * Mode's dev double-invoke of effects must not fire two CRM-writing
  * requests, only re-render twice.
  */
-export function ProposalResponseClient({ token, action }: { token: string; action: string }) {
+export function ProposalResponseClient({ token, dealId, action }: { token: string; dealId: string; action: string }) {
   const [result, setResult] = useState<ClientState>(() =>
-    token && action ? null : { status: "error", code: "invalid_token" }
+    (token || dealId) && action ? null : { status: "error", code: "invalid_token" }
   );
   const requested = useRef(false);
 
   useEffect(() => {
-    if (requested.current || !token || !action) return;
+    if (requested.current || (!token && !dealId) || !action) return;
     requested.current = true;
 
     const reduceMotion = prefersReducedMotion();
@@ -39,7 +39,7 @@ export function ProposalResponseClient({ token, action }: { token: string; actio
     fetch("/api/proposal/respond", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, action }),
+      body: JSON.stringify({ ...(token ? { token } : { dealId }), action }),
     })
       .then(async (response) => (await response.json()) as ProposalResponseResult)
       .catch(
@@ -57,7 +57,7 @@ export function ProposalResponseClient({ token, action }: { token: string; actio
           trackConversion(ANALYTICS_EVENT[payload.action], { form_type: "proposal_response" });
         }
       });
-  }, [token, action]);
+  }, [token, dealId, action]);
 
   if (!result) {
     return <ProposalProcessing />;
