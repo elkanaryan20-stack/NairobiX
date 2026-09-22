@@ -15,14 +15,14 @@ export default async function ProposalRespondPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-  const token = typeof params.token === "string" ? params.token : "";
+  const token = typeof params.token === "string" ? params.token : "";\n  const dealId = typeof params.dealId === "string" ? params.dealId : "";
   const action = typeof params.action === "string" ? params.action : "";
 
   return (
     <>
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
-        <ProposalResponseClient token={token} action={action} />
+        <ProposalResponseClient token={token} dealId={dealId} action={action} />
       </main>
       <SiteFooter />
     </>
