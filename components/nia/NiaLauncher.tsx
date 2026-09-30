@@ -53,7 +53,7 @@ export function NiaLauncher() {
           onMouseEnter={triggerHoverNudge}
           aria-label="Open Nia, the NairobiX Growth Assistant"
           aria-expanded={false}
-          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-[0_12px_32px_rgba(249,115,22,0.35)] transition hover:bg-[var(--color-primary-strong)] sm:bottom-6 sm:right-6"
+          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-[0_10px_28px_rgba(0,0,0,0.45)] transition hover:bg-[var(--color-primary-strong)] sm:bottom-6 sm:right-6"
         >
           <NiaMark
             wipePhase={wipePhase}

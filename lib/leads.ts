@@ -50,6 +50,50 @@ function validateRequiredFields(required: string[], data: Record<string, unknown
   return missing;
 }
 
+// Campaign attribution for the sales team, appended to the lead's
+// Description. Only named, length-limited fields are read; the referrer
+// appears only as its normalized channel, never as a raw domain. When
+// dedicated Zoho fields exist (e.g. UTM_Campaign, GCLID), map them here.
+const TOUCH_LABELS: [string, string][] = [
+  ["channel", "Channel"],
+  ["utm_source", "Source"],
+  ["utm_medium", "Medium"],
+  ["utm_campaign", "Campaign"],
+  ["utm_term", "Term"],
+  ["utm_content", "Content"],
+  ["gclid", "Google click ID"],
+  ["gbraid", "Google click ID (gbraid)"],
+  ["wbraid", "Google click ID (wbraid)"],
+  ["fbclid", "Meta click ID"],
+  ["landing_page", "Landing page"],
+  ["at", "Date"],
+];
+
+const CONTROL_CHARS = /[\u0000-\u001f]/g;
+
+export function formatAttribution(raw: unknown): string {
+  if (typeof raw !== "object" || raw === null) return "";
+  const attribution = raw as Record<string, unknown>;
+  const section = (title: string, touch: unknown) => {
+    if (typeof touch !== "object" || touch === null) return "";
+    const t = touch as Record<string, unknown>;
+    const lines = TOUCH_LABELS.flatMap(([key, label]) => {
+      const value = typeof t[key] === "string" ? (t[key] as string).replace(CONTROL_CHARS, "").slice(0, 150) : "";
+      if (!value) return [];
+      if (key === "channel" && !isLeadSource(value)) return [];
+      return [`${label}: ${value}`];
+    });
+    return lines.length ? [title, ...lines].join("\n") : "";
+  };
+  const page = typeof attribution.conversion_page === "string" ? attribution.conversion_page.replace(CONTROL_CHARS, "").slice(0, 150) : "";
+  const parts = [
+    section("First touch", attribution.first),
+    section("Last touch", attribution.last),
+    page ? `Submitted from: ${page}` : "",
+  ].filter(Boolean);
+  return parts.length ? `\n\n— Attribution —\n${parts.join("\n\n")}` : "";
+}
+
 function mapLeadPayload(formType: string, data: Record<string, unknown>) {
   const base: Record<string, string | string[] | undefined> = {
     First_Name: sanitizeString(data.First_Name),
@@ -61,7 +105,7 @@ function mapLeadPayload(formType: string, data: Record<string, unknown>) {
     City: sanitizeString(data.City),
     Country: sanitizeString(data.Country),
     Industry: sanitizeString(data.Industry),
-    Description: sanitizeString(data.Description),
+    Description: `${sanitizeString(data.Description)}${formatAttribution(data.Attribution)}`.trim(),
     Growth_Goal: sanitizeString(data.Growth_Goal),
     Business_Challenge: sanitizeString(data.Business_Challenge),
 

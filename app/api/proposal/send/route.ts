@@ -159,7 +159,7 @@ export async function POST(request: Request) {
       proposalUrl,
       proceedUrl: `${respondUrl}&action=proceed`,
       discussUrl: `${respondUrl}&action=discuss`,
-      changesUrl: `${respondUrl}&action=changes`,
+      changesUrl: `${respondUrl}&action=request_changes`,
     });
 
     const sendResult = await sendZohoMail({

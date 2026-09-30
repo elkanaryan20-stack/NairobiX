@@ -147,3 +147,81 @@ export function getLeadSource(): LeadSource {
     return FALLBACK_LEAD_SOURCE;
   }
 }
+
+// ── Touch details (first and last touch) ────────────────────────────────
+//
+// Alongside the allow-listed channel above, the details needed to trace a
+// lead back to a campaign: UTM values, ad click IDs (gclid / gbraid / wbraid
+// / fbclid), the landing page and time. First touch is kept forever; last
+// touch is replaced whenever a visit arrives with campaign data. The referrer
+// is recorded only as its normalized channel — never as a raw domain.
+
+const TOUCH_KEY = "nx_touch_v1";
+const TOUCH_FIELDS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid", "gbraid", "wbraid", "fbclid"] as const;
+
+export type Touch = Partial<Record<(typeof TOUCH_FIELDS)[number], string>> & {
+  channel: LeadSource;
+  landing_page: string;
+  at: string;
+};
+
+const clip = (value: string) => value.replace(/[\u0000-\u001f<>]/g, "").slice(0, 150);
+
+function readTouches(): { first?: Touch; last?: Touch } {
+  try {
+    return JSON.parse(window.localStorage.getItem(TOUCH_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+/** Records first/last touch for this page view. Called once per full page load. */
+export function captureTouch(): void {
+  if (typeof window === "undefined") return;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const touch: Touch = {
+      channel: params.get("utm_source")
+        ? normalizeUtmSource(params.get("utm_source")!)
+        : sourceFromReferrer(document.referrer) ?? FALLBACK_LEAD_SOURCE,
+      landing_page: clip(window.location.pathname),
+      at: new Date().toISOString(),
+    };
+    let hasCampaignData = false;
+    for (const field of TOUCH_FIELDS) {
+      const value = params.get(field);
+      if (value) {
+        touch[field] = clip(value);
+        hasCampaignData = true;
+      }
+    }
+    const stored = readTouches();
+    const external = touch.channel !== FALLBACK_LEAD_SOURCE || hasCampaignData;
+    // A direct visit with no campaign data never replaces an earlier real touch.
+    const next = {
+      first: stored.first ?? touch,
+      last: external || !stored.last ? touch : stored.last,
+    };
+    window.localStorage.setItem(TOUCH_KEY, JSON.stringify(next));
+  } catch {
+    // Storage unavailable — attribution is best-effort.
+  }
+}
+
+/** Attribution sent with a form submission: first/last touch plus the page it was submitted from. */
+export function getAttributionPayload(): { first?: Touch; last?: Touch; conversion_page: string } {
+  if (typeof window === "undefined") return { conversion_page: "" };
+  return { ...readTouches(), conversion_page: clip(window.location.pathname) };
+}
+
+/** Meta browser identifiers for server-side (Conversions API) matching. */
+export function getMetaBrowserIds(): { fbp?: string; fbc?: string } {
+  if (typeof document === "undefined") return {};
+  const cookie = (name: string) => document.cookie.split("; ").find((c) => c.startsWith(`${name}=`))?.split("=")[1];
+  const fbclid = readTouches().last?.fbclid;
+  return {
+    fbp: cookie("_fbp"),
+    // Meta's documented fbc format when the Pixel hasn't set the cookie itself.
+    fbc: cookie("_fbc") ?? (fbclid ? `fb.1.${Date.now()}.${fbclid}` : undefined),
+  };
+}

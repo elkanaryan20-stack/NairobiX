@@ -117,11 +117,15 @@ export function articleJsonLd({
   description,
   path,
   datePublished,
+  dateModified,
+  image,
 }: {
   title: string;
   description: string;
   path: string;
   datePublished: string;
+  dateModified?: string;
+  image?: string;
 }) {
   return {
     "@context": "https://schema.org",
@@ -129,6 +133,9 @@ export function articleJsonLd({
     headline: title,
     description,
     datePublished,
+    dateModified: dateModified ?? datePublished,
+    ...(image ? { image: [`${SITE_URL}${image}`] } : {}),
+    mainEntityOfPage: `${SITE_URL}${path}`,
     url: `${SITE_URL}${path}`,
     author: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
     publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: { "@type": "ImageObject", url: LOGO_URL } },

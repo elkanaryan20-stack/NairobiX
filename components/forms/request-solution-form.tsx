@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 import { ChipGroup, FormInput, FormSelect, FormTextarea, SectionHeader } from "@/components/forms/FormField";
-import { ErrorBanner, FormSuccessState, LeadFormShell } from "@/components/forms/LeadFormShell";
+import { ErrorBanner, FormContext, FormSuccessState, LeadFormShell } from "@/components/forms/LeadFormShell";
+
+// What actually happens after a solution request — no response time promised.
+const REQUEST_NEXT = [
+  "We receive your requirements and the context around them.",
+  "NairobiX reviews the request against the rest of your business.",
+  "We come back with the most appropriate next step — a scoping conversation, a proposal or a better-fitting route.",
+];
 import { Button } from "@/components/ui/Button";
-import { trackConversion } from "@/lib/analytics";
+import { formTrackingPayload, newEventId, trackEvent } from "@/lib/analytics";
 import { getLeadSource } from "@/lib/attribution";
 import {
   INVESTMENT_OPTIONS as investmentOptions,
@@ -91,6 +98,7 @@ export function RequestSolutionForm() {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const eventId = newEventId();
     event.preventDefault();
     setSubmitError("");
 
@@ -106,6 +114,7 @@ export function RequestSolutionForm() {
           formType: "request-solution",
           ...formData,
           Marketing_Channel: getLeadSource(),
+          ...formTrackingPayload(eventId),
         }),
       });
 
@@ -116,7 +125,7 @@ export function RequestSolutionForm() {
         return;
       }
 
-      trackConversion("generate_lead", { form_type: "request_solution" });
+      trackEvent("generate_lead", { form_type: "request_solution" }, { eventId, metaEvent: "Lead", userData: { email: formData.Email, phone: formData.Phone } });
       setIsSuccess(true);
     } catch (error) {
       console.error("Solution request failed", error);
@@ -129,16 +138,21 @@ export function RequestSolutionForm() {
   if (isSuccess) {
     return (
       <LeadFormShell
-        icon="S"
-        eyebrow="REQUEST A SOLUTION"
+        eyebrow="NAIROBIX · REQUEST A SOLUTION"
         title="Request a Solution"
         description="Share the challenge, the solution you need, and the project direction you're considering."
       >
         <FormSuccessState
-          title="Your solution request has been received."
-          description="We'll review your requirements and determine the best next step for your business."
-          actionLabel="Return to NairobiX"
-          actionHref="/"
+          title="Request received."
+          description="We have your requirements. NairobiX will review them against the wider business context and identify the appropriate next step."
+          details={[
+            ["Business", formData.Company],
+            ["Solutions", formData.Solution_Needed.join(", ")],
+            ["We'll reply to", formData.Email],
+          ].filter((row): row is [string, string] => Boolean(row[1]))}
+          next={REQUEST_NEXT}
+          actionLabel="See how we approach problems"
+          actionHref="/case-studies"
         />
       </LeadFormShell>
     );
@@ -146,10 +160,19 @@ export function RequestSolutionForm() {
 
   return (
     <LeadFormShell
-      icon="S"
-      eyebrow="REQUEST A SOLUTION"
+      eyebrow="NAIROBIX · REQUEST A SOLUTION"
       title="Request a Solution"
-      description="Tell us what you need and we’ll help you identify the right NairobiX solution for your business growth goals."
+      description="Already know what you need? Tell us the solution, the context and the direction you're considering, and we'll shape the right next step."
+      aside={
+        <FormContext
+          steps={REQUEST_NEXT}
+          alternative={{
+            lead: "Not sure which solution fits?",
+            label: "Start the 4-minute Growth Assessment",
+            href: "/business-growth-audit",
+          }}
+        />
+      }
     >
       <form onSubmit={handleSubmit} className="space-y-10">
         {submitError ? <ErrorBanner message={submitError} /> : null}

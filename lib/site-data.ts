@@ -1,3 +1,4 @@
+import { CONCEPT_CASES } from "@/lib/case-studies";
 export const BOOKING_URL = "/book";
 
 export const NAV_ITEMS = [
@@ -92,6 +93,13 @@ export const TECH_ROLES: Record<string, string> = {
   "Custom portals and dashboards": "Client experience layer",
   "Analytics and conversion tracking": "Conversion intelligence",
   "Sales reporting dashboards": "Pipeline visibility",
+  "AI assistants": "Conversational AI",
+  "Automated appointment reminders": "Attendance",
+  "Listing landing pages": "Enquiry capture",
+  "Booking automation": "Reservations",
+  "Proposal and quote automation": "Sales documents",
+  "SEO-optimized web presence": "Search visibility",
+  "AI-assisted order handling": "Order support",
 };
 
 export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; items: SolutionDetail[] }[] = [
@@ -174,7 +182,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { label: "Lead Source Dependence", direction: "down" },
           { label: "Cost per Lead Clarity", direction: "up" },
         ],
-        relatedCaseStudySlug: "customer-acquisition-retention-system",
+        relatedCaseStudySlug: "ecommerce-growth-system",
         faqs: [
           {
             question: "Do we need a large ad budget to start?",
@@ -263,7 +271,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { label: "Decision Speed", direction: "up" },
           { label: "Reporting Effort", direction: "down" },
         ],
-        relatedCaseStudySlug: "patient-growth-experience-system",
+        relatedCaseStudySlug: "professional-services-growth-system",
         faqs: [
           {
             question: "Is this the same as the free Business Growth Assessment?",
@@ -357,7 +365,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { label: "Pipeline Visibility", direction: "up" },
           { label: "Conversion Path Clarity", direction: "up" },
         ],
-        relatedCaseStudySlug: "lead-generation-sales-system",
+        relatedCaseStudySlug: "real-estate-lead-to-sales-system",
         faqs: [
           {
             question: "We already use spreadsheets — is that a problem?",
@@ -441,7 +449,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { label: "Missed Tasks", direction: "down" },
           { label: "Operational Capacity", direction: "up" },
         ],
-        relatedCaseStudySlug: "lead-generation-sales-system",
+        relatedCaseStudySlug: "venue-enquiry-to-event-automation",
         faqs: [
           {
             question: "Will automation replace staff roles?",
@@ -533,7 +541,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { label: "After-hours Coverage", direction: "up" },
           { label: "Answer Accuracy", direction: "up" },
         ],
-        relatedCaseStudySlug: "patient-growth-experience-system",
+        relatedCaseStudySlug: "clinic-ai-assisted-front-desk",
         faqs: [
           {
             question: "Will the AI assistant make things up?",
@@ -618,7 +626,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           { label: "Conversion Pathways", direction: "up" },
           { label: "Manual Follow-up Steps", direction: "down" },
         ],
-        relatedCaseStudySlug: "customer-acquisition-retention-system",
+        relatedCaseStudySlug: "ecommerce-growth-system",
         faqs: [
           {
             question: "Do we need to rebuild everything from scratch?",
@@ -636,6 +644,8 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
 
 export const ALL_SOLUTIONS: SolutionDetail[] = SOLUTION_CATEGORIES.flatMap((category) => category.items);
 
+// The three growth pathways, each carried by two of the six solution areas
+// (same names as CONNECTED_CAPABILITIES).
 export const HOME_SOLUTIONS = [
   {
     title: "Acquire & Grow",
@@ -644,7 +654,8 @@ export const HOME_SOLUTIONS = [
     image: "/images/photography/acquire-&-grow.jpg",
     imageAlt: "A tailor carrying a sewing machine through a busy African market street.",
     href: "/solutions#acquire-grow",
-    cta: "Explore Solution →",
+    capabilities: ["Strategy & Analytics", "Digital Marketing"],
+    cta: "Explore these solutions →",
   },
   {
     title: "Convert & Scale",
@@ -653,7 +664,8 @@ export const HOME_SOLUTIONS = [
     image: "/images/photography/convert-&-scale.jpg",
     imageAlt: "A hand holding a tablet showing a project task board, with market charts visible on a screen behind it.",
     href: "/solutions#convert-scale",
-    cta: "Explore Solution →",
+    capabilities: ["CRM & Sales Systems", "Business Automation"],
+    cta: "Explore these solutions →",
   },
   {
     title: "Build & Innovate",
@@ -662,96 +674,46 @@ export const HOME_SOLUTIONS = [
     image: "/images/photography/build-and-innovate.jpg",
     imageAlt: "A developer focused on code across dual monitors in a modern office.",
     href: "/solutions#build-innovate",
-    cta: "Explore Solution →",
+    capabilities: ["AI Solutions", "Web & Digital Solutions"],
+    cta: "Explore these solutions →",
   },
 ];
 
-export const CASE_STUDIES = [
-  {
-    slug: "patient-growth-experience-system",
-    label: "Healthcare",
-    title: "Patient Growth & Experience System",
-    description: "How a connected growth system could transform a modern healthcare business.",
-    image: "/images/photography/pexels-tima-miroshnichenko-9574453.jpg",
-    imageAlt: "A clean, modern clinical laboratory with diagnostic equipment and workstations.",
-    primarySolutionId: "crm-sales",
-    businessContext:
-      "A healthcare business where patient inquiries arrive through calls, walk-ins and WhatsApp — and where follow-up depends on whoever is at the front desk that day.",
-    growthProblemFlow: [
-      "Inquiries across calls, walk-ins, WhatsApp",
-      "Manual follow-up and reminders",
-      "Inconsistent booking conversion",
-      "Patients drift away unprompted",
-    ],
-    outcomeMetrics: [
-      { label: "Missed Follow-ups", direction: "down" as const },
-      { label: "Appointment Predictability", direction: "up" as const },
-      { label: "Front-desk Admin Load", direction: "down" as const },
-      { label: "Pipeline Visibility", direction: "up" as const },
-    ],
-    whyItMatters:
-      "In healthcare, the gap between an inquiry and a booked appointment is where trust is won or lost. A connected CRM and communication system closes that gap without adding headcount — freeing front-desk staff to handle judgment calls instead of repetitive follow-up.",
-  },
-  {
-    slug: "customer-acquisition-retention-system",
-    label: "Hospitality",
-    title: "Customer Acquisition & Retention System",
-    description: "How a connected growth system could transform a hospitality brand.",
-    image: "/images/photography/case-hospitality.webp",
-    imageAlt: "An elegant hotel lobby corridor with an arched doorway and patterned rug.",
-    primarySolutionId: "digital-marketing",
-    businessContext:
-      "A hospitality brand where guests book across direct, OTA, walk-in and phone channels — and where repeat-guest relationships depend on staff memory rather than a system.",
-    growthProblemFlow: [
-      "Bookings scattered across channels",
-      "Guest relationships live in staff memory",
-      "Slow periods go unmanaged",
-      "Loyal guests re-book elsewhere",
-    ],
-    outcomeMetrics: [
-      { label: "Calendar Consistency", direction: "up" as const },
-      { label: "Repeat-guest Rate", direction: "up" as const },
-      { label: "Manual Coordination", direction: "down" as const },
-      { label: "Guest Value Visibility", direction: "up" as const },
-    ],
-    whyItMatters:
-      "Hospitality revenue is won or lost in the gaps between stays — the slow season nobody targets, the loyal guest nobody follows up with. A connected guest CRM turns those gaps into a managed part of the calendar, not a seasonal accident.",
-  },
-  {
-    slug: "lead-generation-sales-system",
-    label: "Real Estate",
-    title: "Lead Generation & Sales System",
-    description: "How a connected growth system could transform a real-estate business.",
-    image: "/images/photography/cytonn-photography-76JYlSoAYM4-unsplash.jpg",
-    imageAlt: "A professionally staged modern living room interior in a Nairobi property.",
-    primarySolutionId: "crm-sales",
-    businessContext:
-      "A real-estate business generating inbound interest across property portals, social media and referrals — with response speed and follow-up left to individual agents.",
-    growthProblemFlow: [
-      "Inquiries across portals, social, referrals",
-      "Manual, inconsistent agent response",
-      "Hot leads cool before a viewing",
-      "No shared view of what converts",
-    ],
-    outcomeMetrics: [
-      { label: "Response Time", direction: "down" as const },
-      { label: "Pipeline Visibility per Listing", direction: "up" as const },
-      { label: "Lost Interest Before Viewing", direction: "down" as const },
-      { label: "Marketing Spend Efficiency", direction: "up" as const },
-    ],
-    whyItMatters:
-      "Real-estate interest is perishable — a hot lead ignored for even a day is often a lost deal. Structuring the pipeline around properties, not just people, gives agents and management the same shared view of what's converting and what needs attention.",
-  },
-];
+// Concept case studies live in lib/case-studies. This compact view keeps the
+// homepage, industry and solution pages working with the fields they use.
+export const CASE_STUDIES = CONCEPT_CASES.map((c) => ({
+  slug: c.slug,
+  label: c.industry,
+  title: c.name,
+  description: c.problem,
+  image: c.image,
+  imageAlt: c.imageAlt,
+}));
 
 export const HERO_IMAGE = {
   src: "/images/photography/hero-arrival.webp",
   alt: "Sunlight cutting through a modern architectural walkway, casting long shadows across the floor.",
 };
 
+// The six solution areas as presented in the homepage's "What NairobiX
+// does" capability system — in the order they build on each other.
+export const CONNECTED_CAPABILITIES = [
+  { name: "Strategy & Analytics", phrase: "Define priorities. Measure what matters." },
+  { name: "Digital Marketing", phrase: "Create demand and reach the right audience." },
+  { name: "CRM & Sales Systems", phrase: "Turn opportunities into an organized sales process." },
+  { name: "Business Automation", phrase: "Connect repetitive work into reliable workflows." },
+  { name: "AI Solutions", phrase: "Apply AI where it creates practical leverage." },
+  { name: "Web & Digital Solutions", phrase: "Build digital experiences that connect to the business." },
+];
+
 export const WHAT_WE_DO = {
   eyebrow: "WHAT NAIROBIX DOES",
-  title: "Not a marketing agency. A connected growth system.",
+  title: "Growth, built as a connected system.",
+  summary:
+    "NairobiX connects strategy, digital, sales, automation, AI and technology to build systems that move businesses forward.",
+  statement: "Growth happens between the systems that make a business work.",
+  // Long-form version — no longer shown on the homepage, but still the
+  // source for Nia's knowledge base (lib/nia/knowledge.ts).
   body: "NairobiX is not a marketing agency, a software vendor, or an automation consultancy — although the work touches all three. Digital marketing, CRM and sales systems, business automation, AI implementation, web and digital solutions, growth strategy and analytics are brought together as one body of work, because in practice these disciplines determine each other. A campaign that generates leads a sales team can't follow up on is not a marketing problem — it's a systems problem. NairobiX works at the level where growth actually happens: across the whole business, not inside a single department.",
 };
 
@@ -775,6 +737,106 @@ export const PROBLEMS_WE_SOLVE = [
     title: "It's unclear where to focus next.",
     description:
       "Budget, time and attention are being spent, but it's difficult to see which investments are actually moving the business forward.",
+  },
+];
+
+// The homepage's "Where growth gets stuck" presentation of PROBLEMS_WE_SOLVE
+// (same order): each title split into a short lead and the break itself,
+// plus the point in the connected flow (CONNECTED_GROWTH_FLOW vocabulary)
+// that its description says is failing.
+export const PROBLEM_BREAK_POINTS: {
+  lead: string;
+  statement: string;
+  from: string;
+  to: string;
+  note: string;
+}[] = [
+  { lead: "Leads come in", statement: "Then go quiet.", from: "Lead Capture", to: "Follow-up", note: "Inconsistent follow-up" },
+  { lead: "Marketing and sales", statement: "Don't share a system.", from: "Marketing", to: "Sales", note: "No shared view" },
+  { lead: "Growth still runs on", statement: "Manual effort.", from: "Sales", to: "Customer", note: "Carried manually" },
+  { lead: "It's unclear", statement: "Where to focus next.", from: "Reporting", to: "Optimization", note: "Not visible" },
+];
+
+// Homepage "Systems & Technology" preview — a curated selection, not a full
+// stack list. Logos in public/images/technology are the official marks
+// (svgl.app / Wikimedia Commons / Simple Icons sources), shown on dark in
+// each brand's own dark-background colours. `ratio` is the logo's width ÷
+// height from its viewBox, so each renders at a fixed height without shift.
+export type TechnologyItem = {
+  name: string;
+  category: string;
+  description: string;
+  logo: string;
+  ratio: number;
+};
+
+export const TECHNOLOGY_PREVIEW: TechnologyItem[] = [
+  { name: "Zoho", category: "CRM", description: "CRM and business relationship systems.", logo: "/images/technology/zoho.svg", ratio: 1024 / 450 },
+  { name: "HubSpot", category: "CRM", description: "CRM, marketing and sales operations.", logo: "/images/technology/hubspot.svg", ratio: 1 },
+  { name: "Meta", category: "Acquisition", description: "Digital acquisition and social platforms.", logo: "/images/technology/meta.svg", ratio: 256 / 171 },
+  { name: "Google", category: "Acquisition", description: "Search, advertising and business visibility.", logo: "/images/technology/google.svg", ratio: 268.152 / 273.883 },
+  { name: "WhatsApp", category: "Communication", description: "Business communication and customer interaction.", logo: "/images/technology/whatsapp.svg", ratio: 360 / 362 },
+  { name: "React", category: "Web", description: "Interactive web interfaces and applications.", logo: "/images/technology/react.svg", ratio: 569 / 512 },
+  { name: "Next.js", category: "Web", description: "High-performance websites and digital applications.", logo: "/images/technology/nextjs.svg", ratio: 1 },
+  { name: "WordPress", category: "Web", description: "Content-driven websites and digital platforms.", logo: "/images/technology/wordpress.svg", ratio: 1 },
+  { name: "Shopify", category: "Commerce", description: "E-commerce experiences and storefronts.", logo: "/images/technology/shopify.svg", ratio: 256 / 292 },
+  { name: "Figma", category: "Design", description: "Digital product and interface design.", logo: "/images/technology/figma.svg", ratio: 54 / 80 },
+  { name: "PostgreSQL", category: "Data", description: "Relational data infrastructure.", logo: "/images/technology/postgresql.svg", ratio: 432.071 / 445.383 },
+  { name: "OpenAI", category: "AI", description: "AI-powered applications and workflows.", logo: "/images/technology/openai.svg", ratio: 1 },
+  { name: "Anthropic", category: "AI", description: "AI systems and intelligent business workflows.", logo: "/images/technology/anthropic.svg", ratio: 1 },
+  { name: "Tailwind CSS", category: "Web", description: "Consistent, maintainable interface styling.", logo: "/images/technology/tailwindcss.svg", ratio: 54 / 33 },
+  { name: "Firebase", category: "Data", description: "App backends, authentication and real-time data.", logo: "/images/technology/firebase.svg", ratio: 1 },
+  { name: "Flutter", category: "Mobile", description: "Cross-platform mobile applications.", logo: "/images/technology/flutter.svg", ratio: 256 / 317 },
+  { name: "Docker", category: "Infrastructure", description: "Containerised, reproducible deployments.", logo: "/images/technology/docker.svg", ratio: 1 },
+];
+
+// Homepage versions of GROWTH_APPROACH and WHY_NAIROBIX — shorter, and
+// positioned without vendor comparisons. The originals stay as they are
+// because the About page (incl. its title-keyed WHY_NAIROBIX_INSTEAD map)
+// and Nia's knowledge base still read them.
+export const HOME_PROCESS = [
+  {
+    step: "Understand",
+    description:
+      "We examine your acquisition, sales, systems and operations to identify what's limiting growth and where the strongest opportunities exist.",
+  },
+  {
+    step: "Build",
+    description:
+      "We design and implement the systems, digital assets and strategies your business needs — sized to its current stage.",
+  },
+  {
+    step: "Connect",
+    description:
+      "We connect marketing, sales, customer experience and operations so information and follow-up move between them.",
+  },
+  {
+    step: "Optimize",
+    description:
+      "We track what the system produces, identify where performance is weakest and refine it as the business grows.",
+  },
+];
+
+export const HOME_WHY_NAIROBIX = [
+  {
+    title: "One accountable growth partner",
+    description:
+      "Strategy, acquisition, CRM, automation, AI and digital infrastructure coordinated around one growth plan.",
+  },
+  {
+    title: "Built around your business",
+    description:
+      "The system is shaped around your goals, constraints and stage — not forced into a fixed package.",
+  },
+  {
+    title: "Connected from the start",
+    description:
+      "The systems work together across acquisition, sales, customer experience and operations.",
+  },
+  {
+    title: "Built to keep improving",
+    description:
+      "We measure performance, identify constraints and refine the system as your business evolves.",
   },
 ];
 
@@ -987,7 +1049,7 @@ export const INDUSTRIES: IndustryDetail[] = [
       "Less administrative burden on front-desk staff",
       "A documented view of the patient pipeline, not just a booking diary",
     ],
-    caseStudySlug: "patient-growth-experience-system",
+    caseStudySlug: "clinic-ai-assisted-front-desk",
     faqs: [
       {
         question: "Does this replace our existing clinic management software?",
@@ -1024,7 +1086,7 @@ export const INDUSTRIES: IndustryDetail[] = [
       "Less interest lost between inquiry and viewing",
       "Marketing spend directed toward the channels that actually produce buyers or tenants",
     ],
-    caseStudySlug: "lead-generation-sales-system",
+    caseStudySlug: "real-estate-lead-to-sales-system",
     faqs: [
       {
         question: "Can this work across multiple agents and listings at once?",
@@ -1061,7 +1123,7 @@ export const INDUSTRIES: IndustryDetail[] = [
       "Less manual coordination for front-of-house and reservations staff",
       "A clearer picture of guest lifetime value, not just per-stay revenue",
     ],
-    caseStudySlug: "customer-acquisition-retention-system",
+    caseStudySlug: "venue-enquiry-to-event-automation",
     faqs: [
       {
         question: "Does this integrate with our existing booking engine or PMS?",
@@ -1098,6 +1160,7 @@ export const INDUSTRIES: IndustryDetail[] = [
       "A clear view of the most profitable service lines and client types",
       "Less inquiry follow-up left to memory or informal tracking",
     ],
+    caseStudySlug: "professional-services-growth-system",
     faqs: [
       {
         question: "Will this feel too 'salesy' for a relationship-driven practice?",
@@ -1134,6 +1197,7 @@ export const INDUSTRIES: IndustryDetail[] = [
       "Unified customer records across website, WhatsApp and social orders",
       "Faster order-to-fulfillment handling",
     ],
+    caseStudySlug: "ecommerce-growth-system",
     faqs: [
       {
         question: "Does this work if most of our orders come through WhatsApp, not a website?",

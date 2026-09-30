@@ -23,8 +23,12 @@ function withAnimatedArrow(children: ReactNode): ReactNode {
     <>
       {items.slice(0, -1)}
       {textBefore}
-      {textBefore ? " " : null}
-      <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1">→</span>
+      {/* A literal space is dropped inside the inline-flex button, so the gap is a margin. */}
+      <span
+        className={`inline-block transition-transform duration-200 ease-out group-hover:translate-x-1 ${textBefore ? "ml-[0.4em]" : ""}`}
+      >
+        →
+      </span>
     </>
   );
 }

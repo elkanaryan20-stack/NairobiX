@@ -1,145 +1,121 @@
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
-import { Card } from "@/components/ui/Card";
-import { Heading } from "@/components/ui/Heading";
-import { Button } from "@/components/ui/Button";
-import { GrowthReviewTimeline, type GrowthReviewStep } from "@/components/forms/GrowthReviewTimeline";
-import { BrandSignature } from "@/components/shared/BrandSignature";
+"use client";
 
-const NEXT_STEPS: GrowthReviewStep[] = [
-  {
-    number: "01",
-    title: "Session Confirmed",
-    description: "Your NairobiX Growth Session is scheduled.",
-    complete: true,
-  },
-  {
-    number: "02",
-    title: "Context",
-    description: "We'll use the information you've shared to understand the areas you want to address.",
-    complete: false,
-  },
-  {
-    number: "03",
-    title: "Growth Conversation",
-    description: "We'll focus on your business, current constraints and practical opportunities.",
-    complete: false,
-  },
+import Link from "next/link";
+import { useEffect, useRef } from "react";
+
+const MONO = "font-mono text-[10px] uppercase tracking-[0.2em]";
+
+const NEXT = [
+  "A confirmation arrives in your inbox from our booking system.",
+  "NairobiX reviews what you shared, so the thirty minutes go to your business rather than introductions.",
+  "The team confirms the meeting details with you before the session.",
 ];
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-4 border-b border-white/5 pb-3 last:border-0 last:pb-0">
-      <span className="text-[var(--text-tertiary)]">{label}</span>
-      <span className="text-right font-medium text-white">{value}</span>
-    </div>
-  );
-}
+const PREPARE = [
+  "The one outcome you'd most like from the next six months",
+  "How customers find you today, and what happens after they enquire",
+  "The tools you already use — website, CRM, WhatsApp, spreadsheets",
+];
 
 /**
- * The consultation's equivalent of AssessmentReceived — reached once the
- * real Zoho Bookings appointment has actually been created (see
- * BookingFlow's handleConfirm). Shares the assessment confirmation's
- * typography, spacing and node-timeline grammar, but is about reserving a
- * conversation rather than initiating a review — no Assessment/Booking ID,
- * no "Add to Calendar", a single CTA.
+ * Shown once Zoho Bookings has actually created the appointment (see
+ * BookingFlow). Every detail comes from the booking itself — the chosen
+ * slot, the email given, and Zoho's booking reference when returned. No
+ * meeting link is shown because none exists yet; the copy says how it
+ * arrives instead of inventing one.
  */
 export function GrowthSessionConfirmed({
   formattedDate,
   formattedTime,
+  localTime,
   email,
   discussionTopic,
   firstName,
+  bookingId,
 }: {
   formattedDate: string;
   formattedTime: string;
+  localTime?: string | null;
   email: string;
   discussionTopic: string;
   firstName: string;
+  bookingId?: string;
 }) {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
   return (
-    <div className="bg-[#0b0b0d] text-white">
-      <section
-        role="status"
-        aria-live="polite"
-        className="border-b border-white/10 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.14),transparent_40%)]"
-      >
-        <Container className="py-16 sm:py-24">
-          <div className="mx-auto max-w-2xl text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]" aria-hidden="true" />
-              NairobiX Growth Session
-            </div>
+    <div role="status" aria-live="polite" className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
+      <div>
+        <p className={`${MONO} flex items-center gap-2 text-[var(--color-primary)]`}>
+          <span aria-hidden="true" className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-primary)] text-[9px] text-black">
+            ✓
+          </span>
+          Booked
+        </p>
+        <h2 ref={headingRef} tabIndex={-1} className="mt-4 font-display text-4xl font-medium tracking-tight text-white outline-none sm:text-5xl">
+          Consultation confirmed.
+        </h2>
+        <p className="mt-5 max-w-lg text-lg leading-8 text-[var(--text-secondary)]">
+          {firstName ? `Thank you, ${firstName}. ` : ""}Your Business Growth Consultation is booked. A confirmation is on its way to{" "}
+          <span className="text-white">{email}</span>.
+        </p>
 
-            <Heading as="h1" variant="display-lg" className="mt-6">
-              Your session is confirmed.
-            </Heading>
+        <dl className="mt-8 divide-y divide-white/10 border-y border-white/10 text-sm">
+          <Row label="Date" value={formattedDate} />
+          <Row label="Time" value={`${formattedTime} · East Africa Time (EAT, UTC+3)`} />
+          {localTime ? <Row label="Your time" value={localTime.replace(/ your time/, "")} /> : null}
+          <Row label="Duration" value="30 minutes" />
+          {discussionTopic ? <Row label="Focus" value={discussionTopic} /> : null}
+          <Row label="Meeting details" value="Confirmed with you by the team before the session" />
+          {bookingId ? <Row label="Booking reference" value={bookingId} mono /> : null}
+        </dl>
+      </div>
 
-            {firstName ? (
-              <p className="mt-6 text-base leading-7 text-[var(--text-secondary)]">
-                Good to have you with us, {firstName}.
-              </p>
-            ) : null}
-
-            <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
-              We&apos;re looking forward to the conversation.
-            </p>
-            <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
-              A focused conversation about your business, its current constraints and the systems
-              that can support its next stage of growth.
-            </p>
-
-            <Card variant="surface" className="mx-auto mt-10 max-w-md space-y-4 p-6 text-left text-sm sm:p-8">
-              <SummaryRow label="Date" value={formattedDate} />
-              <SummaryRow label="Time" value={formattedTime} />
-              <SummaryRow label="Duration" value="30 minutes" />
-              <SummaryRow label="Timezone" value="EAT · East Africa Time" />
-            </Card>
-
-            <p className="mx-auto mt-8 max-w-md text-sm leading-6 text-[var(--text-tertiary)]">
-              A confirmation has been sent to {email}. Our team will reach out shortly before your
-              session to confirm the meeting link.
-            </p>
+      <div className="lg:pt-10">
+        <div className="border border-white/10 bg-[#0c0d0e] p-6 sm:p-8">
+          <p className={`${MONO} text-white/50`}>What happens next</p>
+          <ol className="mt-5 space-y-4">
+            {NEXT.map((step, i) => (
+              <li key={step} className="grid grid-cols-[2rem_minmax(0,1fr)] text-[15px] leading-6 text-white/80">
+                <span className="font-mono text-xs leading-6 text-[var(--color-primary)]">{String(i + 1).padStart(2, "0")}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+          <div className="mt-8 border-t border-white/10 pt-6">
+            <p className={`${MONO} text-white/50`}>Worth having to hand</p>
+            <ul className="mt-4 space-y-2.5">
+              {PREPARE.map((item) => (
+                <li key={item} className="flex gap-3 text-sm leading-6 text-white/70">
+                  <span aria-hidden="true" className="mt-[11px] h-px w-3 shrink-0 bg-[var(--color-primary)]" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-xs leading-5 text-white/40">Nothing needs to be prepared formally — rough notes are plenty.</p>
           </div>
-        </Container>
-      </section>
-
-      {discussionTopic ? (
-        <Section tone="base">
-          <div className="mx-auto max-w-xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--text-tertiary)]">
-              Your conversation focus
-            </p>
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/10 px-4 py-2 text-sm font-medium text-white">
-              {discussionTopic}
-            </div>
-            <p className="mt-6 text-sm leading-6 text-[var(--text-secondary)]">
-              We&apos;ll use this to keep the conversation focused from the first minute.
-            </p>
-          </div>
-        </Section>
-      ) : null}
-
-      <Section tone="surface" border="top">
-        <div className="mx-auto max-w-2xl text-center">
-          <Heading as="h2" variant="heading-lg">
-            What happens next
-          </Heading>
         </div>
-        <div className="mt-12">
-          <GrowthReviewTimeline steps={NEXT_STEPS} />
+        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold">
+          <Link href="/case-studies" className="text-white hover:text-[var(--color-primary)]">
+            See how we approach problems →
+          </Link>
+          <Link href="/insights" className="text-white/70 hover:text-white">
+            Read NairobiX Insights →
+          </Link>
         </div>
-      </Section>
+      </div>
+    </div>
+  );
+}
 
-      <Section tone="base" border="top">
-        <div className="mx-auto flex max-w-xl flex-col items-center gap-6 text-center">
-          <Button href="/" variant="primary" size="lg">
-            Explore NairobiX →
-          </Button>
-        </div>
-      </Section>
-
-      <BrandSignature />
+function Row({ label, value, mono = false }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div className="flex items-baseline justify-between gap-6 py-3">
+      <dt className="shrink-0 text-white/45">{label}</dt>
+      <dd className={`text-right text-white ${mono ? "font-mono text-xs" : "font-medium"}`}>{value}</dd>
     </div>
   );
 }

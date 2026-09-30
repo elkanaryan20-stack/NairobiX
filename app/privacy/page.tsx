@@ -5,6 +5,7 @@ import { LegalDocument, type LegalSection } from "@/components/ui/LegalDocument"
 import { CONTACT_EMAIL } from "@/lib/site-data";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
+import { TRACKING } from "@/lib/tracking-config";
 import { webPageJsonLd } from "@/lib/structured-data";
 
 const TITLE = "Privacy Policy";
@@ -119,13 +120,33 @@ const SECTIONS: LegalSection[] = [
     title: "Cookies and tracking",
     body: [
       {
-        p: "NairobiX does not set custom cookies of its own. The website uses Google Analytics (Google LLC) to understand how visitors use the site. Google Analytics sets its own standard browser cookies (such as those beginning with _ga) to distinguish visitors and sessions.",
+        p: "NairobiX does not set custom cookies of its own (advertising platforms, where enabled below, may set their own). The website uses Google Analytics (Google LLC) to understand how visitors use the site. Google Analytics sets its own standard browser cookies (such as those beginning with _ga) to distinguish visitors and sessions.",
       },
       {
         p: "We also send a small number of custom analytics events — for example, when a form is successfully submitted — but these events only include a generic label describing which form was submitted (such as \"contact\" or \"consultation_booking\"). We do not send your name, email, phone number or any other personal information to Google Analytics.",
       },
       {
         p: "We do not currently display a cookie consent banner. If you would prefer not to be tracked by Google Analytics, you can use your browser's cookie controls, a browser extension, or Google's own opt-out tools to limit or block this tracking.",
+      },
+      {
+        p: "To understand which campaigns and channels bring people to NairobiX, the website stores a small record in your browser's local storage: the channel you arrived from, campaign tags in the link (such as utm_source or an ad click ID), the first page you landed on and the date. When you submit a form, this record is sent with it and attached to your enquiry in our CRM. It contains no personal information on its own.",
+      },
+      ...(TRACKING.metaPixelId
+        ? [
+            {
+              p: "We use the Meta Pixel and Meta Conversions API (Meta Platforms) to measure the effectiveness of our advertising. When you submit an enquiry, book a consultation or complete the Growth Assessment, a conversion event is sent to Meta. Where you provided them, your email address and phone number are hashed (converted into an irreversible code) before being sent, so Meta can match the event without receiving them in readable form.",
+            },
+          ]
+        : []),
+      ...(TRACKING.googleAdsId
+        ? [
+            {
+              p: "We use Google Ads conversion tracking. When you complete a key action, Google's tag may send your email address and phone number to Google in hashed form (enhanced conversions) to measure which ads lead to enquiries.",
+            },
+          ]
+        : []),
+      {
+        p: "If your browser sends a Global Privacy Control signal, we do not load advertising pixels or send advertising conversion data for your visit.",
       },
     ],
   },

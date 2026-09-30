@@ -3,19 +3,75 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { FocusEvent } from "react";
 import { ChevronDown } from "lucide-react";
 import { BOOKING_URL, NAV_ITEMS, SOLUTION_CATEGORIES } from "@/lib/site-data";
 import { SkipToContent } from "@/components/skip-to-content";
 
 const CTAS = [
   { label: "Book a Consultation", href: BOOKING_URL, external: false },
-  { label: "Get Free Growth Assessment", href: "/business-growth-audit", external: false },
+  { label: "Start Free Assessment", href: "/business-growth-audit", external: false },
 ];
+
+const pad = (n: number) => String(n).padStart(2, "0");
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Solutions mega-menu. Open state is explicit (not CSS :hover alone) so it
+  // survives the pointer crossing the gap between the trigger and the panel,
+  // and can close on Escape, an outside click, or another nav item.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const triggerRef = useRef<HTMLAnchorElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const suppressFocusOpen = useRef(false);
+
+  const openMenu = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setMenuOpen(true);
+  }, []);
+  const closeMenu = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setMenuOpen(false);
+  }, []);
+  // A short grace period bridges the gap between trigger and panel.
+  const scheduleClose = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setMenuOpen(false), 150);
+  }, []);
+  const handleBlur = (event: FocusEvent<HTMLElement>) => {
+    const next = event.relatedTarget as Node | null;
+    if (next && (triggerRef.current?.contains(next) || panelRef.current?.contains(next))) return;
+    closeMenu();
+  };
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeMenu();
+        suppressFocusOpen.current = true;
+        triggerRef.current?.focus();
+      }
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (!triggerRef.current?.contains(target) && !panelRef.current?.contains(target)) closeMenu();
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [menuOpen, closeMenu]);
+
+  useEffect(() => () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  }, []);
 
   // The floating Nia launcher is mounted independently in the root layout.
   // On short mobile viewports its fixed bottom-right bubble overlaps the last
@@ -28,7 +84,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#030304]/80 backdrop-blur-xl">
       <SkipToContent />
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="-my-2 flex items-center gap-2 py-2 text-white" aria-label="NairobiX home">
           <Image
             src="/images/NairobiX-logo.png"
@@ -52,59 +108,108 @@ export function SiteHeader() {
 
             if (item.label === "Solutions") {
               return (
-                <div key={item.label} className="group relative">
-                  <Link href={item.href} className={`inline-flex items-center gap-1 py-2 ${linkClass}`}>
-                    {item.label}
-                    <ChevronDown
-                      className="h-3.5 w-3.5 transition group-hover:rotate-180 group-focus-within:rotate-180"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                  <div className="invisible absolute left-1/2 top-full z-50 w-[640px] -translate-x-1/2 pt-3 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                    <div className="rounded-2xl border border-white/10 bg-[#0b0b0d] p-6 shadow-[var(--shadow-elevated)]">
-                      <div className="grid grid-cols-3 gap-6">
-                        {SOLUTION_CATEGORIES.map((category) => (
-                          <div key={category.id}>
-                            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
-                              {category.title}
-                            </p>
-                            <ul className="space-y-2.5">
-                              {category.items.map((solution) => (
-                                <li key={solution.id}>
-                                  <Link
-                                    href={`/solutions/${solution.id}`}
-                                    className="text-sm text-[var(--text-secondary)] transition hover:text-white"
-                                  >
+                <div key={item.label} className="contents">
+                <Link
+                  ref={triggerRef}
+                  href={item.href}
+                  aria-expanded={menuOpen}
+                  aria-controls="solutions-menu"
+                  onPointerEnter={openMenu}
+                  onPointerLeave={scheduleClose}
+                  onFocus={() => {
+                    if (suppressFocusOpen.current) {
+                      suppressFocusOpen.current = false;
+                      return;
+                    }
+                    openMenu();
+                  }}
+                  onBlur={handleBlur}
+                  onClick={closeMenu}
+                  className={`inline-flex items-center gap-1 py-2 ${linkClass}`}
+                >
+                  {item.label}
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform duration-200 ${menuOpen ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
+                </Link>
+
+                {/* Solutions mega-menu — spans the header's content container, so its
+                    edges are the page grid's edges and can never leave the viewport. */}
+                <div
+                  id="solutions-menu"
+                  ref={panelRef}
+                  onPointerEnter={openMenu}
+                  onPointerLeave={scheduleClose}
+                  onFocus={openMenu}
+                  onBlur={handleBlur}
+                  className={`absolute inset-x-4 top-full z-50 hidden pt-2 transition-[opacity,transform,visibility] duration-200 ease-out sm:inset-x-6 lg:inset-x-8 lg:block ${
+                    menuOpen ? "visible translate-y-0 opacity-100" : "pointer-events-none invisible -translate-y-1 opacity-0"
+                  }`}
+                >
+                  <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0b0b0d] shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+                    <div className="grid grid-cols-3 divide-x divide-white/10">
+                      {SOLUTION_CATEGORIES.map((category, groupIndex) => (
+                        <div key={category.id} className="px-7 pb-6 pt-7">
+                          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--color-primary)]">
+                            Group {pad(groupIndex + 1)}
+                          </p>
+                          <p className="mt-2 text-base font-semibold text-white">{category.title}</p>
+                          <p className="mt-1 text-xs leading-5 text-[var(--text-tertiary)]">{category.intro}</p>
+                          <ul className="mt-5 space-y-1">
+                            {category.items.map((solution) => (
+                              <li key={solution.id}>
+                                <Link
+                                  href={`/solutions/${solution.id}`}
+                                  onClick={closeMenu}
+                                  className="group/link -mx-3 flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:bg-white/[0.04] hover:text-white focus-visible:bg-white/[0.04] focus-visible:text-white focus-visible:outline-offset-0"
+                                >
+                                  <span className="flex items-baseline gap-3">
+                                    <span aria-hidden="true" className="font-mono text-[10px] tracking-[0.18em] text-white/35">
+                                      {pad(SOLUTION_CATEGORIES.flatMap((c) => c.items).findIndex((i) => i.id === solution.id) + 1)}
+                                    </span>
                                     {solution.title}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-5">
-                        <p className="text-sm text-[var(--text-secondary)]">Not sure where to start?</p>
-                        <Link
-                          href="/business-growth-audit"
-                          className="whitespace-nowrap text-sm font-semibold text-[var(--color-primary)] transition hover:text-white"
-                        >
-                          Get Your Free Growth Assessment →
-                        </Link>
-                      </div>
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    className="-translate-x-1 text-[var(--color-primary)] opacity-0 transition duration-200 group-hover/link:translate-x-0 group-hover/link:opacity-100 group-focus-visible/link:translate-x-0 group-focus-visible/link:opacity-100"
+                                  >
+                                    →
+                                  </span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between gap-4 border-t border-white/10 px-7 py-4">
+                      <p className="text-sm text-[var(--text-secondary)]">Not sure where to start?</p>
+                      <Link
+                        href="/business-growth-audit"
+                        onClick={closeMenu}
+                        className="group/cta whitespace-nowrap text-sm font-semibold text-[var(--color-primary)] transition-colors hover:text-white"
+                      >
+                        Get Your Free Growth Assessment{" "}
+                        <span aria-hidden="true" className="inline-block transition-transform duration-200 group-hover/cta:translate-x-1">
+                          →
+                        </span>
+                      </Link>
                     </div>
                   </div>
+                </div>
                 </div>
               );
             }
 
             return (
-              <Link key={item.label} href={item.href} className={linkClass}>
+              <Link key={item.label} href={item.href} className={linkClass} onPointerEnter={closeMenu} onFocus={closeMenu}>
                 {item.label}
               </Link>
             );
           })}
         </nav>
+
 
         <div className="hidden items-center gap-3 lg:flex">
           {CTAS.map((cta) => (
@@ -166,7 +271,7 @@ export function SiteHeader() {
                 href="/business-growth-audit"
                 className="flex w-full items-center justify-center rounded-full bg-[var(--color-primary)] px-4 py-3 text-sm font-semibold text-[var(--color-on-primary)]"
               >
-                Get Free Growth Assessment
+                Start Free Assessment
               </Link>
             </div>
           </div>

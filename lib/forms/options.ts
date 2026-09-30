@@ -103,3 +103,40 @@ export const DISCUSSION_TOPIC_OPTIONS = [
   "AI Solutions",
   "Website & Digital Solutions",
 ];
+
+// Opportunity Network application — new interactive wizard field set. Not
+// yet mapped to Zoho (lib/leads.ts still submits Partner_Type/
+// Partnership_Interest/Partnership_Motivation above); the CRM/API mapping
+// for these is a follow-up the site owner is doing directly in Zoho.
+export const APPLICANT_TYPE_OPTIONS = ["Individual", "Organization"];
+
+export const CONTRIBUTION_AREA_OPTIONS = [
+  { label: "Generate Opportunities", value: "Generate Opportunities", description: "Introduce relevant business opportunities." },
+  { label: "Provide Expertise", value: "Provide Expertise", description: "Contribute specialized knowledge or expertise." },
+  { label: "Provide Services", value: "Provide Services", description: "Provide defined services or capabilities." },
+  { label: "Collaborate on Projects", value: "Collaborate on Projects", description: "Collaborate with NairobiX on approved projects." },
+];
+
+export const OPPORTUNITY_ACCESS_OPTIONS = [
+  "Business Owners",
+  "Entrepreneurs",
+  "SMEs",
+  "Startups",
+  "Corporate Organizations",
+  "Professionals",
+  "Institutions",
+  "Industry Networks",
+  "Community Networks",
+  "Other",
+];
+
+export const RELATIONSHIP_TO_OPPORTUNITIES_OPTIONS = [
+  "Direct Business Relationship",
+  "Client Relationship",
+  "Professional Relationship",
+  "Customer Relationship",
+  "Decision-Maker Access",
+  "Industry Network",
+  "Community Network",
+  "Other",
+];

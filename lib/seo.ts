@@ -56,6 +56,19 @@ export function homeMetadata(): Metadata {
  * that footprint entirely, and keeps `<title>` (templated once by the root
  * layout) and `openGraph.title` (not templated) both correct.
  */
+/**
+ * Search results show roughly 155–160 characters of a description. Longer
+ * copy is cut at the last full sentence that fits, or else at a word boundary.
+ */
+export function clampDescription(text: string, max = 158): string {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const window = clean.slice(0, max);
+  const sentenceEnd = Math.max(window.lastIndexOf(". "), window.lastIndexOf("? "), window.lastIndexOf("! "));
+  if (sentenceEnd > 80) return window.slice(0, sentenceEnd + 1);
+  return window.slice(0, window.lastIndexOf(" ")).replace(/[,;:—–-]$/, "") + "…";
+}
+
 export function pageMetadata({
   title,
   description,
@@ -67,6 +80,7 @@ export function pageMetadata({
 }): Metadata {
   const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
   const fullTitle = `${title} | ${SITE_NAME}`;
+  description = clampDescription(description);
 
   return {
     title,

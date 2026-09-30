@@ -37,11 +37,11 @@ export function AssessmentSubmissionTransition() {
       className="flex flex-col items-center px-2 py-10 text-center sm:py-16"
     >
       <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-primary)]">
-        NairobiX Growth Activation
+        Business Growth Assessment
       </p>
 
       <h2 className="mt-4 font-display text-2xl font-medium tracking-tight text-white sm:text-3xl">
-        Connecting your assessment<span aria-hidden="true">.....</span>
+        Sending your assessment to NairobiX
       </h2>
 
       <div className="mt-12 w-full max-w-xl">

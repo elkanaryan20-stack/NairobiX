@@ -17,6 +17,8 @@
   --color-border-strong: rgba(255, 255, 255, 0.18);
   --text-secondary: rgba(226, 232, 240, 0.82);
   --text-tertiary: rgba(148, 163, 184, 0.85);
+  /* Fill matching the current section surface; overridden per tone. */
+  --section-bg: #0b0b0d;
   --max-width: 1200px;
   --max-width-prose: 45rem;
   --radius-card: 16px;
@@ -71,8 +73,11 @@
     display: block;
   }
 
+  /* clip, not hidden: hidden turns <main> into a scroll container, which
+     freezes scroll-driven animations (they track the nearest scroll
+     container, and <main> never scrolls) and breaks position: sticky. */
   main {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   ::selection {
@@ -151,6 +156,490 @@
 
   [data-reveal="visible"] {
     animation: fade-up-in 550ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────
+     NairobiX environments — the background hierarchy behind Section tones
+     (components/ui/Section.tsx). Each environment is chosen for what the
+     visitor should feel at that point in the page, and is built from a few
+     ingredients rather than one hex value:
+
+       base      a near-black from one controlled family (never identical)
+       light     painted on the section itself, full-bleed: large, soft,
+                 off-edge illumination — atmosphere, never a visible circle
+       structure painted on ::before, inset to the content column
+                 (--nx-edge), so every line lands on the page's real grid
+
+     Quiet environments (hero, scenarios, FAQ, final CTA) deliberately have
+     no light and no structure; that contrast is what makes the others read.
+     Static by default; the only motion is scroll-linked (System Flow).
+     ───────────────────────────────────────────────────────────────────── */
+  :root {
+    /* Horizontal inset of the content column: Container's gutter below
+       1280px, then the centred 1216px column. Structure layers are inset by
+       this, so a pattern drawn from 0 lands on the content edges exactly —
+       percentage background-position can't do this (it resolves against
+       the leftover space, not the box). */
+    --nx-gutter: 16px;
+    --nx-edge: max(var(--nx-gutter), calc(50% - 608px));
+  }
+  @media (min-width: 640px) {
+    :root { --nx-gutter: 24px; }
+  }
+  @media (min-width: 1024px) {
+    :root { --nx-gutter: 32px; }
+  }
+
+  [class*="nx-env-"] {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--section-bg);
+  }
+  .nx-env-warmth::before,
+  .nx-env-steel::before,
+  .nx-env-friction::before,
+  .nx-env-flow::before,
+  .nx-env-flow::after,
+  .nx-env-technical::before,
+  .nx-env-blueprint::before,
+  .nx-env-interface::before,
+  .nx-env-focus::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  /* Structure layers that belong to the content grid. */
+  .nx-env-warmth::before,
+  .nx-env-steel::before,
+  .nx-env-technical::before,
+  .nx-env-blueprint::before,
+  .nx-env-focus::before {
+    left: var(--nx-edge);
+    right: var(--nx-edge);
+  }
+
+  /* What NairobiX does — business + human context. Warm black, with warm
+     light entering from the upper-left edge and a few long, faint lines. */
+  .nx-env-warmth {
+    --section-bg: #0d0b09;
+    background-image: radial-gradient(120% 90% at -10% -20%, rgba(255, 196, 150, 0.05), transparent 60%);
+  }
+  .nx-env-warmth::before {
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 100% 224px;
+    background-position: 0 111px;
+    mask-image: linear-gradient(to right, #000 40%, transparent);
+  }
+
+  /* Solutions — an operating system of three components. Steel-black with
+     cool central depth; division lines sit exactly on the three card edges
+     (tiles of (W + 24px) / 3 land on each card's left edge given the 24px
+     grid gap), plus the closing right edge. Desktop only. */
+  .nx-env-steel {
+    --section-bg: #080b0e;
+    background-image: radial-gradient(90% 70% at 50% 55%, rgba(150, 180, 210, 0.035), transparent 70%);
+  }
+  .nx-env-steel::before {
+    display: none;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to left, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: calc((100% + 24px) / 3) 100%, 100% 100%;
+    background-repeat: repeat-x, no-repeat;
+    mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 85%, transparent);
+  }
+  @media (min-width: 1024px) {
+    .nx-env-steel::before {
+      display: block;
+    }
+  }
+
+  /* Where growth gets stuck — friction. Charcoal with staggered, broken
+     horizontal lines: structure that starts and fails to continue. */
+  .nx-env-friction {
+    --section-bg: #0f1010;
+  }
+  .nx-env-friction::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='192'%3E%3Cg stroke='rgba(255,255,255,0.05)' stroke-width='1'%3E%3Cline x1='0' y1='0.5' x2='214' y2='0.5'/%3E%3Cline x1='238' y1='0.5' x2='300' y2='0.5'/%3E%3Cline x1='0' y1='96.5' x2='76' y2='96.5'/%3E%3Cline x1='128' y1='96.5' x2='360' y2='96.5'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 360px 192px;
+    background-position: 0 63px;
+    mask-image:
+      linear-gradient(to right, transparent, #000 15%, #000 85%, transparent),
+      linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+    mask-composite: intersect;
+  }
+
+  /* Connected growth system — flow. Ink base, horizontal paths every 120px,
+     a vertical path in the gutter (never under text), and an orange signal
+     that travels as the visitor scrolls through (where supported). */
+  .nx-env-flow {
+    --section-bg: #0a0b0c;
+  }
+  .nx-env-flow::before {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 119px,
+        rgba(255, 255, 255, 0.032) 119px,
+        rgba(255, 255, 255, 0.032) 120px
+      );
+    background-size: 1px 100%, 100% 100%;
+    background-position: calc(var(--nx-edge) - 32px) 0, 0 0;
+    background-repeat: no-repeat, repeat;
+    mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+  }
+  .nx-env-flow::after {
+    display: none;
+    inset: auto;
+    top: 119px;
+    left: 0;
+    width: 12%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(249, 115, 22, 0.45));
+  }
+  @media (min-width: 1024px) {
+    .nx-env-flow::after {
+      display: block;
+    }
+  }
+  @supports (animation-timeline: view()) {
+    /* Travels the empty right half of its path (45% → 88% of the section
+       width; the signal itself is 12% wide), clear of the left-aligned
+       eyebrow and heading that share the path's row. */
+    @keyframes nx-flow-signal {
+      from { transform: translateX(375%); }
+      to { transform: translateX(733%); }
+    }
+    .nx-env-flow::after {
+      animation: nx-flow-signal linear both;
+      animation-timeline: view();
+      animation-range: entry 20% exit 40%;
+    }
+  }
+
+  /* Technology — precision. Cool slate with a slight central lift and edge
+     vignette; engineering columns that continue the matrix's own columns
+     (4 × 25% of the content column, plus the closing right edge). */
+  .nx-env-technical {
+    --section-bg: #0a0d0f;
+    background-image:
+      radial-gradient(80% 60% at 50% 45%, rgba(160, 190, 210, 0.03), transparent 70%),
+      linear-gradient(to right, rgba(0, 0, 0, 0.35), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.35));
+  }
+  .nx-env-technical::before {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to left, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 25% 100%, 100% 100%;
+    background-repeat: repeat-x, no-repeat;
+    mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  /* How NairobiX works — blueprint. Large horizontal alignment lines, very
+     faint vertical guides on the four process columns, and a tiny marker
+     at each intersection. Different language from Technology on purpose. */
+  .nx-env-blueprint {
+    --section-bg: #09090a;
+  }
+  .nx-env-blueprint::before {
+    background-image:
+      radial-gradient(circle at 3px 3px, rgba(255, 255, 255, 0.2) 0 1.1px, transparent 1.6px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to right, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    background-size: 25% 160px, 100% 160px, 25% 100%;
+    background-position: -3px -3px, 0 0, 0 0;
+    mask-image:
+      linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent),
+      linear-gradient(to right, #000 70%, transparent);
+    mask-composite: intersect;
+  }
+
+  /* Why NairobiX — photographic. The photograph itself is the environment
+     (see the page markup); the surface only provides the dark it fades to. */
+  .nx-env-photo {
+    --section-bg: #070707;
+    overflow: hidden;
+  }
+
+  /* Industries — relevance, a business environment. Warm charcoal with very
+     soft horizontal banding and low warm light from the lower left. */
+  .nx-env-business {
+    --section-bg: #110f0d;
+    background-image:
+      radial-gradient(110% 90% at -10% 120%, rgba(255, 190, 140, 0.04), transparent 60%),
+      repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.012) 0 96px, transparent 96px 192px);
+  }
+
+  /* How we work / workspace — experience. Deep interface graphite with soft
+     depth behind the workspace panel and a fine dot grid that fades out
+     around it. */
+  .nx-env-interface {
+    --section-bg: #0b0c0e;
+    background-image: radial-gradient(70% 55% at 60% 68%, rgba(255, 255, 255, 0.03), transparent 70%);
+  }
+  .nx-env-interface::before {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0 1px, transparent 1.4px);
+    background-size: 24px 24px;
+    background-position: var(--nx-edge) 0;
+    mask-image: radial-gradient(60% 50% at 60% 68%, #000, transparent 75%);
+  }
+
+  /* Growth assessment — focus. The richest dark on the page: warm near-
+     black, directional warm light from the upper right, two thin system
+     lines in the section's padding. */
+  .nx-env-focus {
+    --section-bg: #110e0b;
+    background-image:
+      radial-gradient(100% 90% at 105% -15%, rgba(255, 196, 150, 0.06), transparent 55%),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.012), transparent 35%);
+  }
+  .nx-env-focus::before {
+    background-image:
+      linear-gradient(to right, transparent, rgba(255, 255, 255, 0.07) 20%, rgba(255, 255, 255, 0.07) 80%, transparent),
+      linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05) 30%, rgba(255, 255, 255, 0.05) 70%, transparent);
+    background-size: 100% 1px, 100% 1px;
+    background-position: 0 48px, 0 calc(100% - 48px);
+    background-repeat: no-repeat;
+  }
+
+  /* Editorial — knowledge. The page's one light surface: flat warm stone. */
+  .nx-env-editorial {
+    --section-bg: #f3f0ea;
+    color: #141414;
+  }
+
+  /* ── Solutions page environments ──────────────────────────────────────
+     A page-specific family, deliberately different from the homepage's.
+     Same ingredients (near-black base, off-edge light, structure inset to
+     the content column), tuned to what each part of the page explains. */
+
+  /* Hero — a business system map, barely there: three capability lines,
+     one per solution group at the centre of each third of the content
+     column. The group nodes in the hero's nav sit exactly on them. */
+  .nx-env-map {
+    --section-bg: #070808;
+    background-image: radial-gradient(90% 70% at 70% 40%, rgba(160, 180, 200, 0.03), transparent 70%);
+  }
+  .nx-env-map::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    left: var(--nx-edge);
+    right: var(--nx-edge);
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, transparent calc(16.667% - 0.5px), rgba(255, 255, 255, 0.035) calc(16.667% - 0.5px), rgba(255, 255, 255, 0.035) calc(16.667% + 0.5px), transparent calc(16.667% + 0.5px)),
+      linear-gradient(to right, transparent calc(50% - 0.5px), rgba(255, 255, 255, 0.035) calc(50% - 0.5px), rgba(255, 255, 255, 0.035) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(to right, transparent calc(83.333% - 0.5px), rgba(255, 255, 255, 0.035) calc(83.333% - 0.5px), rgba(255, 255, 255, 0.035) calc(83.333% + 0.5px), transparent calc(83.333% + 0.5px));
+    mask-image: linear-gradient(to bottom, transparent 10%, #000 55%, #000 92%, transparent);
+  }
+
+  /* System architecture — the page's special environment: deep ink, a
+     fine 48px drafting grid fading from the centre, cool central depth. */
+  .nx-env-architecture {
+    --section-bg: #080a0c;
+    background-image: radial-gradient(80% 60% at 50% 45%, rgba(150, 180, 210, 0.035), transparent 70%);
+  }
+  .nx-env-architecture::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: var(--nx-edge) 0;
+    mask-image: radial-gradient(70% 65% at 50% 50%, #000, transparent 85%);
+  }
+
+  /* Acquire & Grow — reach, visibility, data: warm near-black, light from
+     the left edge. */
+  .nx-env-acquire {
+    --section-bg: #0d0b09;
+    background-image: radial-gradient(90% 60% at -10% 10%, rgba(255, 196, 150, 0.045), transparent 60%);
+  }
+
+  /* Convert & Scale — pipeline, connection, automation: cool near-black
+     with faint horizontal pipeline lines. */
+  .nx-env-convert {
+    --section-bg: #090c0f;
+    background-image:
+      radial-gradient(90% 60% at 110% 10%, rgba(150, 180, 210, 0.04), transparent 60%),
+      repeating-linear-gradient(to bottom, transparent 0, transparent 159px, rgba(255, 255, 255, 0.022) 159px, rgba(255, 255, 255, 0.022) 160px);
+  }
+
+  /* Build & Innovate — infrastructure, AI, experience: the deepest,
+     most architectural surface, with blueprint guides on the content
+     column (halves, matching the two-column modules). */
+  .nx-env-build {
+    --section-bg: #08080a;
+  }
+  .nx-env-build::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    left: var(--nx-edge);
+    right: var(--nx-edge);
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to right, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 100% 160px, 50% 100%;
+    mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+  }
+
+  /* SolutionArchitecture flow: the path draws, then the steps light in
+     sequence (inline animation-delay per node). */
+  @keyframes nx-flow-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes nx-flow-node {
+    from { opacity: 0; transform: scale(0.4); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .nx-flow-draw {
+    transform-origin: left;
+    animation: nx-flow-draw 700ms cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  .nx-flow-node {
+    animation: nx-flow-node 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nx-flow-draw,
+    .nx-flow-node {
+      animation: none;
+    }
+  }
+
+  /* System node / seam — see Section's `seam` prop. A tiny outlined node on
+     a section boundary with a short line dropping into the section, always
+     on the content grid's left edge, so the seams down the page share one
+     vertical axis with the hero's bridge line. */
+  .nx-seam-node {
+    position: absolute;
+    top: -4px;
+    left: 0;
+    height: 7px;
+    width: 7px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--section-bg, #080808);
+  }
+  .nx-seam-node[data-signal="true"] {
+    border-color: var(--color-primary);
+  }
+  .nx-seam-line {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    height: 56px;
+    width: 1px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.16), transparent);
+  }
+
+  /* Rail progress (ConnectedSystemCompare): hidden by default; where
+     scroll-driven animation exists it fills the rail as the rail scrolls
+     through the viewport — progress you cause, not ambient motion. */
+  .nx-rail-progress {
+    transform: scaleY(0);
+  }
+  @supports (animation-timeline: view()) {
+    @keyframes nx-rail-fill {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+    .nx-rail-progress {
+      animation: nx-rail-fill linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 65%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nx-env-flow::after,
+    .nx-rail-progress {
+      animation: none;
+    }
+  }
+
+  /* Homepage hero entrance — see app/page.tsx and components/home/HeroSystem.tsx.
+     Pure CSS so it runs from first paint without waiting on hydration; each
+     element sets its own animation-delay inline for the stagger. Opacity,
+     a short rise and a line draw only — no zooms, rotations or bounce. */
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes hero-draw-y {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+  @keyframes hero-draw-x {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes hero-node-on {
+    from {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .hero-rise {
+    animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hero-draw-y {
+    transform-origin: top;
+    animation: hero-draw-y 900ms cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  .hero-draw-x {
+    transform-origin: left;
+    animation: hero-draw-x 1100ms cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  /* State → signal → next state: the segment into the new node draws
+     first (.hero-signal-draw), and the node switches on as it lands. The
+     very first active node instead waits for the entrance (~1000ms); once
+     the sequence has moved, HeroSystem drops .hero-system-intro. */
+  .hero-signal-draw {
+    transform-origin: top;
+    animation: hero-draw-y 320ms cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  .hero-node-on {
+    animation: hero-node-on 260ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
+  }
+  .hero-system-intro .hero-node-on {
+    animation: hero-node-on 400ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms both;
+  }
+
+  /* The global reduced-motion rule shortens durations but keeps delays,
+     which would leave hero content invisible for up to a second. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-rise,
+    .hero-draw-y,
+    .hero-draw-x,
+    .hero-signal-draw,
+    .hero-node-on,
+    .hero-system-intro .hero-node-on {
+      animation: none;
+    }
   }
 
   /* Nia idle personality micro-movements — see lib/useNiaPersonality.ts.

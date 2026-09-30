@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       proposalUrl: getProposalLink(dealResult.data) ?? null,
       proceedUrl: `${respondUrl}&action=proceed`,
       discussUrl: `${respondUrl}&action=discuss`,
-      changesUrl: `${respondUrl}&action=changes`,
+      changesUrl: `${respondUrl}&action=request_changes`,
     });
   } catch (error) {
     console.error("Proposal link generation route error", error);

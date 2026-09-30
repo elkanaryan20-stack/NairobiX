@@ -1,5 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { submitLead } from "@/lib/leads";
+import { requestContext, sendMetaEvent, type MetaServerEvent } from "@/lib/meta-capi";
+
+// Forms whose success is a Meta conversion (mirrors lib/analytics.ts).
+const META_EVENT_FOR_FORM: Record<string, MetaServerEvent["eventName"]> = {
+  "business-growth-audit": "Lead",
+  "request-solution": "Lead",
+  contact: "Contact",
+};
 
 function sanitizeString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -22,6 +30,27 @@ export async function POST(request: Request) {
 
     if (!result.success) {
       return NextResponse.json({ success: false, error: result.error }, { status: result.status });
+    }
+
+    // Server-side conversion, sent after the response so it never slows the visitor down.
+    const metaEvent = META_EVENT_FOR_FORM[formType];
+    const context = requestContext(request, json);
+    if (metaEvent && context.eventId && !context.optedOut) {
+      after(() =>
+        sendMetaEvent({
+          eventName: metaEvent,
+          eventId: context.eventId!,
+          sourceUrl: context.sourceUrl,
+          email: sanitizeString(json.Email),
+          phone: sanitizeString(json.Phone),
+          firstName: sanitizeString(json.First_Name),
+          lastName: sanitizeString(json.Last_Name),
+          fbp: context.fbp,
+          fbc: context.fbc,
+          ip: context.ip,
+          userAgent: context.userAgent,
+        }),
+      );
     }
 
     return NextResponse.json({ success: true, message: "Form submitted successfully." }, { status: 200 });

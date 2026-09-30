@@ -14,7 +14,7 @@ const CONTENT: Record<ProposalAction, { status: string; heading: string; body: s
     heading: "Let's continue the conversation.",
     body: "We've received your request to discuss the proposal. A NairobiX representative will follow up to continue the conversation and address any questions regarding the recommended solution, scope, investment, or next steps.",
   },
-  changes: {
+  request_changes: {
     status: "Request received",
     heading: "Request received.",
     body: "We've received your request to review the proposal. Our team will review the requested changes and follow up with you regarding the next step.",

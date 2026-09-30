@@ -1,36 +1,34 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Container } from "@/components/ui/Container";
-import { Card } from "@/components/ui/Card";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormInput, FormTextarea, FieldError } from "@/components/forms/FormField";
+import { SingleChoiceCards } from "@/components/forms/ChoiceCard";
 import { SecuringSessionTransition } from "@/components/booking/SecuringSessionTransition";
 import { GrowthSessionConfirmed } from "@/components/booking/GrowthSessionConfirmed";
-import { trackConversion } from "@/lib/analytics";
+import { formTrackingPayload, newEventId, trackEvent, trackOnce } from "@/lib/analytics";
 import { wait, prefersReducedMotion } from "@/lib/motion";
 import { DISCUSSION_TOPIC_OPTIONS as DISCUSSION_TOPICS } from "@/lib/forms/options";
 
-const STEPS = ["About", "Time", "Confirm"] as const;
+// Time first: a visitor who has decided to talk sees real availability
+// before typing anything (schedule-first). Details and confirmation follow.
+const STEPS = ["Time", "Details", "Confirm"] as const;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^[+()\d\s-]{7,20}$/;
 const URL_REGEX = /^https?:\/\/.+/i;
-
-const DATE_FORMATTER = new Intl.DateTimeFormat("en-KE", {
-  timeZone: "Africa/Nairobi",
-  weekday: "short",
-  day: "numeric",
-  month: "short",
-});
+const NAIROBI_TZ = "Africa/Nairobi";
 
 const DATE_FORMATTER_LONG = new Intl.DateTimeFormat("en-KE", {
-  timeZone: "Africa/Nairobi",
+  timeZone: NAIROBI_TZ,
   weekday: "long",
   day: "numeric",
   month: "long",
   year: "numeric",
 });
+const MONTH_FORMATTER = new Intl.DateTimeFormat("en-KE", { month: "long", year: "numeric" });
+const SHORT_MONTH = new Intl.DateTimeFormat("en-KE", { month: "short" });
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
 function toISODate(date: Date): string {
   const year = date.getFullYear();
@@ -45,24 +43,19 @@ function isWeekend(date: Date): boolean {
 }
 
 /**
- * Only weekdays — NairobiX is available Monday–Friday, so weekends never
- * appear in the calendar at all. Starts from today (i = 0): Zoho Bookings is
- * the source of truth for whether any slots remain today, so the calendar
- * must offer it rather than assuming it's always exhausted — the
- * availability fetch for that date already renders "not available" if Zoho
- * returns no remaining times.
+ * Only weekdays — NairobiX is available Monday–Friday. Starts from today:
+ * Zoho Bookings is the source of truth for whether any slots remain, so the
+ * calendar offers today and lets the availability fetch decide.
  */
 function buildUpcomingDates(count: number): Date[] {
   const dates: Date[] = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
   for (let i = 0; dates.length < count; i += 1) {
     const candidate = new Date(today);
     candidate.setDate(today.getDate() + i);
     if (!isWeekend(candidate)) dates.push(candidate);
   }
-
   return dates;
 }
 
@@ -72,6 +65,17 @@ function formatTime12h(time: string): string {
   const period = hour >= 12 ? "PM" : "AM";
   const hour12 = hour % 12 === 0 ? 12 : hour % 12;
   return `${hour12}:${minute} ${period}`;
+}
+
+/** The visitor's own equivalent of a Nairobi slot, or null if they're on EAT. */
+function localEquivalent(iso: string, time: string): string | null {
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const instant = new Date(`${iso}T${time}:00+03:00`);
+  const inNairobi = new Intl.DateTimeFormat("en-KE", { timeZone: NAIROBI_TZ, hour: "numeric", minute: "2-digit", hour12: true }).format(instant);
+  const inLocal = new Intl.DateTimeFormat("en-KE", { hour: "numeric", minute: "2-digit", weekday: "short", hour12: true }).format(instant);
+  const localOnly = new Intl.DateTimeFormat("en-KE", { hour: "numeric", minute: "2-digit", hour12: true }).format(instant);
+  if (localOnly === inNairobi) return null;
+  return `${inLocal} your time (${zone.replace(/_/g, " ")})`;
 }
 
 const initialFormState = {
@@ -85,16 +89,14 @@ const initialFormState = {
   priority: "",
 };
 
-/**
- * "submitting": the request is in flight but the Confirm step is still on
- * screen, with the button in its brief processing state — mirrors
- * BusinessGrowthAuditForm's handleSubmit pattern.
- * "securing": SecuringSessionTransition is shown, gated on the real Zoho
- * Bookings response, never a fixed timer alone.
- */
 type Phase = "form" | "submitting" | "securing" | "confirmed";
 
-export function BookingFlow() {
+/**
+ * The consultation booking workspace: session context on the left (sticky on
+ * desktop), the booking interface on the right. On confirmation the whole
+ * workspace is replaced by the confirmation composition.
+ */
+export function BookingFlow({ context }: { context: ReactNode }) {
   const [step, setStep] = useState(0);
   const [phase, setPhase] = useState<Phase>("form");
 
@@ -104,17 +106,19 @@ export function BookingFlow() {
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
   const [availabilityError, setAvailabilityError] = useState("");
   const [exhaustedDates, setExhaustedDates] = useState<Set<string>>(new Set());
+  const [reloadKey, setReloadKey] = useState(0);
+  const [localTime, setLocalTime] = useState<string | null>(null);
 
   const [formData, setFormData] = useState(initialFormState);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-
   const [submitError, setSubmitError] = useState("");
+  const [bookingId, setBookingId] = useState<string | undefined>();
 
-  const upcomingDates = useMemo(() => buildUpcomingDates(28), []);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const upcomingDates = useMemo(() => buildUpcomingDates(20), []);
 
   useEffect(() => {
     if (!selectedDateISO) return;
-
     let cancelled = false;
 
     fetch(`/api/bookings/availability?date=${selectedDateISO}`)
@@ -122,19 +126,15 @@ export function BookingFlow() {
       .then((payload) => {
         if (cancelled) return;
         if (!payload.success) {
-          setAvailabilityError(payload.error || "We couldn't load available times for this date.");
+          setAvailabilityError(payload.error || "We couldn't load times for this date.");
           return;
         }
         const times: string[] = payload.times || [];
         setAvailableTimes(times);
-        if (times.length === 0) {
-          setExhaustedDates((prev) => new Set(prev).add(selectedDateISO));
-        }
+        if (times.length === 0) setExhaustedDates((prev) => new Set(prev).add(selectedDateISO));
       })
       .catch(() => {
-        if (!cancelled) {
-          setAvailabilityError("We couldn't load available times for this date. Please try again.");
-        }
+        if (!cancelled) setAvailabilityError("We couldn't load times for this date — the connection may have dropped.");
       })
       .finally(() => {
         if (!cancelled) setIsLoadingTimes(false);
@@ -143,14 +143,35 @@ export function BookingFlow() {
     return () => {
       cancelled = true;
     };
-  }, [selectedDateISO]);
+  }, [selectedDateISO, reloadKey]);
+
+  // Bring the panel back into view when the step changes on small screens.
+  const scrollToPanel = () => {
+    const panel = panelRef.current;
+    if (panel && panel.getBoundingClientRect().top < 0) {
+      panel.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+    }
+  };
 
   const handleSelectDate = (iso: string) => {
     setSelectedDateISO(iso);
     setSelectedTime(null);
+    setLocalTime(null);
     setAvailableTimes([]);
     setAvailabilityError("");
     setIsLoadingTimes(true);
+  };
+
+  const retryAvailability = () => {
+    setAvailabilityError("");
+    setIsLoadingTimes(true);
+    setReloadKey((k) => k + 1);
+  };
+
+  const handleSelectTime = (time: string) => {
+    trackOnce("booking_start", { form_type: "consultation_booking" });
+    setSelectedTime(time);
+    setLocalTime(selectedDateISO ? localEquivalent(selectedDateISO, time) : null);
   };
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -159,40 +180,35 @@ export function BookingFlow() {
     setFormErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const validateAbout = () => {
+  // Error messages say how to fix the problem, not just that there is one.
+  const validateDetails = () => {
     const errors: Record<string, string> = {};
-
-    if (!formData.firstName.trim()) errors.firstName = "This field is required.";
-    if (!formData.lastName.trim()) errors.lastName = "This field is required.";
-    if (!formData.businessName.trim()) errors.businessName = "This field is required.";
-    if (!formData.email.trim()) {
-      errors.email = "This field is required.";
-    } else if (!EMAIL_REGEX.test(formData.email.trim())) {
-      errors.email = "Please use a valid email address.";
-    }
-    if (!formData.phone.trim()) {
-      errors.phone = "This field is required.";
-    } else if (!PHONE_REGEX.test(formData.phone.trim())) {
-      errors.phone = "Please use a valid phone number.";
-    }
-    if (formData.website.trim() && !URL_REGEX.test(formData.website.trim())) {
-      errors.website = "Please include http:// or https://.";
-    }
-    if (!formData.discussionTopic) errors.discussionTopic = "Please choose a focus area.";
-    if (!formData.priority.trim()) errors.priority = "This field is required.";
-
+    if (!formData.firstName.trim()) errors.firstName = "Please enter your first name.";
+    if (!formData.lastName.trim()) errors.lastName = "Please enter your last name.";
+    if (!formData.businessName.trim()) errors.businessName = "Please enter your business name — or your own name if you're independent.";
+    if (!formData.email.trim()) errors.email = "Please enter the email the confirmation should go to.";
+    else if (!EMAIL_REGEX.test(formData.email.trim())) errors.email = "That email doesn't look complete — check for a missing @ or domain.";
+    if (!formData.phone.trim()) errors.phone = "Please enter a phone or WhatsApp number.";
+    else if (!PHONE_REGEX.test(formData.phone.trim())) errors.phone = "Please use digits only, with an optional + and country code.";
+    if (formData.website.trim() && !URL_REGEX.test(formData.website.trim())) errors.website = "Please start the address with https://";
+    if (!formData.discussionTopic) errors.discussionTopic = "Please choose the area you'd most like to focus on.";
+    if (!formData.priority.trim()) errors.priority = "A sentence is enough — it helps us prepare.";
     setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    const first = Object.keys(errors)[0];
+    if (first) requestAnimationFrame(() => document.querySelector<HTMLElement>(`[name="${first}"]`)?.focus());
+    return !first;
   };
 
   const goToNextStep = () => {
-    if (step === 0 && !validateAbout()) return;
-    if (step === 1 && (!selectedDateISO || !selectedTime)) return;
+    if (step === 0 && (!selectedDateISO || !selectedTime)) return;
+    if (step === 1 && !validateDetails()) return;
     setStep((prev) => Math.min(prev + 1, STEPS.length - 1));
+    requestAnimationFrame(scrollToPanel);
   };
 
-  const goToPreviousStep = () => {
-    setStep((prev) => Math.max(prev - 1, 0));
+  const goToStep = (target: number) => {
+    setStep(target);
+    requestAnimationFrame(scrollToPanel);
   };
 
   const handleConfirm = async () => {
@@ -200,14 +216,13 @@ export function BookingFlow() {
 
     setSubmitError("");
     setPhase("submitting");
+    const eventId = newEventId();
 
     const reduceMotion = prefersReducedMotion();
     const buttonHoldMs = reduceMotion ? 0 : 450;
     const minTransitionMs = reduceMotion ? 0 : 900;
 
-    // Fire the real request immediately — the button's brief processing
-    // state and the securing-session transition only ever wait on this
-    // promise, never simulate it.
+    // The real request fires immediately; the transitions only ever wait on it.
     const submission = fetch("/api/bookings/appointment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -222,35 +237,33 @@ export function BookingFlow() {
         website: formData.website.trim(),
         discussionTopic: formData.discussionTopic,
         priority: formData.priority.trim(),
+        // For the server-side Meta event only; Zoho Bookings receives just its configured fields.
+        Tracking: formTrackingPayload(eventId).Tracking,
       }),
-    }).then(async (response) => ({
-      ok: response.ok,
-      payload: await response.json(),
-    }));
+    }).then(async (response) => ({ ok: response.ok, payload: await response.json() }));
 
     await wait(buttonHoldMs);
     setPhase("securing");
-
     const start = Date.now();
 
     try {
       const { ok, payload } = await submission;
-
       if (!ok || !payload.success) {
         setSubmitError(payload.error || "We couldn't confirm your consultation right now.");
         setPhase("form");
         return;
       }
-
       const elapsed = Date.now() - start;
-      if (elapsed < minTransitionMs) {
-        await wait(minTransitionMs - elapsed);
-      }
-
-      trackConversion("generate_lead", { form_type: "consultation_booking" });
+      if (elapsed < minTransitionMs) await wait(minTransitionMs - elapsed);
+      setBookingId(payload.data?.bookingId || undefined);
+      trackEvent(
+        "booking_complete",
+        { form_type: "consultation_booking", focus: formData.discussionTopic },
+        { eventId, userData: { email: formData.email, phone: formData.phone } },
+      );
       setPhase("confirmed");
     } catch {
-      setSubmitError("We couldn't confirm your consultation right now. Please try again.");
+      setSubmitError("We couldn't reach the booking system. Your details are still here — please try again.");
       setPhase("form");
     }
   };
@@ -260,237 +273,241 @@ export function BookingFlow() {
       <GrowthSessionConfirmed
         formattedDate={DATE_FORMATTER_LONG.format(new Date(`${selectedDateISO}T00:00:00`))}
         formattedTime={formatTime12h(selectedTime)}
+        localTime={localTime}
         email={formData.email}
         discussionTopic={formData.discussionTopic}
         firstName={formData.firstName.trim()}
+        bookingId={bookingId}
       />
     );
   }
 
   const isLocked = phase === "submitting";
+  const selectedLabel = selectedDateISO ? DATE_FORMATTER_LONG.format(new Date(`${selectedDateISO}T00:00:00`)) : "";
+  const leadingBlanks = upcomingDates.length ? (upcomingDates[0].getDay() + 6) % 7 : 0;
 
   return (
-    <Container width="narrow" className="py-12 sm:py-16">
-      <StepIndicator step={step} />
+    <div className="grid gap-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-14">
+      <aside className="order-2 lg:order-1">
+        <div className="lg:sticky lg:top-28">{context}</div>
+      </aside>
 
-      <Card variant="outline" className="mt-8 overflow-hidden p-6 sm:p-8 lg:p-10">
-        {phase === "securing" ? (
-          <SecuringSessionTransition />
-        ) : (
-          <>
-            {step === 0 && (
-              <section key={step} className="animate-step-fade">
-                <SectionIntro
-                  number="01"
-                  title="About you"
-                  description="Tell us a little about your business, so the conversation is useful from the first minute."
-                />
+      <div ref={panelRef} className="order-1 scroll-mt-24 lg:order-2">
+        <StepIndicator step={step} />
+        <div className="mt-6 border border-white/10 bg-[#0c0d0e] p-5 sm:p-8">
+          {phase === "securing" ? (
+            <SecuringSessionTransition />
+          ) : (
+            <>
+              {step === 0 && (
+                <section key="time" className="animate-step-fade" aria-labelledby="booking-time-heading">
+                  <StepHeading number="01" id="booking-time-heading" title="Choose a time">
+                    30 minutes · Monday–Friday · times shown in East Africa Time (Nairobi)
+                  </StepHeading>
 
-                <div className="grid gap-5 md:grid-cols-2">
-                  <FormInput label="First Name" name="firstName" value={formData.firstName} onChange={handleFieldChange} required error={formErrors.firstName} />
-                  <FormInput label="Last Name" name="lastName" value={formData.lastName} onChange={handleFieldChange} required error={formErrors.lastName} />
-                  <FormInput label="Business Name" name="businessName" value={formData.businessName} onChange={handleFieldChange} required error={formErrors.businessName} />
-                  <FormInput label="Email" name="email" type="email" value={formData.email} onChange={handleFieldChange} placeholder="you@example.com" required error={formErrors.email} />
-                  <FormInput label="Phone / WhatsApp" name="phone" type="tel" value={formData.phone} onChange={handleFieldChange} placeholder="+254..." required error={formErrors.phone} />
-                  <FormInput label="Website" name="website" type="url" value={formData.website} onChange={handleFieldChange} placeholder="https:// (optional)" error={formErrors.website} />
-                </div>
-
-                <div className="mt-6">
-                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
-                    <span className="flex items-center gap-2">
-                      Consultation focus
-                      <span className="text-[var(--color-primary)]">*</span>
-                    </span>
-                    <div className="mt-3 flex flex-wrap gap-2.5">
-                      {DISCUSSION_TOPICS.map((topic) => {
-                        const isSelected = formData.discussionTopic === topic;
+                  <div role="group" aria-label="Available weekdays">
+                    <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
+                      {WEEKDAYS.map((d) => (
+                        <p key={d} className="pb-1 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">
+                          {d}
+                        </p>
+                      ))}
+                      {Array.from({ length: leadingBlanks }).map((_, i) => (
+                        <span key={`blank-${i}`} aria-hidden="true" />
+                      ))}
+                      {upcomingDates.map((date, i) => {
+                        const iso = toISODate(date);
+                        const isSelected = selectedDateISO === iso;
+                        const isExhausted = exhaustedDates.has(iso) && !isSelected;
+                        const newMonth = i === 0 || date.getMonth() !== upcomingDates[i - 1].getMonth();
                         return (
                           <button
-                            key={topic}
+                            key={iso}
                             type="button"
-                            onClick={() => {
-                              setFormData((prev) => ({ ...prev, discussionTopic: topic }));
-                              setFormErrors((prev) => ({ ...prev, discussionTopic: "" }));
-                            }}
+                            onClick={() => handleSelectDate(iso)}
                             aria-pressed={isSelected}
-                            className={`rounded-full border px-4 py-3 text-sm transition ${
+                            aria-label={`${DATE_FORMATTER_LONG.format(new Date(`${iso}T00:00:00`))}${isExhausted ? ", no times left" : ""}`}
+                            className={`relative min-h-12 rounded-md border px-1 py-2 text-center transition ${
                               isSelected
                                 ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-white"
-                                : "border-white/10 bg-white/[0.02] text-[var(--text-secondary)] hover:border-white/20"
+                                : isExhausted
+                                  ? "border-white/5 text-white/30 line-through decoration-white/20"
+                                  : "border-white/10 text-white/80 hover:border-white/25 hover:bg-white/[0.04]"
                             }`}
                           >
-                            {topic}
+                            {newMonth ? (
+                              <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--color-primary)]">
+                                {SHORT_MONTH.format(date)}
+                              </span>
+                            ) : null}
+                            <span className="block text-base font-semibold">{date.getDate()}</span>
                           </button>
                         );
                       })}
                     </div>
-                    <FieldError message={formErrors.discussionTopic} />
-                  </label>
-                </div>
-
-                <div className="mt-6">
-                  <FormTextarea
-                    label="Your current priority"
-                    name="priority"
-                    value={formData.priority}
-                    onChange={handleFieldChange}
-                    placeholder="What's the biggest constraint on growth right now?"
-                    required
-                    rows={4}
-                    error={formErrors.priority}
-                  />
-                </div>
-
-                <StepFooter onNext={goToNextStep} nextLabel="Choose a Time →" />
-              </section>
-            )}
-
-            {step === 1 && (
-              <section key={step} className="animate-step-fade">
-                <div className="mb-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">02</p>
-                  <h2 className="mt-3 text-2xl font-semibold text-white sm:text-3xl">Choose a time that works for you</h2>
-                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-[var(--text-secondary)]">
-                    <span>Monday–Friday</span>
-                    <span className="text-[var(--text-tertiary)]" aria-hidden="true">·</span>
-                    <span>9:00 AM–5:00 PM EAT</span>
-                    <span className="text-[var(--text-tertiary)]" aria-hidden="true">·</span>
-                    <span>30 minutes</span>
+                    <p className="mt-2 text-xs text-white/40">{MONTH_FORMATTER.format(upcomingDates[0])} onwards · weekends unavailable</p>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
-                  {upcomingDates.map((date) => {
-                    const iso = toISODate(date);
-                    const isSelected = selectedDateISO === iso;
-                    const isExhausted = exhaustedDates.has(iso) && !isSelected;
-
-                    return (
-                      <button
-                        key={iso}
-                        type="button"
-                        onClick={() => handleSelectDate(iso)}
-                        aria-pressed={isSelected}
-                        className={`rounded-2xl border px-2 py-3 text-center text-sm transition ${
-                          isSelected
-                            ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-white"
-                            : isExhausted
-                              ? "border-white/10 bg-white/[0.02] text-[var(--text-tertiary)] opacity-60 hover:border-white/20"
-                              : "border-white/10 bg-white/[0.02] text-[var(--text-secondary)] hover:border-white/20 hover:bg-white/[0.04]"
-                        }`}
-                      >
-                        <span className="block text-[11px] uppercase tracking-wide text-[var(--text-tertiary)]">
-                          {DATE_FORMATTER.format(date).split(" ")[0]}
-                        </span>
-                        <span className="mt-1 block text-base font-semibold">{date.getDate()}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {selectedDateISO && (
-                  <div className="mt-8 border-t border-white/10 pt-8" aria-live="polite">
-                    <p className="text-sm font-medium text-white">
-                      {DATE_FORMATTER_LONG.format(new Date(`${selectedDateISO}T00:00:00`))}
-                    </p>
-
-                    {isLoadingTimes && (
-                      <div className="mt-4 flex flex-wrap gap-2.5" aria-hidden="true">
-                        {[0, 1, 2, 3].map((i) => (
-                          <span key={i} className="h-11 w-24 animate-pulse rounded-full bg-white/[0.04]" />
-                        ))}
-                      </div>
-                    )}
-                    {isLoadingTimes && <p className="sr-only">Loading available times…</p>}
-
-                    {!isLoadingTimes && availabilityError && (
-                      <div className="mt-4">
-                        <FieldError message={availabilityError} />
-                      </div>
-                    )}
-
-                    {!isLoadingTimes && !availabilityError && availableTimes.length === 0 && (
-                      <p className="mt-4 text-sm text-[var(--text-tertiary)]">
-                        This date isn&apos;t available. Please choose another date above.
-                      </p>
-                    )}
-
-                    {!isLoadingTimes && availableTimes.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-2.5">
-                        {availableTimes.map((time) => {
-                          const isSelected = selectedTime === time;
-                          return (
-                            <button
-                              key={time}
-                              type="button"
-                              onClick={() => setSelectedTime(time)}
-                              aria-pressed={isSelected}
-                              className={`rounded-full border px-4 py-3 text-sm transition ${
-                                isSelected
-                                  ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-white"
-                                  : "border-white/10 bg-white/[0.02] text-[var(--text-secondary)] hover:border-white/20 hover:bg-white/[0.04]"
-                              }`}
-                            >
-                              {formatTime12h(time)}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <StepFooter onBack={goToPreviousStep} onNext={goToNextStep} nextDisabled={!selectedDateISO || !selectedTime} nextLabel="Review & Confirm →" />
-              </section>
-            )}
-
-            {step === 2 && selectedDateISO && selectedTime && (
-              <section key={step} className="animate-step-fade">
-                <SectionIntro number="03" title="Confirm your consultation" description="Please review the details below before confirming." />
-                <div className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-sm">
-                  <SummaryRow label="Consultation" value="NairobiX Business Growth Consultation" />
-                  <SummaryRow label="Date" value={DATE_FORMATTER_LONG.format(new Date(`${selectedDateISO}T00:00:00`))} />
-                  <SummaryRow label="Time" value={`${formatTime12h(selectedTime)} (Africa/Nairobi, EAT)`} />
-                  <SummaryRow label="Duration" value="30 minutes" />
-                  <SummaryRow label="Name" value={`${formData.firstName} ${formData.lastName}`.trim()} />
-                  <SummaryRow label="Business" value={formData.businessName} />
-                  <SummaryRow label="Email" value={formData.email} />
-                  <SummaryRow label="Phone" value={formData.phone} />
-                  <SummaryRow label="Focus" value={formData.discussionTopic} />
-                </div>
-
-                {submitError && <div className="mt-4"><FieldError message={submitError} /></div>}
-
-                <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    type="button"
-                    onClick={goToPreviousStep}
-                    disabled={isLocked}
-                    className="text-sm font-medium text-[var(--text-secondary)] hover:text-white disabled:opacity-50"
-                  >
-                    ← Back
-                  </button>
-                  <Button onClick={handleConfirm} disabled={isLocked} variant="primary">
-                    {isLocked ? (
-                      <span className="inline-flex items-center gap-2">
-                        Confirming
-                        <span className="inline-flex gap-0.5" aria-hidden="true">
-                          <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "0ms" }} />
-                          <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "150ms" }} />
-                          <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "300ms" }} />
-                        </span>
-                      </span>
+                  <div className="mt-6 border-t border-white/10 pt-6" aria-live="polite">
+                    {!selectedDateISO ? (
+                      <p className="text-sm text-white/55">Select a day to see available times.</p>
                     ) : (
-                      "Confirm Consultation"
+                      <>
+                        <p className="text-sm font-medium text-white">{selectedLabel}</p>
+                        {isLoadingTimes ? (
+                          <>
+                            <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4" aria-hidden="true">
+                              {[0, 1, 2, 3].map((i) => (
+                                <span key={i} className="h-11 animate-pulse rounded-md bg-white/[0.05]" />
+                              ))}
+                            </div>
+                            <p className="sr-only">Checking availability…</p>
+                          </>
+                        ) : availabilityError ? (
+                          <div className="mt-4 flex flex-wrap items-center gap-4">
+                            <FieldError message={availabilityError} />
+                            <button type="button" onClick={retryAvailability} className="text-sm font-semibold text-white underline decoration-white/30 underline-offset-4 hover:decoration-[var(--color-primary)]">
+                              Try again
+                            </button>
+                          </div>
+                        ) : availableTimes.length === 0 ? (
+                          <p className="mt-4 text-sm text-white/60">No times are left on this day. Please choose another day above.</p>
+                        ) : (
+                          <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4" role="group" aria-label="Available times">
+                            {availableTimes.map((time) => {
+                              const isSelected = selectedTime === time;
+                              return (
+                                <button
+                                  key={time}
+                                  type="button"
+                                  onClick={() => handleSelectTime(time)}
+                                  aria-pressed={isSelected}
+                                  className={`min-h-11 rounded-md border px-2 text-sm transition ${
+                                    isSelected
+                                      ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-white"
+                                      : "border-white/10 text-white/80 hover:border-white/25 hover:bg-white/[0.04]"
+                                  }`}
+                                >
+                                  {formatTime12h(time)}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                        {selectedTime && localTime ? <p className="mt-3 text-xs text-white/50">That&apos;s {localTime}.</p> : null}
+                      </>
                     )}
-                  </Button>
-                </div>
-              </section>
-            )}
-          </>
-        )}
-      </Card>
-    </Container>
+                  </div>
+
+                  <StepFooter
+                    note={selectedTime ? `${selectedLabel} · ${formatTime12h(selectedTime)} EAT` : "Availability comes directly from our calendar."}
+                    onNext={goToNextStep}
+                    nextDisabled={!selectedDateISO || !selectedTime}
+                    nextLabel="Continue to your details →"
+                  />
+                </section>
+              )}
+
+              {step === 1 && (
+                <section key="details" className="animate-step-fade" aria-labelledby="booking-details-heading">
+                  <StepHeading number="02" id="booking-details-heading" title="About you and your business">
+                    So the conversation is useful from the first minute. About two minutes.
+                  </StepHeading>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <FormInput label="First name" name="firstName" value={formData.firstName} onChange={handleFieldChange} required autoComplete="given-name" error={formErrors.firstName} />
+                    <FormInput label="Last name" name="lastName" value={formData.lastName} onChange={handleFieldChange} required autoComplete="family-name" error={formErrors.lastName} />
+                    <FormInput label="Business name" name="businessName" value={formData.businessName} onChange={handleFieldChange} required autoComplete="organization" error={formErrors.businessName} />
+                    <FormInput label="Email" name="email" type="email" inputMode="email" value={formData.email} onChange={handleFieldChange} placeholder="you@company.com" required autoComplete="email" error={formErrors.email} />
+                    <FormInput label="Phone / WhatsApp" name="phone" type="tel" inputMode="tel" value={formData.phone} onChange={handleFieldChange} placeholder="+254…" required autoComplete="tel" error={formErrors.phone} />
+                    <FormInput label="Website (optional)" name="website" type="url" inputMode="url" value={formData.website} onChange={handleFieldChange} placeholder="https://" autoComplete="url" error={formErrors.website} />
+                  </div>
+
+                  <div className="mt-6">
+                    <SingleChoiceCards
+                      label="What would you like to focus on?"
+                      name="discussionTopic"
+                      value={formData.discussionTopic}
+                      onSelect={(value) => {
+                        setFormData((prev) => ({ ...prev, discussionTopic: value }));
+                        setFormErrors((prev) => ({ ...prev, discussionTopic: "" }));
+                      }}
+                      options={[...DISCUSSION_TOPICS]}
+                      required
+                      error={formErrors.discussionTopic}
+                      columns={3}
+                    />
+                  </div>
+
+                  <div className="mt-6">
+                    <FormTextarea
+                      label="What's the most important thing to discuss?"
+                      name="priority"
+                      value={formData.priority}
+                      onChange={handleFieldChange}
+                      placeholder="For example: enquiries come in on WhatsApp, but follow-up is inconsistent."
+                      required
+                      rows={3}
+                      error={formErrors.priority}
+                    />
+                  </div>
+
+                  <StepFooter onBack={() => goToStep(0)} onNext={goToNextStep} nextLabel="Review booking →" />
+                </section>
+              )}
+
+              {step === 2 && selectedDateISO && selectedTime && (
+                <section key="confirm" className="animate-step-fade" aria-labelledby="booking-confirm-heading">
+                  <StepHeading number="03" id="booking-confirm-heading" title="Review and confirm">
+                    Check the details — you can change anything before confirming.
+                  </StepHeading>
+
+                  <dl className="divide-y divide-white/10 border-y border-white/10 text-sm">
+                    <SummaryRow label="Consultation" value="Business Growth Consultation · 30 minutes" />
+                    <SummaryRow label="When" value={`${selectedLabel} · ${formatTime12h(selectedTime)} EAT`} action={{ label: "Change", onClick: () => goToStep(0) }} />
+                    {localTime ? <SummaryRow label="Your time" value={localTime.replace(/ your time/, "")} /> : null}
+                    <SummaryRow label="Name" value={`${formData.firstName} ${formData.lastName}`.trim()} action={{ label: "Edit", onClick: () => goToStep(1) }} />
+                    <SummaryRow label="Business" value={formData.businessName} />
+                    <SummaryRow label="Email" value={formData.email} />
+                    <SummaryRow label="Phone" value={formData.phone} />
+                    <SummaryRow label="Focus" value={formData.discussionTopic} />
+                  </dl>
+
+                  {submitError ? (
+                    <div role="alert" className="mt-5 border-l-2 border-red-400/70 bg-red-500/[0.06] px-4 py-3">
+                      <p className="text-sm text-red-200">{submitError}</p>
+                      <button type="button" onClick={() => goToStep(0)} className="mt-2 text-sm font-semibold text-white underline decoration-white/30 underline-offset-4">
+                        Choose another time
+                      </button>
+                    </div>
+                  ) : null}
+
+                  <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <button type="button" onClick={() => goToStep(1)} disabled={isLocked} className="text-sm font-medium text-white/60 hover:text-white disabled:opacity-50">
+                      ← Back
+                    </button>
+                    <Button onClick={handleConfirm} disabled={isLocked} variant="primary">
+                      {isLocked ? (
+                        <span className="inline-flex items-center gap-2">
+                          Confirming
+                          <span className="inline-flex gap-0.5" aria-hidden="true">
+                            <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "0ms" }} />
+                            <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "150ms" }} />
+                            <span className="h-1 w-1 animate-pulse rounded-full bg-current" style={{ animationDelay: "300ms" }} />
+                          </span>
+                        </span>
+                      ) : (
+                        "Confirm my consultation"
+                      )}
+                    </Button>
+                  </div>
+                </section>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -500,25 +517,21 @@ function StepIndicator({ step }: { step: number }) {
       <p aria-live="polite" className="sr-only">
         Step {step + 1} of {STEPS.length}: {STEPS[step]}
       </p>
-      <ol className="flex items-center justify-between gap-2" aria-label="Booking progress">
+      <ol className="flex items-center gap-3" aria-label="Booking progress">
         {STEPS.map((label, index) => {
           const isActive = index === step;
           const isDone = index < step;
           return (
-            <li key={label} className="flex flex-1 items-center gap-2 last:flex-none">
-              <span
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition ${
-                  isActive
-                    ? "bg-[var(--color-primary)] text-[var(--color-on-primary)]"
-                    : isDone
-                      ? "bg-white/15 text-white"
-                      : "bg-white/5 text-[var(--text-tertiary)]"
-                }`}
-              >
-                {index + 1}
-              </span>
-              <span className={`hidden text-xs font-medium sm:inline ${isActive ? "text-white" : "text-[var(--text-tertiary)]"}`}>
-                {label}
+            <li key={label} className="flex flex-1 items-center gap-3 last:flex-none">
+              <span className="flex items-center gap-2">
+                <span
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] transition ${
+                    isActive ? "bg-[var(--color-primary)] text-[var(--color-on-primary)]" : isDone ? "bg-white/15 text-white" : "border border-white/15 text-white/40"
+                  }`}
+                >
+                  {isDone ? "✓" : index + 1}
+                </span>
+                <span className={`text-xs font-medium ${isActive ? "text-white" : "text-white/45"}`}>{label}</span>
               </span>
               {index < STEPS.length - 1 && <span className="h-px flex-1 bg-white/10" aria-hidden />}
             </li>
@@ -529,48 +542,59 @@ function StepIndicator({ step }: { step: number }) {
   );
 }
 
-function SectionIntro({ number, title, description }: { number: string; title: string; description?: string }) {
+function StepHeading({ number, id, title, children }: { number: string; id: string; title: string; children?: ReactNode }) {
   return (
     <div className="mb-6">
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">{number}</p>
-      <h2 className="mt-3 text-2xl font-semibold text-white sm:text-3xl">{title}</h2>
-      {description ? <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)]">{description}</p> : null}
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--color-primary)]">{number}</p>
+      <h2 id={id} className="mt-2 font-display text-2xl font-medium tracking-tight text-white sm:text-[1.75rem]">
+        {title}
+      </h2>
+      {children ? <p className="mt-2 text-sm leading-6 text-white/55">{children}</p> : null}
     </div>
   );
 }
 
 function StepFooter({
+  note,
   onBack,
   onNext,
   nextDisabled,
   nextLabel,
 }: {
+  note?: string;
   onBack?: () => void;
   onNext: () => void;
   nextDisabled?: boolean;
   nextLabel: string;
 }) {
   return (
-    <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-6">
+    <div className="mt-8 flex flex-col-reverse gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
       {onBack ? (
-        <button type="button" onClick={onBack} className="text-sm font-medium text-[var(--text-secondary)] hover:text-white">
+        <button type="button" onClick={onBack} className="self-start text-sm font-medium text-white/60 hover:text-white sm:self-auto">
           ← Back
         </button>
       ) : (
-        <p className="text-sm text-[var(--text-tertiary)]">Your information is secure and only used for this consultation.</p>
+        <p className="text-sm text-white/50">{note}</p>
       )}
-      <Button onClick={onNext} disabled={nextDisabled} variant="primary">
+      <Button onClick={onNext} disabled={nextDisabled} variant="primary" className="w-full sm:w-auto">
         {nextLabel}
       </Button>
     </div>
   );
 }
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
+function SummaryRow({ label, value, action }: { label: string; value: string; action?: { label: string; onClick: () => void } }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-white/5 pb-3 last:border-0 last:pb-0">
-      <span className="text-[var(--text-tertiary)]">{label}</span>
-      <span className="text-right font-medium text-white">{value}</span>
+    <div className="flex items-baseline justify-between gap-4 py-3">
+      <dt className="shrink-0 text-white/45">{label}</dt>
+      <dd className="flex items-baseline gap-3 text-right font-medium text-white">
+        {value}
+        {action ? (
+          <button type="button" onClick={action.onClick} className="text-xs font-semibold text-[var(--color-primary)] hover:text-white">
+            {action.label}
+          </button>
+        ) : null}
+      </dd>
     </div>
   );
 }

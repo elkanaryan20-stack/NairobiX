@@ -56,7 +56,7 @@ function SocialIcon({ name }: { name: string }) {
 export function SiteFooter() {
   return (
     <footer className="border-t border-white/10 bg-[#030304]">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6 lg:px-8 lg:pt-16">
         <div className="grid gap-10 lg:grid-cols-[1.5fr_0.9fr_0.9fr_1fr_1.1fr]">
           <div>
             <div className="mb-4 flex items-center gap-2 text-white">
@@ -74,43 +74,43 @@ export function SiteFooter() {
             </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="mt-2 inline-block py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-white"
+              className="mt-2 inline-block py-2 text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-white"
             >
               {CONTACT_EMAIL}
             </a>
           </div>
 
           <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Solutions</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--text-tertiary)]">Solutions</p>
             <ul className="-my-1 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.solutions.map((item) => (
                 <li key={item.label}>
-                  <Link href={item.href} className="inline-block py-2.5 hover:text-white">{item.label}</Link>
+                  <Link href={item.href} className="inline-block py-2.5 transition-colors duration-200 hover:text-white">{item.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Company</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--text-tertiary)]">Company</p>
             <ul className="-my-1 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.company.map((item) => (
                 <li key={item.label}>
-                  <Link href={item.href} className="inline-block py-2.5 hover:text-white">{item.label}</Link>
+                  <Link href={item.href} className="inline-block py-2.5 transition-colors duration-200 hover:text-white">{item.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Start</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--text-tertiary)]">Start</p>
             <ul className="-my-1 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.start.map((item) => (
                 <li key={item.label}>
                   {item.chat ? (
-                    <OpenChatButton className="inline-block py-2.5 text-left hover:text-white">{item.label}</OpenChatButton>
+                    <OpenChatButton className="inline-block py-2.5 text-left transition-colors duration-200 hover:text-white">{item.label}</OpenChatButton>
                   ) : (
-                    <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener noreferrer" : undefined} className="inline-block py-2.5 hover:text-white">
+                    <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener noreferrer" : undefined} className="inline-block py-2.5 transition-colors duration-200 hover:text-white">
                       {item.label}
                     </a>
                   )}
@@ -120,7 +120,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">Social</p>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--text-tertiary)]">Social</p>
             <div className="flex flex-wrap gap-3">
               {SOCIAL_LINKS.map((link) => (
                 <a
@@ -129,7 +129,7 @@ export function SiteFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={link.label}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[var(--text-secondary)] transition hover:border-[var(--color-primary)] hover:text-white"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[var(--text-secondary)] transition-colors duration-200 hover:border-[var(--color-primary)]/50 hover:text-white"
                 >
                   <SocialIcon name={link.icon} />
                 </a>
@@ -141,8 +141,8 @@ export function SiteFooter() {
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-[var(--text-tertiary)] sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 NairobiX. All rights reserved.</p>
           <div className="flex items-center gap-5">
-            <Link href="/privacy" className="inline-block py-2.5 hover:text-white">Privacy Policy</Link>
-            <Link href="/terms" className="inline-block py-2.5 hover:text-white">Terms of Service</Link>
+            <Link href="/privacy" className="inline-block py-2.5 transition-colors duration-200 hover:text-white">Privacy Policy</Link>
+            <Link href="/terms" className="inline-block py-2.5 transition-colors duration-200 hover:text-white">Terms of Service</Link>
           </div>
         </div>
       </div>

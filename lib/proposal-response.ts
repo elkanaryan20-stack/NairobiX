@@ -1,7 +1,7 @@
 import { verifyProposalToken } from "@/lib/proposal-token";
 import { getProposalLink, getZohoDeal, updateZohoDealFields } from "@/lib/zoho";
 
-export const PROPOSAL_ACTIONS = ["proceed", "discuss", "changes"] as const;
+export const PROPOSAL_ACTIONS = ["proceed", "discuss", "request_changes"] as const;
 export type ProposalAction = (typeof PROPOSAL_ACTIONS)[number];
 
 function isProposalAction(value: unknown): value is ProposalAction {
@@ -14,41 +14,29 @@ function isProposalAction(value: unknown): value is ProposalAction {
 // the slash, unlike their conversational/display names):
 //   Qualification → Needs Analysis → Proposal/Price Quote →
 //   Negotiation/Review → Verbal Agreement → Closed Won / Closed Lost
-// A proposal response is only ever accepted while the Deal is in
-// "Proposal/Price Quote". "Agreement" is a commercial process that happens
-// inside "Negotiation/Review" / "Verbal Agreement", not a Deal Stage of its
-// own — this handler never sets Verbal Agreement or Closed Won.
+// A proposal response is only ever *accepted* while the Deal is in
+// "Proposal/Price Quote" — but Stage is now also this handler's own
+// idempotency marker (see below), so Negotiation/Review and Verbal
+// Agreement are both stages it recognizes as "already responded to".
 const PROPOSAL_STAGE = "Proposal/Price Quote";
+const REVIEW_STAGE = "Negotiation/Review";
+const AGREEMENT_STAGE = "Verbal Agreement";
 
-type ActionConfig = {
-  /** Only "proceed" advances the Deal Stage — discuss/changes stay in Proposal/Price Quote. */
-  stage?: string;
-  nextStep: string;
-};
+type ActionConfig = { stage: string };
 
-// Next Step is the operational record of the client's response and also
-// doubles as the idempotency marker below. This handler only identifies the
-// Deal and updates its fields — it does not create CRM Tasks. Zoho CRM
-// workflows watch for these Deal states and create any internal Tasks
-// separately.
+// Next Step is never read or written by this handler — the Deal's existing
+// Next Step is preserved exactly as-is for every action. Stage is the only
+// field this handler ever mutates, and (since discuss/request_changes both
+// land on Negotiation/Review) it also doubles as the idempotency marker:
+// once a Deal has moved off Proposal/Price Quote, further identical clicks
+// no-op and a click that would move it backward is refused rather than
+// applied. This handler does not create CRM Tasks — Zoho CRM workflows
+// watch for these Deal states and create any internal Tasks separately.
 const ACTION_CONFIG: Record<ProposalAction, ActionConfig> = {
-  proceed: {
-    stage: "Negotiation/Review",
-    nextStep: "Prepare Agreement",
-  },
-  discuss: {
-    nextStep: "Discuss Proposal",
-  },
-  changes: {
-    nextStep: "Review Requested Proposal Changes",
-  },
+  proceed: { stage: AGREEMENT_STAGE },
+  discuss: { stage: REVIEW_STAGE },
+  request_changes: { stage: REVIEW_STAGE },
 };
-
-function findRecordedAction(nextStep: string | undefined): ProposalAction | undefined {
-  return (Object.entries(ACTION_CONFIG) as [ProposalAction, ActionConfig][]).find(
-    ([, config]) => config.nextStep === nextStep
-  )?.[0];
-}
 
 export type ProposalErrorCode =
   | "invalid_token"
@@ -66,13 +54,17 @@ export type ProposalResponseResult =
 
 /**
  * Validates and processes a signed proposal response: token validation,
- * Deal identification, action validation, and the Deal Stage/Next Step
- * update for the given action. Does not create CRM Tasks — Zoho CRM
+ * Deal identification, action validation, and the Deal Stage update for the
+ * given action. Never touches Next Step, never creates CRM Tasks — Zoho CRM
  * workflows detect the resulting Deal state and create any Task separately.
  *
- * Idempotency: Next Step already matching one of the three known values
- * means a response was already fully recorded, so no further update is
- * attempted.
+ * Idempotency runs entirely off Stage (see ACTION_CONFIG's comment):
+ *  - Verbal Agreement is treated as final for this flow — a later
+ *    discuss/request_changes click is refused rather than moving the Deal
+ *    backward to Negotiation/Review.
+ *  - Negotiation/Review accepts a later "proceed" (real forward progress to
+ *    Verbal Agreement), but a repeat discuss/request_changes click is a
+ *    no-op duplicate.
  */
 export async function processProposalResponse(
   token: string,
@@ -89,7 +81,6 @@ export async function processProposalResponse(
   }
 
   const action = actionParam;
-  const config = ACTION_CONFIG[action];
 
   const dealResult = await getZohoDeal(verification.dealId);
 
@@ -98,41 +89,39 @@ export async function processProposalResponse(
   }
 
   const deal = dealResult.data;
-  const recordedAction = findRecordedAction(deal.Next_Step);
 
-  if (recordedAction && recordedAction !== action) {
-    // The client already responded with a different action on an earlier
-    // visit — show that original confirmation rather than reprocessing.
-    return { status: "duplicate", action: recordedAction };
+  if (deal.Stage === AGREEMENT_STAGE) {
+    // Already at the end state via an earlier "proceed" — never downgrade
+    // back to Negotiation/Review for a later discuss/request_changes click.
+    return { status: "duplicate", action: "proceed" };
   }
 
-  // Only block on stage/link when nothing has been recorded yet. If Next
-  // Step already reflects this action, the deal was clearly eligible when
-  // that response was first recorded — re-blocking a self-healing retry
-  // just because the deal has since moved on would strand it permanently.
-  if (!recordedAction) {
-    if (deal.Stage !== PROPOSAL_STAGE) {
-      return { status: "error", code: "wrong_stage" };
+  if (deal.Stage === REVIEW_STAGE) {
+    if (action === "proceed") {
+      const updateResult = await updateZohoDealFields(deal.id, { Stage: AGREEMENT_STAGE });
+      if (!updateResult.ok) {
+        return { status: "error", code: "crm_error" };
+      }
+      return { status: "success", action: "proceed" };
     }
 
-    if (!getProposalLink(deal)) {
-      return { status: "error", code: "missing_proposal_link" };
-    }
+    // Already in review from an earlier discuss/request_changes click.
+    return { status: "duplicate", action };
   }
 
-  const needsStageUpdate = config.stage !== undefined && deal.Stage !== config.stage;
-  const needsNextStepUpdate = deal.Next_Step !== config.nextStep;
-
-  if (needsStageUpdate || needsNextStepUpdate) {
-    const updateResult = await updateZohoDealFields(deal.id, {
-      ...(needsNextStepUpdate ? { Next_Step: config.nextStep } : {}),
-      ...(needsStageUpdate ? { Stage: config.stage } : {}),
-    });
-
-    if (!updateResult.ok) {
-      return { status: "error", code: "crm_error" };
-    }
+  if (deal.Stage !== PROPOSAL_STAGE) {
+    return { status: "error", code: "wrong_stage" };
   }
 
-  return { status: recordedAction === action ? "duplicate" : "success", action };
+  if (!getProposalLink(deal)) {
+    return { status: "error", code: "missing_proposal_link" };
+  }
+
+  const updateResult = await updateZohoDealFields(deal.id, { Stage: ACTION_CONFIG[action].stage });
+
+  if (!updateResult.ok) {
+    return { status: "error", code: "crm_error" };
+  }
+
+  return { status: "success", action };
 }

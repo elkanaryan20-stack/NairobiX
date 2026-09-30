@@ -5,6 +5,7 @@ const ASPECT_CLASSES = {
   wide: "aspect-[16/9]",
   portrait: "aspect-[3/4]",
   square: "aspect-square",
+  landscape: "aspect-[4/3]",
 } as const;
 
 // Inline SVG fractal-noise turbulence — a lightweight, dependency-free grain

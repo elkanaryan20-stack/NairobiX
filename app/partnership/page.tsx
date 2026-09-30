@@ -21,10 +21,10 @@ const DESCRIPTION =
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/partnership" });
 
 const BENEFITS = [
-  { title: "Generate Opportunities", text: "Introduce businesses that could benefit from a stronger growth system." },
-  { title: "Collaborate on Projects", text: "Work with NairobiX on strategy, implementation and customer journeys." },
-  { title: "Provide Expertise", text: "Bring specialized skills and insight to NairobiX engagements." },
-  { title: "Build Strategic Relationships", text: "Build long-term relationships within the NairobiX Opportunities Network." },
+  { title: "Generate Opportunities", text: "Introduce relevant business opportunities." },
+  { title: "Provide Expertise", text: "Contribute specialized knowledge or expertise." },
+  { title: "Provide Services", text: "Provide defined services or capabilities." },
+  { title: "Collaborate on Projects", text: "Collaborate with NairobiX on approved projects." },
 ];
 
 const WHO_ITS_FOR = [
@@ -33,11 +33,15 @@ const WHO_ITS_FOR = [
   "Business centres and service providers with a strong client network.",
 ];
 
+// The actual controlled admission lifecycle — not a guarantee of admission
+// or commercial outcomes (see the disclaimer below the grid).
 const APPLICATION_STEPS = [
-  { number: "01", title: "Apply", text: "Tell us about your business and Network interests." },
-  { number: "02", title: "Review", text: "NairobiX reviews the application and evaluates Network fit." },
-  { number: "03", title: "Connect", text: "Qualified Network members are contacted for a conversation." },
-  { number: "04", title: "Activate", text: "Approved Network members receive the information and support required to begin working with NairobiX." },
+  { number: "01", title: "Application", text: "Submit your Network application." },
+  { number: "02", title: "Review", text: "NairobiX reviews the information provided." },
+  { number: "03", title: "Qualification", text: "We assess potential contribution against current Network requirements." },
+  { number: "04", title: "Portal Onboarding", text: "Qualified applicants are onboarded to the NairobiX Network Workspace." },
+  { number: "05", title: "Verification & Review", text: "Onboarding details are verified before activation." },
+  { number: "06", title: "Activation", text: "Activated Network members can begin engaging with NairobiX." },
 ];
 
 export default function PartnershipPage() {
@@ -66,15 +70,22 @@ export default function PartnershipPage() {
             <div className="max-w-3xl">
               <Eyebrow>NAIROBIX · OPPORTUNITIES NETWORK</Eyebrow>
               <Heading as="h1" variant="display-lg" className="mt-4">
-                Grow With NairobiX
+                NairobiX Opportunities Network
               </Heading>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">
-                Join the NairobiX Opportunities Network to bring connected growth systems and
-                digital transformation to more businesses.
+                A selective network built around capability, relationships and opportunity.
               </p>
-              <div className="mt-8">
+              <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--text-secondary)]">
+                The NairobiX Opportunities Network connects qualified individuals and organizations with
+                NairobiX across referrals, expertise, services and approved project collaboration. This is a
+                managed business network, not an open marketplace.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Button href="/partner" variant="primary">
-                  Join the Network →
+                  Apply to the Network →
+                </Button>
+                <Button href="#how-it-works" variant="secondary">
+                  How It Works
                 </Button>
               </div>
             </div>
@@ -101,6 +112,9 @@ export default function PartnershipPage() {
               </Card>
             ))}
           </div>
+          <p className="mt-8 max-w-2xl text-sm leading-6 text-[var(--text-tertiary)]">
+            Applicants may select more than one contribution area.
+          </p>
         </Section>
 
         <Section tone="surface" border="top">
@@ -119,14 +133,14 @@ export default function PartnershipPage() {
           </div>
         </Section>
 
-        <Section border="top">
+        <Section id="how-it-works" border="top">
           <div className="mb-8 max-w-2xl">
-            <Eyebrow>APPLICATION PROCESS</Eyebrow>
+            <Eyebrow>ADMISSION PROCESS</Eyebrow>
             <Heading as="h2" variant="display-md" className="mt-4">
-              A simple and thoughtful Network application flow.
+              A controlled, thoughtful admission process.
             </Heading>
           </div>
-          <div className="grid gap-6 lg:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {APPLICATION_STEPS.map((step) => (
               <Card key={step.number} variant="outline" className="p-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
@@ -136,7 +150,14 @@ export default function PartnershipPage() {
               </Card>
             ))}
           </div>
-          <p className="mt-8 max-w-2xl text-sm leading-6 text-[var(--text-tertiary)]">{PARTNER_PORTAL_NOTE}</p>
+          <div className="mt-8 max-w-2xl space-y-2 text-sm leading-6 text-[var(--text-tertiary)]">
+            <p>Application does not guarantee admission.</p>
+            <p>
+              Network participation does not guarantee referrals, assignments, projects, clients, revenue or
+              other commercial outcomes.
+            </p>
+          </div>
+          <p className="mt-6 max-w-2xl text-sm leading-6 text-[var(--text-tertiary)]">{PARTNER_PORTAL_NOTE}</p>
         </Section>
       </main>
       <SiteFooter />

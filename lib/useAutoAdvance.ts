@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { FocusEvent } from "react";
+import type { FocusEvent, PointerEvent } from "react";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const DEFAULT_INTERVAL_MS = 3500;
@@ -19,8 +19,8 @@ type UseAutoAdvanceOptions = {
 };
 
 type ContainerHandlers = {
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
+  onPointerEnter: (event: PointerEvent<HTMLElement>) => void;
+  onPointerLeave: (event: PointerEvent<HTMLElement>) => void;
   onFocus: (event: FocusEvent<HTMLElement>) => void;
   onBlur: (event: FocusEvent<HTMLElement>) => void;
 };
@@ -104,8 +104,15 @@ export function useAutoAdvance({
   return {
     containerRef,
     containerHandlers: {
-      onMouseEnter: () => setIsHovered(true),
-      onMouseLeave: () => setIsHovered(false),
+      // Pointer events filtered to real mice: a touch tap fires emulated
+      // mouseenter with no matching mouseleave until the visitor taps
+      // somewhere else, which froze autoplay after a single tap on phones.
+      onPointerEnter: (event) => {
+        if (event.pointerType === "mouse") setIsHovered(true);
+      },
+      onPointerLeave: (event) => {
+        if (event.pointerType === "mouse") setIsHovered(false);
+      },
       onFocus: handleFocus,
       onBlur: handleBlur,
     },

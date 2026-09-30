@@ -11,7 +11,7 @@ import type { ProposalAction, ProposalErrorCode, ProposalResponseResult } from "
 const ANALYTICS_EVENT: Record<ProposalAction, string> = {
   proceed: "proposal_proceed",
   discuss: "proposal_discuss",
-  changes: "proposal_changes_requested",
+  request_changes: "proposal_changes_requested",
 };
 
 type ClientState = ProposalResponseResult | null;
