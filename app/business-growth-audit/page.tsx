@@ -54,10 +54,10 @@ export default function BusinessGrowthAuditPage() {
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-[var(--text-tertiary)] sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <p>© 2026 NairobiX.</p>
           <div className="flex gap-5">
-            <Link href="/privacy" className="inline-block py-2 transition-colors hover:text-white">
+            <Link href="/privacy-policy" className="inline-block py-2 transition-colors hover:text-white">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="inline-block py-2 transition-colors hover:text-white">
+            <Link href="/terms-of-service" className="inline-block py-2 transition-colors hover:text-white">
               Terms of Service
             </Link>
           </div>

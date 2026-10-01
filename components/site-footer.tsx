@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { OpenChatButton } from "@/components/open-chat-button";
 import { CONTACT_EMAIL, FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/site-data";
+import { LEGAL_DOCUMENTS, LEGAL_ORDER } from "@/lib/legal/documents";
 
 function SocialIcon({ name }: { name: string }) {
   const sharedClass = "h-4 w-4 fill-current";
@@ -140,10 +141,13 @@ export function SiteFooter() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-[var(--text-tertiary)] sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 NairobiX. All rights reserved.</p>
-          <div className="flex items-center gap-5">
-            <Link href="/privacy" className="inline-block py-2.5 transition-colors duration-200 hover:text-white">Privacy Policy</Link>
-            <Link href="/terms" className="inline-block py-2.5 transition-colors duration-200 hover:text-white">Terms of Service</Link>
-          </div>
+          <nav aria-label="Legal" className="flex flex-wrap items-center gap-x-5">
+            {LEGAL_ORDER.map((key) => (
+              <Link key={key} href={LEGAL_DOCUMENTS[key].href} className="inline-block py-2.5 transition-colors duration-200 hover:text-white">
+                {LEGAL_DOCUMENTS[key].title}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>

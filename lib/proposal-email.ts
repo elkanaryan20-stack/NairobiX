@@ -763,11 +763,11 @@ export function buildProposalEmailHtml(params: ProposalEmailParams): string {
                 </div>
 
                 <div class="footer-links">
-                  <a href="https://www.nairobix.com/privacy">
+                  <a href="https://www.nairobix.com/privacy-policy">
                     Privacy Policy
                   </a>
                   &nbsp;&nbsp;·&nbsp;&nbsp;
-                  <a href="https://www.nairobix.com/terms">
+                  <a href="https://www.nairobix.com/terms-of-service">
                     Terms of Service
                   </a>
                 </div>

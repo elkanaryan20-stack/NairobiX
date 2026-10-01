@@ -208,7 +208,7 @@ export function ContactForm() {
       <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm leading-6 text-[var(--text-tertiary)]">
           Used only to respond to your enquiry. See our{" "}
-          <Link href="/privacy" className="underline decoration-white/25 underline-offset-4 hover:text-white">
+          <Link href="/privacy-policy" className="underline decoration-white/25 underline-offset-4 hover:text-white">
             privacy policy
           </Link>
           .

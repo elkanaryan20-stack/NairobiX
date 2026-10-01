@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
           ["lead-generation-sales-system", "real-estate-lead-to-sales-system"],
           ["customer-acquisition-retention-system", "venue-enquiry-to-event-automation"],
         ].map(([from, to]) => ({ source: `/case-studies/${from}`, destination: `/case-studies/${to}`, permanent: true })),
+        // The legal pages moved to descriptive URLs alongside the new Cookie Policy.
+        [
+          { source: "/privacy", destination: "/privacy-policy", permanent: true },
+          { source: "/terms", destination: "/terms-of-service", permanent: true },
+        ],
       );
   },
 };

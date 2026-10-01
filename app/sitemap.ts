@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { ALL_SOLUTIONS, CASE_STUDIES, INDUSTRIES } from '@/lib/site-data'
 import { INSIGHTS } from '@/lib/insights'
 import { SITE_URL as BASE_URL } from '@/lib/seo'
+import { LEGAL_DOCUMENTS, LEGAL_ORDER } from '@/lib/legal/documents'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -17,8 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/book`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/request-solution`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${BASE_URL}/privacy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${BASE_URL}/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+    ...LEGAL_ORDER.map((key): MetadataRoute.Sitemap[number] => ({
+      url: `${BASE_URL}${LEGAL_DOCUMENTS[key].href}`,
+      lastModified: new Date(LEGAL_DOCUMENTS[key].lastUpdatedISO),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    })),
   ]
 
   const solutionRoutes: MetadataRoute.Sitemap = ALL_SOLUTIONS.map((solution) => ({
