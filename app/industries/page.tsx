@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -10,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/JsonLd";
 import { IndustryIndex } from "@/components/industries/IndustryIndex";
+import { IndustryStrip } from "@/components/industries/IndustryStrip";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 import { CONTEXT_DIMENSIONS, INDUSTRY_CONTEXTS } from "@/lib/industry-contexts";
@@ -60,29 +60,7 @@ export default function IndustriesPage() {
               </Button>
             </div>
           </div>
-          <ul className="mt-16 grid grid-cols-3 gap-1.5 sm:grid-cols-9 lg:mt-20">
-            {INDUSTRY_CONTEXTS.map((industry, i) => (
-              <li key={industry.slug}>
-                <Link
-                  href={`#${industry.slug}`}
-                  className="group relative block aspect-[3/4] overflow-hidden rounded-[3px] bg-white/[0.03] sm:aspect-[2/5] lg:aspect-[3/5]"
-                >
-                  <Image
-                    src={industry.image}
-                    alt=""
-                    fill
-                    sizes="(min-width: 640px) 11vw, 33vw"
-                    className="object-cover grayscale-[60%] transition duration-500 group-hover:grayscale-0 group-focus-visible:grayscale-0"
-                  />
-                  <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/10" />
-                  <span className="absolute inset-x-2.5 bottom-2.5">
-                    <span className={`${LABEL} block text-[var(--color-primary)]`}>{pad(i + 1)}</span>
-                    <span className="mt-1 block text-[12px] font-medium leading-4 text-white">{industry.name}</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <IndustryStrip className="mt-16 lg:mt-20" />
         </Section>
 
         {/* 02 — How context changes the problem. */}

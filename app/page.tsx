@@ -28,6 +28,7 @@ import { AssessmentStages } from "@/components/home/AssessmentStages";
 import { CtaSystemLine } from "@/components/home/CtaSystemLine";
 import { INSIGHTS } from "@/lib/insights";
 import { PortalPreview } from "@/components/solutions/PortalPreview";
+import { IndustryStrip } from "@/components/industries/IndustryStrip";
 import { Reveal } from "@/components/ui/Reveal";
 import { NiaSectionCue } from "@/components/nia/NiaSectionCue";
 import { HOME_TITLE, HOME_DESCRIPTION, homeMetadata } from "@/lib/seo";
@@ -48,18 +49,9 @@ import {
   TECHNOLOGY_PREVIEW,
   HOME_PROCESS,
   HOME_WHY_NAIROBIX,
-  INDUSTRIES_SERVED,
   CLIENT_WORKSPACE,
   WORKSPACE_FEATURES,
 } from "@/lib/site-data";
-
-const INDUSTRY_SLUGS: Record<string, string> = {
-  Healthcare: "healthcare",
-  Hospitality: "hospitality",
-  "Real Estate": "real-estate",
-  "Retail & E-commerce": "ecommerce",
-  "Professional Services": "professional-services",
-};
 
 const WORKSPACE_FEATURE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   visibility: ClipboardList,
@@ -264,6 +256,23 @@ export default function HomePage() {
           </Reveal>
         </Section>
 
+        {/* Industries · relevance, straight after the problems they shape (business).
+            The same photographic strip as the /industries hero — one shared
+            component, so the cards are identical on both pages. */}
+        <Section tone="business" border="top">
+          <Reveal>
+            <div className="mb-10 max-w-2xl">
+              <Eyebrow>INDUSTRIES WE UNDERSTAND</Eyebrow>
+              <Heading variant="display-md" className="mt-4">
+                Growth systems designed around your industry&apos;s realities.
+              </Heading>
+            </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <IndustryStrip linkBase="/industries" />
+          </Reveal>
+        </Section>
+
         {/* 05 — The connected growth system · flow (flow) */}
         <Section tone="flow" border="top" seam="signal">
           <Reveal>
@@ -382,37 +391,6 @@ export default function HomePage() {
               </div>
             </Reveal>
           </div>
-        </Section>
-
-        {/* 09 — Industries · relevance, a qualification layer (business) */}
-        <Section tone="business" border="top">
-          <Reveal>
-            <div className="mb-10 max-w-2xl">
-              <Eyebrow>INDUSTRIES WE UNDERSTAND</Eyebrow>
-              <Heading variant="display-md" className="mt-4">
-                Growth systems designed around your industry&apos;s realities.
-              </Heading>
-            </div>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="flex flex-wrap gap-3">
-              {INDUSTRIES_SERVED.map((industry) => {
-                const slug = INDUSTRY_SLUGS[industry];
-                const className =
-                  "rounded-full border border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition hover:border-[var(--color-primary)]/40 hover:text-white";
-
-                return slug ? (
-                  <Link key={industry} href={`/industries/${slug}`} className={className}>
-                    {industry}
-                  </Link>
-                ) : (
-                  <span key={industry} className={className}>
-                    {industry}
-                  </span>
-                );
-              })}
-            </div>
-          </Reveal>
         </Section>
 
         {/* 10 — How we work + workspace · experience (interface) */}
