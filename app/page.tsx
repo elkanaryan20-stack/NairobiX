@@ -331,6 +331,48 @@ export default function HomePage() {
           </Reveal>
         </Section>
 
+        {/* 11 — Illustrative scenarios · application, image-led (ink) */}
+        <Section tone="ink" border="top">
+          <Reveal>
+            <div className="mb-10 max-w-2xl">
+              <Eyebrow>ILLUSTRATIVE SCENARIOS</Eyebrow>
+              <Heading variant="display-md" className="mt-4">
+                What a connected growth system could look like
+              </Heading>
+              <p className="mt-4 text-sm leading-6 text-[var(--text-tertiary)]">
+                These are concept case studies illustrating how NairobiX approaches a growth system
+                for a given industry — not documented results from a specific client.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal>
+            <div className="grid gap-6 lg:grid-cols-3">
+              {CASE_STUDIES.map((study) => (
+                <Link key={study.slug} href={`/case-studies/${study.slug}`} className="group block">
+                  <ImageFrame
+                    src={study.image}
+                    alt={study.imageAlt}
+                    aspect="wide"
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                  />
+                  <div className="mt-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
+                      {study.label} · Concept Case Study
+                    </p>
+                    <Heading variant="heading-md" as="h3" className="mt-3">
+                      {study.title}
+                    </Heading>
+                    <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
+                    <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
+                      Explore the case study →
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </Reveal>
+        </Section>
+
         {/* 07 — How NairobiX works · architecture (blueprint) */}
         <Section tone="blueprint" border="top">
           <Reveal>
@@ -472,48 +514,6 @@ export default function HomePage() {
               </span>
             </Link>
           </div>
-        </Section>
-
-        {/* 11 — Illustrative scenarios · application, image-led (ink) */}
-        <Section tone="ink" border="top">
-          <Reveal>
-            <div className="mb-10 max-w-2xl">
-              <Eyebrow>ILLUSTRATIVE SCENARIOS</Eyebrow>
-              <Heading variant="display-md" className="mt-4">
-                What a connected growth system could look like
-              </Heading>
-              <p className="mt-4 text-sm leading-6 text-[var(--text-tertiary)]">
-                These are concept case studies illustrating how NairobiX approaches a growth system
-                for a given industry — not documented results from a specific client.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal>
-            <div className="grid gap-6 lg:grid-cols-3">
-              {CASE_STUDIES.map((study) => (
-                <Link key={study.slug} href={`/case-studies/${study.slug}`} className="group block">
-                  <ImageFrame
-                    src={study.image}
-                    alt={study.imageAlt}
-                    aspect="wide"
-                    sizes="(min-width: 1024px) 33vw, 100vw"
-                  />
-                  <div className="mt-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
-                      {study.label} · Concept Case Study
-                    </p>
-                    <Heading variant="heading-md" as="h3" className="mt-3">
-                      {study.title}
-                    </Heading>
-                    <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
-                    <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
-                      Explore the case study →
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </Reveal>
         </Section>
 
         {/* 12 — Insights · knowledge (editorial) */}
