@@ -212,21 +212,23 @@ export function SiteHeader() {
 
 
         <div className="hidden items-center gap-3 lg:flex">
-          {CTAS.map((cta) => (
-            <a
-              key={cta.label}
-              href={cta.href}
-              target={cta.external ? "_blank" : undefined}
-              rel={cta.external ? "noopener noreferrer" : undefined}
-              className={
-                cta.label === "Book a Consultation"
-                  ? "inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:border-white/30 hover:bg-white/10"
-                  : "inline-flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--color-on-primary)] transition hover:bg-[var(--color-primary-strong)]"
-              }
-            >
-              {cta.label}
-            </a>
-          ))}
+          {CTAS.map((cta) => {
+            const className =
+              cta.label === "Book a Consultation"
+                ? "inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:border-white/30 hover:bg-white/10"
+                : "inline-flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--color-on-primary)] transition hover:bg-[var(--color-primary-strong)]";
+            // Internal CTAs use client-side navigation: a plain <a> reloaded the
+            // whole document, re-running every tag on the site's two key CTAs.
+            return cta.external ? (
+              <a key={cta.label} href={cta.href} target="_blank" rel="noopener noreferrer" className={className}>
+                {cta.label}
+              </a>
+            ) : (
+              <Link key={cta.label} href={cta.href} className={className}>
+                {cta.label}
+              </Link>
+            );
+          })}
         </div>
 
         <button

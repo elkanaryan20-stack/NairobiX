@@ -218,10 +218,12 @@ export function getAttributionPayload(): { first?: Touch; last?: Touch; conversi
 export function getMetaBrowserIds(): { fbp?: string; fbc?: string } {
   if (typeof document === "undefined") return {};
   const cookie = (name: string) => document.cookie.split("; ").find((c) => c.startsWith(`${name}=`))?.split("=")[1];
-  const fbclid = readTouches().last?.fbclid;
+  const last = readTouches().last;
+  // Meta's documented fbc format when the Pixel hasn't set the cookie itself;
+  // its timestamp is when the fbclid was first seen, not when the form was sent.
+  const clickTime = last?.at ? Date.parse(last.at) : NaN;
   return {
     fbp: cookie("_fbp"),
-    // Meta's documented fbc format when the Pixel hasn't set the cookie itself.
-    fbc: cookie("_fbc") ?? (fbclid ? `fb.1.${Date.now()}.${fbclid}` : undefined),
+    fbc: cookie("_fbc") ?? (last?.fbclid ? `fb.1.${Number.isNaN(clickTime) ? Date.now() : clickTime}.${last.fbclid}` : undefined),
   };
 }

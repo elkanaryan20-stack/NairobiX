@@ -237,8 +237,9 @@ export function BookingFlow({ context }: { context: ReactNode }) {
         website: formData.website.trim(),
         discussionTopic: formData.discussionTopic,
         priority: formData.priority.trim(),
-        // For the server-side Meta event only; Zoho Bookings receives just its configured fields.
-        Tracking: formTrackingPayload(eventId).Tracking,
+        // Tracking is for the server-side Meta event only. Attribution reaches Zoho
+        // Bookings only when ZOHO_BOOKINGS_ATTRIBUTION_FIELD names a configured field.
+        ...formTrackingPayload(eventId),
       }),
     }).then(async (response) => ({ ok: response.ok, payload: await response.json() }));
 

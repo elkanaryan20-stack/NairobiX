@@ -5,6 +5,15 @@ import {
   NAIROBIX_CONSULTATION_STAFF_ID,
 } from "@/lib/zoho-bookings";
 import { DISCUSSION_TOPIC_OPTIONS } from "@/lib/forms/options";
+import { formatAttribution } from "@/lib/leads";
+
+/**
+ * The Zoho Bookings custom field that receives campaign attribution (first/last
+ * touch, as on CRM leads). Zoho rejects appointments carrying a field it doesn't
+ * have, so this stays off until the field exists — create it as a multi-line
+ * text field on the consultation service, then set its exact label here.
+ */
+const ATTRIBUTION_FIELD = process.env.ZOHO_BOOKINGS_ATTRIBUTION_FIELD?.trim() || "";
 
 export const DISCUSSION_TOPICS = DISCUSSION_TOPIC_OPTIONS;
 
@@ -47,6 +56,8 @@ export type ConsultationBookingInput = {
   priority: unknown;
   date: unknown;
   time: unknown;
+  /** First/last-touch attribution from the browser (lib/attribution.ts). Optional. */
+  Attribution?: unknown;
 };
 
 export type ConsultationBookingResult =
@@ -150,6 +161,11 @@ export async function submitConsultationBooking(
 
   if (website) {
     additionalFields.Website = website;
+  }
+
+  const attribution = ATTRIBUTION_FIELD ? formatAttribution(input.Attribution).replace(/^\s*— Attribution —\s*/, "").slice(0, 1000) : "";
+  if (attribution) {
+    additionalFields[ATTRIBUTION_FIELD] = attribution;
   }
 
   // Zoho Bookings' appointment-creation API only accepts a single
