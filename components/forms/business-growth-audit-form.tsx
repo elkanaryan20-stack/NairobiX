@@ -241,7 +241,8 @@ export function BusinessGrowthAuditForm() {
   const locked = phase === "submitting";
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pb-20 pt-10 sm:px-6 sm:pt-14 lg:px-8 lg:pb-28 lg:pt-16">
+    // data-nia-quiet: Nia stays still while the visitor is working in here.
+    <div data-nia-quiet className="mx-auto max-w-7xl px-4 pb-20 pt-10 sm:px-6 sm:pt-14 lg:px-8 lg:pb-28 lg:pt-16">
       <Intro />
       <div className="mt-10 border-t border-white/10 pt-10 lg:mt-12 lg:pt-12">
     <div ref={topRef} className="scroll-mt-24 grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-16">

@@ -683,6 +683,73 @@
   .animate-nia-roll-half { animation: nia-roll-half 500ms cubic-bezier(0.4, 0, 0.2, 1); }
   .animate-nia-attentive { animation: nia-attentive-pulse 900ms ease-in-out; }
 
+  /* Whole-launcher moves — the circle itself, with its note attached. */
+  @keyframes nia-hop {
+    0%, 100% { transform: translateY(0); }
+    22% { transform: translateY(-7px); }
+    44% { transform: translateY(0); }
+    62% { transform: translateY(-3px); }
+    80% { transform: translateY(0); }
+  }
+  @keyframes nia-bob {
+    0%, 50%, 100% { transform: translateY(0); }
+    25%, 75% { transform: translateY(-3px); }
+  }
+  @keyframes nia-drift {
+    0%, 100% { transform: translateX(0); }
+    45% { transform: translateX(-14px); }
+  }
+  @keyframes nia-arc {
+    0%, 100% { transform: translate(0, 0); }
+    30% { transform: translate(-8px, -9px); }
+    60% { transform: translate(-14px, -4px); }
+  }
+  /* A short roll out and back: the glyph turns by the distance travelled
+     over the circle's circumference (d / (π × 56px) × 360°). */
+  @keyframes nia-roll-short {
+    0%, 100% { transform: translateX(0); }
+    45%, 55% { transform: translateX(var(--nia-roll-d)); }
+  }
+  @keyframes nia-roll-short-glyph {
+    0%, 100% { transform: rotate(0deg); }
+    45%, 55% { transform: rotate(var(--nia-roll-r)); }
+  }
+  @keyframes nia-settle {
+    0%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-3px); }
+  }
+  :root { --nia-roll-d: -28px; --nia-roll-r: -57deg; }
+  @media (min-width: 640px) {
+    :root { --nia-roll-d: -44px; --nia-roll-r: -90deg; }
+  }
+
+  .animate-nia-hop { animation: nia-hop 900ms ease-out; }
+  .animate-nia-bob { animation: nia-bob 2000ms ease-in-out; }
+  .animate-nia-drift { animation: nia-drift 1400ms cubic-bezier(0.45, 0, 0.25, 1); }
+  .animate-nia-arc { animation: nia-arc 1500ms cubic-bezier(0.45, 0, 0.25, 1); }
+  .animate-nia-roll-short { animation: nia-roll-short 1700ms cubic-bezier(0.45, 0, 0.25, 1); }
+  .animate-nia-roll-short-glyph { animation: nia-roll-short-glyph 1700ms cubic-bezier(0.45, 0, 0.25, 1); }
+  .animate-nia-settle { animation: nia-settle 600ms ease-out; }
+
+  /* Nia's note — see components/nia/NiaNote.tsx. */
+  .nia-note {
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+  }
+  .nia-note-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* A fade is a state change, not motion — keep it; drop the slide. */
+    .nia-note {
+      transform: none;
+      transition-property: opacity !important;
+      transition-duration: 200ms !important;
+    }
+  }
+
   /* The N mark wipes out edge-to-edge then back in — see NiaMark.tsx. The
      circle never moves or changes; only the glyph's visible region does,
      via clip-path, so it never shifts position mid-wipe. */

@@ -1,15 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { NiaChat } from "@/components/nia/NiaChat";
 import { NiaMark } from "@/components/nia/NiaMark";
+import { NiaNote } from "@/components/nia/NiaNote";
 import { useNiaPersonality } from "@/lib/useNiaPersonality";
 
 export function NiaLauncher() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const { markAnimationClass, wipePhase, isRolling, triggerHoverNudge, triggerClickRoll } =
-    useNiaPersonality({ active: !isOpen && !mobileNavOpen });
+  const {
+    buttonRef,
+    glyphClass,
+    bodyClass,
+    wipePhase,
+    isRolling,
+    away,
+    bubble,
+    travelStyle,
+    rotorStyle,
+    onPointerEnter,
+    onPointerLeave,
+    onFocus,
+    onBlur,
+    triggerClickRoll,
+  } = useNiaPersonality({ active: !isOpen && !mobileNavOpen, pathname });
 
   // Hide the floating bubble while the site header's mobile menu is open —
   // see the matching dispatch in components/site-header.tsx.
@@ -47,19 +64,35 @@ export function NiaLauncher() {
           <NiaChat onClose={() => setIsOpen(false)} />
         </div>
       ) : mobileNavOpen ? null : (
-        <button
-          type="button"
-          onClick={() => triggerClickRoll(() => setIsOpen(true))}
-          onMouseEnter={triggerHoverNudge}
-          aria-label="Open Nia, the NairobiX Growth Assistant"
-          aria-expanded={false}
-          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-[0_10px_28px_rgba(0,0,0,0.45)] transition hover:bg-[var(--color-primary-strong)] sm:bottom-6 sm:right-6"
-        >
-          <NiaMark
-            wipePhase={wipePhase}
-            className={`h-6 w-6 ${isRolling ? "animate-nia-roll" : markAnimationClass}`}
-          />
-        </button>
+        // A click-through, clipped stage the size of the viewport: Nia can roll
+        // to (and past) its edges without ever creating page overflow or
+        // touching layout — she only ever moves by transform.
+        <div className="pointer-events-none fixed inset-0 z-50 overflow-clip">
+          <div className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6" style={travelStyle}>
+            <div className={bodyClass}>
+              <NiaNote text={bubble.text} visible={bubble.visible} />
+              <button
+                ref={buttonRef}
+                type="button"
+                onClick={() => triggerClickRoll(() => setIsOpen(true))}
+                onPointerEnter={onPointerEnter}
+                onPointerLeave={onPointerLeave}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                aria-label="Open Nia, the NairobiX Growth Assistant"
+                aria-expanded={false}
+                className={`${away ? "pointer-events-none" : "pointer-events-auto"} flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-[0_10px_28px_rgba(0,0,0,0.45)] transition hover:bg-[var(--color-primary-strong)]`}
+              >
+                <span className="block" style={rotorStyle}>
+                  <NiaMark
+                    wipePhase={wipePhase}
+                    className={`h-6 w-6 ${isRolling ? "animate-nia-roll" : glyphClass}`}
+                  />
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

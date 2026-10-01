@@ -288,7 +288,8 @@ export function BookingFlow({ context }: { context: ReactNode }) {
   const leadingBlanks = upcomingDates.length ? (upcomingDates[0].getDay() + 6) % 7 : 0;
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-14">
+    // data-nia-quiet: Nia stays still while the visitor is working in here.
+    <div data-nia-quiet className="grid gap-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-14">
       <aside className="order-2 lg:order-1">
         <div className="lg:sticky lg:top-28">{context}</div>
       </aside>
