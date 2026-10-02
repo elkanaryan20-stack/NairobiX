@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { FormInput, SectionHeader } from "@/components/forms/FormField";
+import { useRef, useState } from "react";
+import { FormInput, FormTextarea, SectionHeader } from "@/components/forms/FormField";
 import { SingleChoiceCards, MultiChoiceCards } from "@/components/forms/ChoiceCard";
-import { ErrorBanner, LeadFormShell } from "@/components/forms/LeadFormShell";
+import { ErrorBanner, FormContext, LeadFormShell } from "@/components/forms/LeadFormShell";
 import { ReviewSummary, type ReviewSection } from "@/components/forms/ReviewSummary";
 import { OpportunityApplicationTransition } from "@/components/forms/OpportunityApplicationTransition";
 import { OpportunityApplicationReceived } from "@/components/forms/OpportunityApplicationReceived";
@@ -18,44 +18,36 @@ import {
   RELATIONSHIP_TO_OPPORTUNITIES_OPTIONS as relationshipOptions,
 } from "@/lib/forms/options";
 
-// One short conditional follow-up per contribution area (brief section 13) —
-// contextual application information only, not a modeled CRM field.
-const CONTRIBUTION_FOLLOW_UPS: Record<string, string> = {
-  "Generate Opportunities": "What types of opportunities can you identify or introduce?",
-  "Provide Expertise": "What area of expertise can you contribute?",
-  "Provide Services": "What services or capabilities can you provide?",
-  "Collaborate on Projects": "What types of projects or engagements can you support?",
-};
-
 const initialState = {
   First_Name: "",
   Last_Name: "",
   Applicant_Type: "",
+  Organization_Name: "",
   Email: "",
   Phone: "",
-  Website: "",
   Contribution_Areas: [] as string[],
-  Contribution_Details: {} as Record<string, string>,
   Opportunity_Access: [] as string[],
   Relationship_To_Opportunities: [] as string[],
+  Qualification_Evidence: "",
+  Supporting_Links: "",
 };
 
 type FormState = typeof initialState;
 type FieldName = keyof FormState;
 
 const STEPS = [
-  { title: "About You", description: "Tell us about yourself." },
-  { title: "Contribution", description: "How would you contribute to NairobiX?" },
-  { title: "Opportunity Access", description: "Who do you have access to?" },
-  { title: "Relationships", description: "How are you connected to these opportunities?" },
+  { title: "About You", description: "Your details" },
+  { title: "Contribution", description: "How you can contribute" },
+  { title: "Opportunity Access", description: "Your relationships and reach" },
+  { title: "Qualification Evidence", description: "Examples and links" },
   { title: "Review", description: "Review your application before submitting." },
 ] as const;
 
 const STEP_FIELDS: FieldName[][] = [
-  ["First_Name", "Last_Name", "Applicant_Type", "Email", "Phone", "Website"],
+  ["First_Name", "Last_Name", "Applicant_Type", "Organization_Name", "Email", "Phone"],
   ["Contribution_Areas"],
-  ["Opportunity_Access"],
-  ["Relationship_To_Opportunities"],
+  ["Opportunity_Access", "Relationship_To_Opportunities"],
+  ["Qualification_Evidence", "Supporting_Links"],
   [],
 ];
 
@@ -68,6 +60,7 @@ const REQUIRED_FIELDS: FieldName[] = [
   "Contribution_Areas",
   "Opportunity_Access",
   "Relationship_To_Opportunities",
+  "Qualification_Evidence",
 ];
 
 function stepForField(field: string): number {
@@ -88,6 +81,7 @@ export function GrowthPartnerForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState("");
   const [phase, setPhase] = useState<Phase>("form");
+  const submissionStarted = useRef(false);
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -100,23 +94,9 @@ export function GrowthPartnerForm() {
       const current = prev[name];
       const next = current.includes(value) ? current.filter((entry) => entry !== value) : [...current, value];
 
-      // Dropping a contribution area also drops its follow-up answer so
-      // stale text can't be submitted for a no-longer-selected area.
-      const nextDetails =
-        name === "Contribution_Areas" && !next.includes(value)
-          ? Object.fromEntries(Object.entries(prev.Contribution_Details).filter(([key]) => key !== value))
-          : prev.Contribution_Details;
-
-      return { ...prev, [name]: next, Contribution_Details: nextDetails };
+      return { ...prev, [name]: next };
     });
     setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
-
-  const setContributionDetail = (area: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      Contribution_Details: { ...prev.Contribution_Details, [area]: value },
-    }));
   };
 
   const validateFields = (fields: FieldName[]) => {
@@ -150,8 +130,14 @@ export function GrowthPartnerForm() {
     if (fields.includes("Phone") && formData.Phone && !/^[+()\d\s-]{7,20}$/.test(formData.Phone)) {
       nextErrors.Phone = "Enter a valid phone or WhatsApp number.";
     }
-    if (fields.includes("Website") && formData.Website && !/^https?:\/\//i.test(formData.Website)) {
-      nextErrors.Website = "Include http:// or https://.";
+    if (fields.includes("Organization_Name") && formData.Applicant_Type === "Organization" && !formData.Organization_Name.trim()) {
+      nextErrors.Organization_Name = "Enter your organization name.";
+    }
+    if (fields.includes("Supporting_Links") && formData.Supporting_Links) {
+      const links = formData.Supporting_Links.split(/[\n,]+/).map((link) => link.trim()).filter(Boolean);
+      if (links.some((link) => !/^https?:\/\//i.test(link))) {
+        nextErrors.Supporting_Links = "Add each link with http:// or https://.";
+      }
     }
 
     return nextErrors;
@@ -177,6 +163,7 @@ export function GrowthPartnerForm() {
 
   const handleSubmit = async () => {
     setSubmitError("");
+    if (submissionStarted.current) return;
     const allErrors = validateAll();
 
     if (Object.keys(allErrors).length > 0) {
@@ -186,6 +173,7 @@ export function GrowthPartnerForm() {
       return;
     }
 
+    submissionStarted.current = true;
     setPhase("submitting");
 
     const reduceMotion = prefersReducedMotion();
@@ -198,6 +186,18 @@ export function GrowthPartnerForm() {
       body: JSON.stringify({
         formType: "partner",
         ...formData,
+        // Adapt the guided application to the existing Zoho Leads field map.
+        Company: formData.Applicant_Type === "Organization"
+          ? formData.Organization_Name.trim()
+          : `${formData.First_Name} ${formData.Last_Name}`.trim(),
+        Partner_Type: formData.Applicant_Type,
+        Partnership_Interest: formData.Contribution_Areas,
+        Partnership_Motivation: [
+          `Opportunity access: ${formData.Opportunity_Access.join(", ")}`,
+          `Relationship to opportunities: ${formData.Relationship_To_Opportunities.join(", ")}`,
+          `Qualification evidence: ${formData.Qualification_Evidence.trim()}`,
+          formData.Supporting_Links.trim() ? `Supporting links: ${formData.Supporting_Links.trim()}` : "",
+        ].filter(Boolean).join("\n\n"),
         Marketing_Channel: getLeadSource(),
         Attribution: formTrackingPayload(newEventId()).Attribution,
       }),
@@ -212,6 +212,7 @@ export function GrowthPartnerForm() {
       const { ok, payload } = await submission;
 
       if (!ok || !payload.success) {
+        submissionStarted.current = false;
         setSubmitError(payload.error || "Something prevented your application from being submitted. Please review the highlighted information and try again.");
         setPhase("form");
         return;
@@ -224,6 +225,7 @@ export function GrowthPartnerForm() {
       setPhase("success");
     } catch (error) {
       console.error("Network application failed", error);
+      submissionStarted.current = false;
       setSubmitError("We couldn't complete your submission right now. Your information has not been submitted. Please try again.");
       setPhase("form");
     }
@@ -243,9 +245,9 @@ export function GrowthPartnerForm() {
       rows: [
         { label: "Name", value: `${formData.First_Name} ${formData.Last_Name}`.trim() },
         { label: "Applicant Type", value: formData.Applicant_Type },
+        ...(formData.Applicant_Type === "Organization" ? [{ label: "Organization Name", value: formData.Organization_Name }] : []),
         { label: "Email", value: formData.Email },
-        { label: "Phone", value: formData.Phone },
-        { label: "Website", value: formData.Website },
+        { label: "Phone / WhatsApp", value: formData.Phone },
       ],
     },
     {
@@ -256,20 +258,32 @@ export function GrowthPartnerForm() {
     {
       title: "Opportunity Access",
       stepIndex: 2,
-      rows: [{ label: "Access", value: formData.Opportunity_Access.join(", ") }],
+      rows: [
+        { label: "Opportunity Access", value: formData.Opportunity_Access.join(", ") },
+        { label: "Relationship to Potential Opportunities", value: formData.Relationship_To_Opportunities.join(", ") },
+      ],
     },
     {
-      title: "Relationships",
+      title: "Qualification Evidence",
       stepIndex: 3,
-      rows: [{ label: "Relationship", value: formData.Relationship_To_Opportunities.join(", ") }],
+      rows: [
+        { label: "Examples / Qualification Evidence", value: formData.Qualification_Evidence },
+        { label: "Supporting links", value: formData.Supporting_Links },
+      ],
     },
   ];
 
   return (
     <LeadFormShell
       eyebrow="NAIROBIX · OPPORTUNITIES NETWORK"
-      title="Network Application"
-      description="Join the NairobiX Opportunities Network and help businesses access strategic growth solutions and long-term value."
+      title="Opportunity Network Application"
+      description="A managed network for trusted individuals and organizations who can contribute expertise, services, collaboration or relevant business opportunities. Apply to be considered; every application is reviewed and submission does not mean approval."
+      aside={<FormContext steps={[
+        "NairobiX reviews your application.",
+        "Your contribution and fit are assessed.",
+        "Qualified applicants proceed to Participant onboarding.",
+        "Approved Participants receive Opportunity Network access.",
+      ]} note="Submitting an application does not create a Participant account or grant portal access." />}
     >
       {phase === "transition" ? (
         <OpportunityApplicationTransition />
@@ -283,10 +297,8 @@ export function GrowthPartnerForm() {
             <fieldset disabled={isLocked} className="m-0 min-w-0 space-y-10 border-0 p-0">
               {step === 0 && (
                 <div>
-                  <SectionHeader number="01" title="Tell us about yourself." />
+                  <SectionHeader number="01" title="About you" description="Start with the best way to identify and reach you." />
                   <div className="grid gap-5 md:grid-cols-2">
-                    <FormInput label="First Name" name="First_Name" value={formData.First_Name} onChange={handleTextChange} required error={errors.First_Name} />
-                    <FormInput label="Last Name" name="Last_Name" value={formData.Last_Name} onChange={handleTextChange} required error={errors.Last_Name} />
                     <div className="md:col-span-2">
                       <SingleChoiceCards
                         label="Applicant Type"
@@ -302,18 +314,18 @@ export function GrowthPartnerForm() {
                         columns={2}
                       />
                     </div>
-                    <FormInput label="Email" name="Email" type="email" value={formData.Email} onChange={handleTextChange} required error={errors.Email} />
-                    <FormInput label="Phone / WhatsApp" name="Phone" type="tel" value={formData.Phone} onChange={handleTextChange} required error={errors.Phone} />
-                    <div className="md:col-span-2">
-                      <FormInput label="Website" name="Website" type="url" value={formData.Website} onChange={handleTextChange} placeholder="https:// (optional)" error={errors.Website} />
-                    </div>
+                    <FormInput label="First Name" name="First_Name" value={formData.First_Name} onChange={handleTextChange} required error={errors.First_Name} autoComplete="given-name" />
+                    <FormInput label="Last Name" name="Last_Name" value={formData.Last_Name} onChange={handleTextChange} required error={errors.Last_Name} autoComplete="family-name" />
+                    {formData.Applicant_Type === "Organization" && <div className="md:col-span-2"><FormInput label="Organization Name" name="Organization_Name" value={formData.Organization_Name} onChange={handleTextChange} required error={errors.Organization_Name} autoComplete="organization" /></div>}
+                    <FormInput label="Email" name="Email" type="email" value={formData.Email} onChange={handleTextChange} required error={errors.Email} autoComplete="email" />
+                    <FormInput label="Phone / WhatsApp" name="Phone" type="tel" value={formData.Phone} onChange={handleTextChange} required error={errors.Phone} autoComplete="tel" />
                   </div>
                 </div>
               )}
 
               {step === 1 && (
                 <div>
-                  <SectionHeader number="02" title="How would you contribute to NairobiX?" description="Select all that apply." />
+                  <SectionHeader number="02" title="Contribution" description="Where could your experience and capabilities strengthen the Network? Select all that apply." />
                   <MultiChoiceCards
                     label="Contribution Areas"
                     name="Contribution_Areas"
@@ -323,28 +335,12 @@ export function GrowthPartnerForm() {
                     error={errors.Contribution_Areas}
                     required
                   />
-
-                  {formData.Contribution_Areas.length > 0 ? (
-                    <div className="mt-8 space-y-5 border-t border-white/10 pt-8">
-                      {formData.Contribution_Areas.map((area) =>
-                        CONTRIBUTION_FOLLOW_UPS[area] ? (
-                          <FormInput
-                            key={area}
-                            label={CONTRIBUTION_FOLLOW_UPS[area]}
-                            name={`detail-${area}`}
-                            value={formData.Contribution_Details[area] ?? ""}
-                            onChange={(event) => setContributionDetail(area, event.target.value)}
-                          />
-                        ) : null
-                      )}
-                    </div>
-                  ) : null}
                 </div>
               )}
 
               {step === 2 && (
                 <div>
-                  <SectionHeader number="03" title="Who do you have access to?" description="Select the types of people, businesses or networks you legitimately interact with." />
+                  <SectionHeader number="03" title="Opportunity access" description="Tell us who you can reach and how you are connected. Select all that apply." />
                   <MultiChoiceCards
                     label="Opportunity Access"
                     name="Opportunity_Access"
@@ -355,22 +351,51 @@ export function GrowthPartnerForm() {
                     required
                     columns={2}
                   />
+                  <div className="mt-8 border-t border-white/10 pt-8">
+                    <MultiChoiceCards
+                      label="Relationship to Potential Opportunities"
+                      name="Relationship_To_Opportunities"
+                      options={relationshipOptions}
+                      selected={formData.Relationship_To_Opportunities}
+                      onToggle={(value) => toggleMulti("Relationship_To_Opportunities", value)}
+                      error={errors.Relationship_To_Opportunities}
+                      required
+                      columns={2}
+                    />
+                  </div>
                 </div>
               )}
 
               {step === 3 && (
                 <div>
-                  <SectionHeader number="04" title="How are you connected to these opportunities?" />
-                  <MultiChoiceCards
-                    label="Relationship to Opportunities"
-                    name="Relationship_To_Opportunities"
-                    options={relationshipOptions}
-                    selected={formData.Relationship_To_Opportunities}
-                    onToggle={(value) => toggleMulti("Relationship_To_Opportunities", value)}
-                    error={errors.Relationship_To_Opportunities}
+                  <SectionHeader number="04" title="Qualification evidence" description="Share concise examples that demonstrate your experience, relationships or ability to contribute." />
+                  <FormTextarea
+                    label="Examples / Qualification Evidence"
+                    name="Qualification_Evidence"
+                    value={formData.Qualification_Evidence}
+                    onChange={(event) => {
+                      setFormData((prev) => ({ ...prev, Qualification_Evidence: event.target.value }));
+                      setErrors((prev) => ({ ...prev, Qualification_Evidence: "" }));
+                    }}
                     required
-                    columns={2}
+                    error={errors.Qualification_Evidence}
+                    placeholder="Relevant work, outcomes, services or examples of the opportunities you can support"
                   />
+                  <div className="mt-6">
+                    <FormTextarea
+                      label="Supporting links"
+                      name="Supporting_Links"
+                      value={formData.Supporting_Links}
+                      onChange={(event) => {
+                        setFormData((prev) => ({ ...prev, Supporting_Links: event.target.value }));
+                        setErrors((prev) => ({ ...prev, Supporting_Links: "" }));
+                      }}
+                      rows={3}
+                      helperText="Optional. Add one link per line."
+                      error={errors.Supporting_Links}
+                      placeholder="https://your-portfolio.example"
+                    />
+                  </div>
                 </div>
               )}
 

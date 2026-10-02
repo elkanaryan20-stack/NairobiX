@@ -9,19 +9,25 @@ const NEXT_STEPS: GrowthReviewStep[] = [
   {
     number: "01",
     title: "Review",
-    description: "We review the information you've provided.",
+    description: "NairobiX reviews the application you submitted.",
     complete: true,
   },
   {
     number: "02",
     title: "Qualification",
-    description: "We assess your potential contribution against current Network requirements.",
+    description: "We assess your contribution and fit for current Network requirements.",
     complete: false,
   },
   {
     number: "03",
-    title: "Next Step",
-    description: "If your application progresses, we'll provide instructions for the next stage.",
+    title: "Participant Onboarding",
+    description: "Qualified applicants proceed to Participant onboarding.",
+    complete: false,
+  },
+  {
+    number: "04",
+    title: "Network Access",
+    description: "Approved Participants receive Opportunity Network access.",
     complete: false,
   },
 ];
@@ -40,7 +46,7 @@ export function OpportunityApplicationReceived({ firstName }: { firstName: strin
       <section
         role="status"
         aria-live="polite"
-        className="border-b border-white/10 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.14),transparent_40%)]"
+        className="border-b border-white/10 bg-[#0b0b0d]"
       >
         <Container className="py-16 sm:py-24">
           <div className="mx-auto max-w-2xl text-center">
@@ -58,8 +64,7 @@ export function OpportunityApplicationReceived({ firstName }: { firstName: strin
               Opportunity Network.
             </p>
             <p className="mt-4 text-sm text-[var(--text-tertiary)]">
-              Application does not guarantee admission. Network participation does not guarantee referrals,
-              assignments, projects, clients, revenue or other commercial outcomes.
+              Submission does not mean approval. We will contact you about any next steps after the review.
             </p>
           </div>
         </Container>

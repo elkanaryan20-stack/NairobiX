@@ -245,11 +245,10 @@ function getValidationRules(formType: string) {
           "Company",
           "Email",
           "Phone",
-          "City",
-          "Country",
           "Partner_Type",
           "Partnership_Interest",
           "Partnership_Motivation",
+          "Qualification_Evidence",
         ],
       };
 
