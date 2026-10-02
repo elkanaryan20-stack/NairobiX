@@ -3,6 +3,7 @@ import Link from "next/link";
 import { OpenChatButton } from "@/components/open-chat-button";
 import { CONTACT_EMAIL, FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/site-data";
 import { LEGAL_DOCUMENTS, LEGAL_ORDER } from "@/lib/legal/documents";
+import { CookiePreferencesButton } from "@/components/privacy/CookieConsent";
 
 function SocialIcon({ name }: { name: string }) {
   const sharedClass = "h-4 w-4 fill-current";
@@ -147,6 +148,7 @@ export function SiteFooter() {
                 {LEGAL_DOCUMENTS[key].title}
               </Link>
             ))}
+            <CookiePreferencesButton className="inline-block py-2.5 transition-colors duration-200 hover:text-white" />
           </nav>
         </div>
       </div>

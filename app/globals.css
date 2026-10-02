@@ -779,3 +779,35 @@
   .animate-nia-wipe-out { animation: nia-wipe-out 1400ms cubic-bezier(0.65, 0, 0.35, 1) forwards; }
   .animate-nia-wipe-in { animation: nia-wipe-in 1400ms cubic-bezier(0.65, 0, 0.35, 1) forwards; }
 }
+/* Compact NairobiX consent controls use the same restrained outlined action style. */
+.cookie-action {
+  min-height: 36px;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 4%);
+  padding: 0.5rem 0.75rem;
+  color: rgb(255 255 255 / 86%);
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 550;
+  line-height: 1rem;
+  text-align: center;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.cookie-action:hover {
+  border-color: rgb(249 115 22 / 52%);
+  background: rgb(255 255 255 / 7%);
+  color: #fff;
+}
+
+.cookie-action:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie-action {
+    transition: none;
+  }
+}

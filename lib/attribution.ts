@@ -18,6 +18,8 @@
 // normalized to "Referral" (we know it's an external link, just not one of
 // our named channels) rather than leaking the raw host.
 
+import { hasMarketingConsent } from "@/lib/cookie-consent";
+
 const STORAGE_KEY = "nx_lead_source";
 const MEDIUM_KEY = "nx_lead_source_medium";
 const CAMPAIGN_KEY = "nx_lead_source_campaign";
@@ -138,6 +140,7 @@ export function captureAttribution(): void {
  * discarded in favor of the fallback rather than forwarded to Zoho.
  */
 export function getLeadSource(): LeadSource {
+  if (!hasMarketingConsent()) return FALLBACK_LEAD_SOURCE;
   if (typeof window === "undefined") return FALLBACK_LEAD_SOURCE;
 
   try {

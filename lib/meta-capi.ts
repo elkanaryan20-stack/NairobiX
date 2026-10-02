@@ -74,12 +74,12 @@ export async function sendMetaEvent(event: MetaServerEvent): Promise<void> {
   }
 }
 
-/** Reads the request context CAPI needs, and whether the visitor opted out (Global Privacy Control). */
+/** Reads the request context CAPI needs; server events require affirmative Marketing consent. */
 export function requestContext(request: Request, body: Record<string, unknown>) {
   const tracking = (typeof body.Tracking === "object" && body.Tracking) || {};
   const t = tracking as Record<string, unknown>;
   const str = (v: unknown) => (typeof v === "string" && v.length < 500 ? v : undefined);
-  const optedOut = request.headers.get("sec-gpc") === "1" || t.adConsent === false;
+  const optedOut = request.headers.get("sec-gpc") === "1" || t.adConsent !== true;
   return {
     optedOut,
     eventId: str(t.eventId),

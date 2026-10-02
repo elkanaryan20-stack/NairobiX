@@ -1,29 +1,25 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { captureAttribution, captureTouch } from "@/lib/attribution";
-import { adTrackingAllowed, trackEvent } from "@/lib/analytics";
+import { trackEvent } from "@/lib/analytics";
+import { hasMarketingConsent } from "@/lib/cookie-consent";
 
-// Destinations that count as a conversion CTA.
 const CTA_PATHS = ["/business-growth-audit", "/book", "/contact", "/request-solution"];
 
-/**
- * Site-wide, render-nothing tracker:
- *  - captures first-touch channel and first/last-touch campaign details;
- *  - sends Meta PageView on client-side navigations (the Pixel's own init
- *    covers the first page — GA4 page views are automatic);
- *  - records cta_click for any link to a conversion destination, via one
- *    delegated listener rather than per-button code.
- */
+/** Consent-aware acquisition attribution and delegated CTA analytics. */
 export function AttributionTracker() {
   const pathname = usePathname();
-  // The path the Pixel last counted — its own init counts the first page.
-  const countedPath = useRef(pathname);
 
   useEffect(() => {
-    captureAttribution();
-    captureTouch();
+    const captureIfAllowed = () => {
+      if (!hasMarketingConsent()) return;
+      captureAttribution();
+      captureTouch();
+    };
+    captureIfAllowed();
+    window.addEventListener("nairobix:consent-change", captureIfAllowed);
 
     const onClick = (event: MouseEvent) => {
       const link = (event.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
@@ -35,7 +31,7 @@ export function AttributionTracker() {
         return;
       }
       if (url.origin !== window.location.origin) return;
-      const destination = CTA_PATHS.find((p) => url.pathname === p);
+      const destination = CTA_PATHS.find((path) => url.pathname === path);
       if (!destination || url.pathname === window.location.pathname) return;
       trackEvent("cta_click", {
         cta_text: (link.textContent || "").replace(/[→↓]/g, "").trim().slice(0, 80),
@@ -45,13 +41,16 @@ export function AttributionTracker() {
       });
     };
     document.addEventListener("click", onClick, { capture: true });
-    return () => document.removeEventListener("click", onClick, { capture: true });
+    return () => {
+      document.removeEventListener("click", onClick, { capture: true });
+      window.removeEventListener("nairobix:consent-change", captureIfAllowed);
+    };
   }, []);
 
   useEffect(() => {
-    if (pathname === countedPath.current) return;
-    countedPath.current = pathname;
-    if (adTrackingAllowed()) window.fbq?.("track", "PageView");
+    if (!hasMarketingConsent()) return;
+    captureAttribution();
+    captureTouch();
   }, [pathname]);
 
   return null;

@@ -17,6 +17,7 @@
 
 import { TRACKING } from "@/lib/tracking-config";
 import { getAttributionPayload, getMetaBrowserIds } from "@/lib/attribution";
+import { hasAnalyticsConsent, hasMarketingConsent } from "@/lib/cookie-consent";
 
 type Params = Record<string, string | number | boolean | undefined>;
 
@@ -26,10 +27,9 @@ const META_EVENT: Record<string, string> = {
   contact_submit: "Contact",
 };
 
-/** Global Privacy Control: when set, no advertising pixels or user data are sent. */
+/** Compatibility helper for existing marketing call sites, including GPC handling. */
 export function adTrackingAllowed(): boolean {
-  if (typeof navigator === "undefined") return false;
-  return (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl !== true;
+  return hasMarketingConsent();
 }
 
 /** A per-conversion ID shared by the browser Pixel and the server Conversions API for deduplication. */
@@ -49,11 +49,13 @@ export function trackEvent(
   if (typeof window === "undefined") return;
   const clean = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== ""));
 
-  // GA4 (and GTM, via the same dataLayer).
-  window.gtag?.("event", name, clean);
-  if (TRACKING.gtmId) window.dataLayer?.push({ event: `nx_${name}`, ...clean });
+  // GA4 event collection follows the Analytics choice independently.
+  if (hasAnalyticsConsent()) window.gtag?.("event", name, clean);
 
-  if (!adTrackingAllowed()) return;
+  if (!hasMarketingConsent()) return;
+
+  // Optional GTM tags are loaded only after Marketing consent.
+  if (TRACKING.gtmId) window.dataLayer?.push({ event: `nx_${name}`, ...clean });
 
   // Google Ads conversion, with enhanced-conversion user data when provided.
   const label = TRACKING.googleAdsLabels[name];
@@ -97,13 +99,14 @@ export function trackConversion(eventName: string, params?: Params) {
  * matching Conversions API event. Never forwarded to Zoho as-is.
  */
 export function formTrackingPayload(eventId: string) {
+  const marketingConsent = hasMarketingConsent();
   return {
-    Attribution: getAttributionPayload(),
+    ...(marketingConsent ? { Attribution: getAttributionPayload() } : {}),
     Tracking: {
       eventId,
       pageUrl: typeof window !== "undefined" ? window.location.href.split("?")[0] : "",
-      adConsent: adTrackingAllowed(),
-      ...(adTrackingAllowed() ? getMetaBrowserIds() : {}),
+      adConsent: marketingConsent,
+      ...(marketingConsent ? getMetaBrowserIds() : {}),
     },
   };
 }

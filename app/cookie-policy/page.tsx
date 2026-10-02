@@ -48,12 +48,13 @@ const SECTIONS: LegalSectionEntry[] = [
       <>
         <p>We use cookies and similar technologies for a small number of purposes:</p>
         <ul>
-          <li><strong>Essential functionality</strong> — keeping your Growth Assessment answers while you move between steps, and making sure each conversion is counted once.</li>
-          <li><strong>Analytics</strong> — understanding which pages are visited and how people find the Website, so we can improve it.</li>
-          <li><strong>Campaign attribution</strong> — recording which channel or campaign brought you to us, so that an enquiry you send can be linked to its source.</li>
+          <li><strong>Essential functionality</strong> — keeping your Growth Assessment answers while you move between steps, and remembering your cookie choice.</li>
+          <li><strong>Analytics</strong> — understanding which pages are visited so we can improve the Website. Google Analytics loads only if you allow Analytics.</li>
+          <li><strong>Marketing</strong> — measuring marketing through Meta Pixel and, when configured, Google Ads. These technologies load only if you allow Marketing.</li>
+          <li><strong>Campaign attribution</strong> — with Marketing consent, recording which channel or campaign brought you to us so an enquiry can be linked to its source.</li>
           {ADS_ENABLED ? <li><strong>Advertising measurement</strong> — seeing which of our ads lead to enquiries, bookings and completed Assessments.</li> : null}
         </ul>
-        <p>NairobiX&apos;s own website code does not set cookies. The cookies described below are set by the third-party services we use.</p>
+        <p>NairobiX&apos;s website stores your consent choice and, after Marketing consent, campaign attribution in local storage. Third-party cookies are set only after you enable the relevant category.</p>
       </>
     ),
   },
@@ -68,8 +69,8 @@ const SECTIONS: LegalSectionEntry[] = [
           head={["Name", "Type", "Purpose", "Duration"]}
           rows={[
             ["nairobix:growth-assessment:v2", "Session storage", "Keeps your Growth Assessment answers if you refresh or move between steps. Cleared when you submit.", "Until the tab is closed"],
-            ["nx_evt_*", "Session storage", "Records that a start event (such as starting the Assessment) has been counted, so it is not counted twice.", "Until the tab is closed"],
             ["nx_nia_roamed", "Session storage", "Remembers that Nia's occasional on-screen animation has played, so it does not repeat.", "Until the tab is closed"],
+            ["nairobix:cookie-consent:v1", "Local storage", "Remembers your Analytics and Marketing choice until you clear site data or change it in Cookie preferences.", "Until you clear site data"],
           ]}
         />
       </>
@@ -81,8 +82,9 @@ const SECTIONS: LegalSectionEntry[] = [
     content: (
       <>
         <p>
-          To understand which channels bring people to NairobiX, the Website keeps a small first-party record in your
-          browser&apos;s local storage. It is sent with any form you submit and stored with your enquiry in our CRM.
+          If you allow Marketing, the Website keeps a small first-party record of campaign attribution in your browser&apos;s
+          local storage. It is sent with a form you submit and stored with your enquiry in our CRM. If you reject or later
+          disable Marketing, the Website stops capturing attribution and clears this record where browser storage allows.
         </p>
         <LegalTable
           caption="Campaign attribution storage"
@@ -117,10 +119,12 @@ const SECTIONS: LegalSectionEntry[] = [
             ["_ga_<container-id>", "Google Analytics", "Keeps the state of the current session", "2 years"],
           ]}
         />
-        <p>
-          We send Google Analytics events such as &ldquo;a form was submitted&rdquo; or &ldquo;a booking was completed&rdquo;,
-          with general labels only. We never send your name, email address or phone number to Google Analytics.
-        </p>
+        <p>Google Analytics and its cookies load only after you enable Analytics. We send general event labels only and never send your name, email address or phone number to Google Analytics.</p>
+        <LegalTable
+          caption="Analytics session storage"
+          head={["Name", "Type", "Purpose", "Duration"]}
+          rows={[["nx_evt_*", "Session storage", "Avoids counting an analytics start event more than once in a browser session", "Until the tab is closed"]]}
+        />
       </>
     ),
   },
@@ -161,8 +165,7 @@ const SECTIONS: LegalSectionEntry[] = [
       </>
     ) : (
       <p>
-        The Website does not currently use advertising cookies or advertising measurement tags. If we introduce them, we will
-        update this Policy before they are used.
+        The Website does not currently use advertising cookies or advertising measurement tags. If we introduce them, we will update this Policy before they are used. Marketing technologies are held until you enable Marketing.
       </p>
     ),
   },
@@ -199,7 +202,7 @@ const SECTIONS: LegalSectionEntry[] = [
         <LegalH3>Browser settings</LegalH3>
         <p>
           You can block or delete cookies and site data in your browser&apos;s settings, usually under Privacy or Site data.
-          Clearing site data for nairobix.com also removes the attribution record described above. Blocking all storage may
+          Clearing site data for nairobix.com also removes your consent choice and any attribution record. Blocking all storage may
           stop features such as saving your Assessment progress from working.
         </p>
         <LegalH3>Google Analytics</LegalH3>
@@ -226,10 +229,7 @@ const SECTIONS: LegalSectionEntry[] = [
           </>
         ) : null}
         <LegalCallout title="Consent">
-          <p>
-            The Website does not currently show a cookie consent banner. The controls above let you limit or block these
-            technologies at any time. If we introduce a consent tool, this Policy will explain how it works.
-          </p>
+          <p>You can accept, reject or manage optional categories using the cookie notice. Your choice is saved in this browser. Use &ldquo;Cookie preferences&rdquo; in the Website footer to change it later. Essential storage is always active.</p>
         </LegalCallout>
       </>
     ),

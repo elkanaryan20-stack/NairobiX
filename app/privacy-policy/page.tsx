@@ -95,8 +95,8 @@ const SECTIONS: LegalSectionEntry[] = [
             ["Nia conversations", "The messages you type to Nia", "When you chat with Nia"],
             ["Communications", "Emails and WhatsApp messages you exchange with us", "When you contact us or we reply"],
             ["Client Engagement information", "Contacts at the Client, scope and delivery records, Invoices and Payment records", "When you become a Client"],
-            ["Technical and usage", "Pages viewed, approximate location, device and browser type, referring website", "Automatically, when you browse the website"],
-            ["Campaign attribution", "The channel you arrived from, campaign tags in the link (such as utm_source), ad click IDs, landing page", "Automatically, and sent with any form you submit"],
+            ["Technical and usage", "Pages viewed and general interaction events", "When you enable Analytics, as you browse the Website"],
+            ["Campaign attribution", "The channel you arrived from, campaign tags in the link (such as utm_source), ad click IDs, landing page", "When you enable Marketing; sent with any form you submit"],
           ]}
         />
         <p>
@@ -244,9 +244,8 @@ const SECTIONS: LegalSectionEntry[] = [
     content: (
       <>
         <p>
-          The website uses Google Analytics to understand how it is used{ADS_ENABLED ? ", and advertising measurement tags to see which campaigns lead to enquiries" : ""}.
-          It also keeps a small attribution record in your browser so we know which channel brought you to us; this is sent with
-          any form you submit and stored with your enquiry in our CRM.
+          The website uses Google Analytics to understand how it is used when you enable Analytics{ADS_ENABLED ? ", and advertising measurement tags to see which campaigns lead to enquiries when you enable Marketing" : ""}.
+          With Marketing consent, it also keeps a small attribution record in your browser so we know which channel brought you to us; this is sent with any form you submit and stored with your enquiry in our CRM. You can change these choices using Cookie preferences in the Website footer.
         </p>
         <p>
           We do not send your name, email or phone number to Google Analytics.
