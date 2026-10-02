@@ -20,46 +20,34 @@ import {
   TIMELINE_OPTIONS,
 } from "@/lib/forms/options";
 import {
-  BUSINESS_STAGE_OPTIONS,
-  CRM_USAGE_OPTIONS,
   DISCOVERY_OPTIONS,
-  ENQUIRY_CHANNEL_OPTIONS,
-  FOLLOW_UP_OPTIONS,
   GROWTH_PRIORITY_OPTIONS,
-  MONTHLY_ENQUIRY_OPTIONS,
   NONE_CURRENTLY,
-  REFERRALS,
-  REPETITIVE_WORK_OPTIONS,
-  REPORTING_OPTIONS,
   SCREENS,
   STAGES,
   STUCK_OPTIONS,
-  TRACKING_OPTIONS,
-  diagnosticRows,
+  discoveryLabel,
   initialAssessment,
   priorityLabel,
-  showsCrmUsage,
-  showsFollowUp,
-  showsRepetitiveWork,
   showsTrialBudget,
   toLeadPayload,
   validateScreen,
 } from "@/lib/forms/assessment";
 import type { Assessment, ScreenId } from "@/lib/forms/assessment";
 
-const STORAGE_KEY = "nairobix:growth-assessment:v2";
+const STORAGE_KEY = "nairobix:growth-assessment:v3";
 const REVIEW = SCREENS.length; // index of the review screen, after the last question screen
 
 type Phase = "form" | "submitting" | "transition" | "success";
-type ArrayField = "stuckAreas" | "discovery" | "enquiryChannels" | "repetitiveWork";
+type ArrayField = "stuckAreas" | "discovery";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
  * The Business Growth Assessment — a short diagnostic conversation rather
  * than a contact form. One meaningful group per screen, five named stages,
- * back navigation that never loses answers, lightweight branching for
- * relevance, and a review before submitting. Content, branching and the
+ * back navigation that never loses answers, and a review before submitting.
+ * Every question maps to a Zoho Lead field. Content, branching and the
  * CRM mapping live in lib/forms/assessment.ts; the submission contract with
  * /api/leads (and Zoho behind it) is unchanged.
  */
@@ -128,10 +116,10 @@ export function BusinessGrowthAuditForm() {
       const current = prev[field];
       let next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
       if (field === "discovery") {
-        // "No active marketing yet" can sit alongside referrals, but not
-        // alongside an active channel (mirrors the server's rule).
-        if (value === NONE_CURRENTLY && next.includes(NONE_CURRENTLY)) next = next.filter((v) => v === NONE_CURRENTLY || v === REFERRALS);
-        else if (value !== NONE_CURRENTLY && value !== REFERRALS) next = next.filter((v) => v !== NONE_CURRENTLY);
+        // "No active marketing yet" can't sit alongside an active channel
+        // (mirrors the server's rule).
+        if (value === NONE_CURRENTLY && next.includes(NONE_CURRENTLY)) next = [NONE_CURRENTLY];
+        else if (value !== NONE_CURRENTLY) next = next.filter((v) => v !== NONE_CURRENTLY);
       }
       return { ...prev, [field]: next };
     });
@@ -297,7 +285,7 @@ export function BusinessGrowthAuditForm() {
                   <span aria-hidden="true">←</span> Back
                 </button>
               ) : (
-                <p className="text-xs leading-5 text-[var(--text-tertiary)]">About 4 minutes · No obligation</p>
+                <p className="text-xs leading-5 text-[var(--text-tertiary)]">About 3 minutes · No obligation</p>
               )}
 
               {isReview ? (
@@ -332,7 +320,7 @@ function Intro() {
         what&apos;s worth reviewing and the most practical next step.
       </p>
       <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
-        <li>About 4 minutes</li>
+        <li>About 3 minutes</li>
         <li>Five short stages</li>
         <li>No obligation</li>
         <li>Reviewed by the NairobiX team</li>
@@ -396,103 +384,17 @@ function Screen({ id, data, errors, set, toggle, onInput }: ScreenProps) {
 
     case "reach":
       return (
-        <>
-          <div {...errorFlag("discovery")}>
-            <ChipSelect
-              label="How do customers currently find the business?"
-              name="discovery"
-              options={DISCOVERY_OPTIONS}
-              selected={data.discovery}
-              onToggle={(v) => toggle("discovery", v)}
-              error={errors.discovery}
-              helperText="Select all that apply."
-            />
-          </div>
-          <div {...errorFlag("enquiryChannels")}>
-            <ChipSelect
-              label="Where do enquiries usually arrive?"
-              name="enquiryChannels"
-              options={ENQUIRY_CHANNEL_OPTIONS}
-              selected={data.enquiryChannels}
-              onToggle={(v) => toggle("enquiryChannels", v)}
-              error={errors.enquiryChannels}
-              helperText="Select all that apply."
-            />
-          </div>
-          <div {...errorFlag("monthlyEnquiries")}>
-            <SegmentedControl
-              label="Roughly how many new enquiries do you get in a typical month?"
-              name="monthlyEnquiries"
-              options={MONTHLY_ENQUIRY_OPTIONS}
-              value={data.monthlyEnquiries}
-              onSelect={(v) => set("monthlyEnquiries", v)}
-              error={errors.monthlyEnquiries}
-            />
-          </div>
-        </>
-      );
-
-    case "operate":
-      return (
-        <>
-          <div {...errorFlag("tracking")}>
-            <SingleChoiceCards
-              label="How does your team keep track of prospects and customers?"
-              name="tracking"
-              options={TRACKING_OPTIONS}
-              value={data.tracking}
-              onSelect={(v) => set("tracking", v)}
-              error={errors.tracking}
-            />
-          </div>
-          {showsCrmUsage(data) ? (
-            <div {...errorFlag("crmUsage")} className="animate-step-fade">
-              <SegmentedControl
-                label="How much of your sales process runs through it?"
-                name="crmUsage"
-                options={CRM_USAGE_OPTIONS}
-                value={data.crmUsage}
-                onSelect={(v) => set("crmUsage", v)}
-                error={errors.crmUsage}
-              />
-            </div>
-          ) : null}
-          {showsFollowUp(data) ? (
-            <div {...errorFlag("followUp")}>
-              <SingleChoiceCards
-                label="What usually happens after someone makes an enquiry?"
-                name="followUp"
-                options={FOLLOW_UP_OPTIONS}
-                value={data.followUp}
-                onSelect={(v) => set("followUp", v)}
-                error={errors.followUp}
-              />
-            </div>
-          ) : null}
-          {showsRepetitiveWork(data) ? (
-            <div {...errorFlag("repetitiveWork")}>
-              <ChipSelect
-                label="Where does your team spend the most repetitive time?"
-                name="repetitiveWork"
-                options={REPETITIVE_WORK_OPTIONS}
-                selected={data.repetitiveWork}
-                onToggle={(v) => toggle("repetitiveWork", v)}
-                error={errors.repetitiveWork}
-                helperText="Select all that apply."
-              />
-            </div>
-          ) : null}
-          <div {...errorFlag("reporting")}>
-            <SingleChoiceCards
-              label="How does the business know what's working?"
-              name="reporting"
-              options={REPORTING_OPTIONS}
-              value={data.reporting}
-              onSelect={(v) => set("reporting", v)}
-              error={errors.reporting}
-            />
-          </div>
-        </>
+        <div {...errorFlag("discovery")}>
+          <ChipSelect
+            label="How do customers currently find the business?"
+            name="discovery"
+            options={DISCOVERY_OPTIONS}
+            selected={data.discovery}
+            onToggle={(v) => toggle("discovery", v)}
+            error={errors.discovery}
+            helperText="Select all that apply."
+          />
+        </div>
       );
 
     case "business":
@@ -517,17 +419,6 @@ function Screen({ id, data, errors, set, toggle, onInput }: ScreenProps) {
               required
               error={errors.Industry}
               columns={3}
-            />
-          </div>
-          <div {...errorFlag("businessStage")}>
-            <SegmentedControl
-              label="Where is the business today?"
-              name="businessStage"
-              options={BUSINESS_STAGE_OPTIONS}
-              value={data.businessStage}
-              onSelect={(v) => set("businessStage", v)}
-              required
-              error={errors.businessStage}
             />
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
@@ -647,8 +538,6 @@ function Screen({ id, data, errors, set, toggle, onInput }: ScreenProps) {
 
 function reviewSections(a: Assessment): ReviewSection[] {
   const screenIndex = (id: ScreenId) => SCREENS.findIndex((s) => s.id === id);
-  const rows = diagnosticRows(a);
-  const pick = (labels: string[]) => rows.filter((r) => labels.includes(r.label));
   return [
     {
       title: "Growth",
@@ -659,18 +548,9 @@ function reviewSections(a: Assessment): ReviewSection[] {
       ],
     },
     {
-      title: "Systems",
+      title: "Marketing",
       stepIndex: screenIndex("reach"),
-      rows: pick([
-        "Customers find the business through",
-        "Enquiries arrive via",
-        "New enquiries per month",
-        "Prospects and customers are tracked in",
-        "Sales process run through the CRM",
-        "After an enquiry",
-        "Repetitive work",
-        "Knows what's working through",
-      ]),
+      rows: [{ label: "Customers find the business through", value: a.discovery.map(discoveryLabel).join(", ") }],
     },
     {
       title: "Business",
@@ -678,7 +558,6 @@ function reviewSections(a: Assessment): ReviewSection[] {
       rows: [
         { label: "Business", value: a.Company },
         { label: "Industry", value: a.Industry },
-        { label: "Stage", value: a.businessStage },
         { label: "Location", value: [a.City, a.Country].filter(Boolean).join(", ") },
         { label: "Website", value: a.Website },
       ],
@@ -749,7 +628,7 @@ function StageRail({ stageIndex }: { stageIndex: number }) {
         </ol>
 
         <div className="mt-10 border-t border-white/10 pt-6 text-xs leading-6 text-[var(--text-tertiary)]">
-          <p className="text-white/70">About 4 minutes</p>
+          <p className="text-white/70">About 3 minutes</p>
           <p>Five short stages. Go back at any time — nothing is lost.</p>
           <p className="mt-4 text-white/70">After you submit</p>
           <p>NairobiX reviews your responses and comes back with clear priorities and a proposed next step.</p>

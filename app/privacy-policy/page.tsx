@@ -86,7 +86,7 @@ const SECTIONS: LegalSectionEntry[] = [
           head={["Category", "Examples", "When"]}
           rows={[
             ["Identity and contact", "First and last name, email address, phone or WhatsApp number", "Any form, booking, Nia request, Proposal or direct contact"],
-            ["Business information", "Business name, industry, website, city, country, business stage", "Growth Assessment, forms, bookings, Network applications"],
+            ["Business information", "Business name, industry, website, city, country", "Growth Assessment, forms, bookings, Network applications"],
             ["Enquiry details", "Your message, the topic or Solution you are interested in, desired timeline, investment readiness", "Contact and Request a Solution forms, Nia"],
             ["Growth Assessment answers", "Growth priorities, where your business is stuck, how customers find you, how enquiries are tracked and followed up", "Business Growth Assessment"],
             ["Consultation details", "Chosen date and time, focus area, what you would like to discuss", "Consultation booking (website or Nia)"],
