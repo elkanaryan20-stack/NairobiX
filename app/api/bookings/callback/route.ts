@@ -6,6 +6,12 @@ const ZOHO_BOOKINGS_ACCOUNTS_URL =
 const ZOHO_BOOKINGS_REDIRECT_URI =
   "https://www.nairobix.com/api/bookings/callback";
 
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (character) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!
+  );
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
@@ -75,8 +81,16 @@ export async function GET(request: NextRequest) {
     console.log("Zoho Bookings authorization completed. A refresh token was issued.");
 
     return new NextResponse(
-      "Zoho Bookings authorization successful. Contact the site administrator to complete setup.",
-      { status: 200 }
+      `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="referrer" content="no-referrer"><title>Zoho Bookings authorized</title></head><body><h1>Zoho Bookings authorized</h1><p>Copy this refresh token into Vercel as ZOHO_BOOKINGS_REFRESH_TOKEN.</p><textarea readonly rows="5" cols="80" aria-label="Zoho Bookings refresh token">${escapeHtml(tokenData.refresh_token)}</textarea></body></html>`,
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store",
+          "Content-Type": "text/html; charset=utf-8",
+          "Content-Security-Policy": "default-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+          "X-Content-Type-Options": "nosniff",
+        },
+      }
     );
   } catch (err) {
     console.error("Zoho Bookings OAuth error:", err);
