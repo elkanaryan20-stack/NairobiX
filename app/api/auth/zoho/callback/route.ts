@@ -3,6 +3,25 @@ import { NextRequest, NextResponse } from "next/server";
 const ZOHO_ACCOUNTS_URL =
   process.env.ZOHO_ACCOUNTS_URL || "https://accounts.zoho.com";
 
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (character) => {
+    switch (character) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case "'":
+        return "&#39;";
+      default:
+        return character;
+    }
+  });
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
@@ -70,10 +89,30 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return new NextResponse(
-      "Zoho authorization successful. The refresh token has been generated. Add it to Vercel as ZOHO_REFRESH_TOKEN.",
-      { status: 200 }
-    );
+    const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Zoho authorization successful</title>
+  </head>
+  <body>
+    <h1>Zoho authorization successful</h1>
+    <p>Copy this refresh token into Vercel as <code>ZOHO_REFRESH_TOKEN</code>.</p>
+    <textarea readonly aria-label="Zoho refresh token" rows="5" cols="80">${escapeHtml(tokenData.refresh_token)}</textarea>
+  </body>
+</html>`;
+
+    return new NextResponse(html, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/html; charset=utf-8",
+        "Content-Security-Policy": "default-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+        "X-Content-Type-Options": "nosniff",
+      },
+    });
   } catch (err) {
     console.error("Zoho OAuth error:", err);
 
