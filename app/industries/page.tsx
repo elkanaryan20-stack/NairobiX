@@ -141,7 +141,7 @@ export default function IndustriesPage() {
                   How NairobiX works →
                 </Link>
                 <Link href="/solutions" className="text-white hover:text-[var(--color-primary)]">
-                  The six solution areas →
+                  The six growth capabilities →
                 </Link>
               </div>
             </div>

@@ -48,9 +48,8 @@ const SECTIONS: LegalSectionEntry[] = [
     content: (
       <>
         <p>
-          NairobiX is a business growth and digital transformation partner based in Nairobi, Kenya. We help businesses with
-          growth strategy, digital marketing, CRM and sales systems, automation, AI implementation and websites and digital
-          platforms.
+          NairobiX is a growth and digital transformation partner based in Nairobi, Kenya. Its work spans growth strategy,
+          digital marketing, CRM and sales systems, automation, AI implementation, websites and digital platforms.
         </p>
         <LegalH3>When NairobiX is the data controller</LegalH3>
         <p>
@@ -87,7 +86,7 @@ const SECTIONS: LegalSectionEntry[] = [
           rows={[
             ["Identity and contact", "First and last name, email address, phone or WhatsApp number", "Any form, booking, Nia request, Proposal or direct contact"],
             ["Business information", "Business name, industry, website, city, country", "Growth Assessment, forms, bookings, Network applications"],
-            ["Enquiry details", "Your message, the topic or Solution you are interested in, desired timeline, investment readiness", "Contact and Request a Solution forms, Nia"],
+            ["Enquiry details", "Your message, the topic or growth area you are interested in, desired timeline, investment readiness", "Contact and Growth System Request forms, Nia"],
             ["Growth Assessment answers", "Growth priorities, where your business is stuck, how customers find you, how enquiries are tracked and followed up", "Business Growth Assessment"],
             ["Consultation details", "Chosen date and time, focus area, what you would like to discuss", "Consultation booking (website or Nia)"],
             ["Opportunities Network application", "Organisation type, how you would like to participate, motivation", "Network application"],

@@ -52,7 +52,7 @@ export function ConceptDisclosure({ className = "" }: { className?: string }) {
 }
 
 /** A slim, contextual call to action between sections. */
-export function InlineCTA({ lead, primary, secondary = "Book a Consultation" }: { lead: string; primary: string; secondary?: string }) {
+export function InlineCTA({ lead, primary, secondary = "Talk to Us" }: { lead: string; primary: string; secondary?: string }) {
   return (
     <div className="flex flex-col gap-5 border-y border-white/10 py-7 lg:flex-row lg:items-center lg:justify-between">
       <p className="max-w-xl font-display text-xl leading-snug text-white">{lead}</p>

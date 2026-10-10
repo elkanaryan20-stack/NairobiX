@@ -53,9 +53,9 @@ const SECTIONS: LegalSectionEntry[] = [
     title: "About NairobiX",
     content: (
       <p>
-        NairobiX is a business growth and digital transformation partner based in Nairobi, Kenya. We help ambitious businesses
-        design and run connected growth systems across growth strategy, digital marketing, CRM and sales systems, automation, AI
-        implementation and websites and digital platforms.
+        NairobiX is a growth and digital transformation partner based in Nairobi, Kenya. Its work connects growth strategy,
+        digital marketing, CRM and sales systems, automation, AI implementation, websites and digital platforms around each
+        business&apos;s operating context.
       </p>
     ),
   },

@@ -34,7 +34,7 @@ function IndustryDetail({ industry, solutions }: { industry: IndustryContext; so
       ),
     },
     {
-      label: "Relevant solutions",
+      label: "Relevant growth capabilities",
       body: (
         <ul className="flex flex-wrap gap-2">
           {relevant.map((s) => (

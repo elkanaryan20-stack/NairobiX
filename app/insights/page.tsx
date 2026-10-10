@@ -15,7 +15,7 @@ import { webPageJsonLd } from "@/lib/structured-data";
 import { FEATURED_INSIGHT_SLUG, INSIGHTS, INSIGHT_TOPICS } from "@/lib/insights";
 import { BOOKING_URL } from "@/lib/site-data";
 
-const TITLE = "NairobiX Insights";
+const TITLE = "Business Growth Insights";
 const DESCRIPTION =
   "Long-form, sourced explanations of growth, sales systems, CRM, automation, AI and websites — written for business owners deciding what to build next.";
 
@@ -198,7 +198,7 @@ export default function InsightsPage() {
             Apply This Thinking to Your Business →
           </Button>
           <Button href={BOOKING_URL} variant="secondary">
-            Book a Consultation →
+            Talk to Us →
           </Button>
         </CTASection>
       </main>

@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 export const SITE_NAME = "NairobiX";
 export const SITE_URL = "https://www.nairobix.com";
 
-export const HOME_TITLE = "NairobiX | Premium Business Growth Systems";
+export const HOME_TITLE = "NairobiX | Growth & Digital Transformation Partner";
 export const HOME_DESCRIPTION =
-  "NairobiX helps ambitious businesses grow through digital marketing, CRM, automation, AI, web solutions and scalable growth systems.";
+  "NairobiX connects marketing, sales, CRM and technology into one growth system that reveals missed opportunities and builds what comes next.";
 
 /**
  * A page's own `openGraph` object replaces the root layout's file-convention
@@ -18,7 +18,7 @@ const OG_IMAGE = {
   url: "/opengraph-image",
   width: 1200,
   height: 630,
-  alt: "NairobiX — Premium Business Growth Systems",
+  alt: "NairobiX — Growth and Digital Transformation Partner",
 };
 
 /** Homepage metadata is a special case: its title is already the full, absolute

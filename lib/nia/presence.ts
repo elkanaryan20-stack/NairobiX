@@ -11,7 +11,7 @@ export const IDLE_MESSAGES = [
   "Talk to Nia",
   "Need a hand?",
   "Have a question?",
-  "How can we help?",
+  "What are you trying to improve?",
   "Want to talk growth?",
   "Need help finding your way?",
 ];

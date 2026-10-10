@@ -33,10 +33,10 @@ export function CapabilitySystem({ items }: { items: Capability[] }) {
     <div ref={containerRef} {...containerHandlers}>
       <p className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--text-tertiary)]">
         <span aria-hidden="true" className="h-px w-3 bg-[var(--color-primary)]" />
-        Six solution areas, one system
+        Six growth capabilities, one system
       </p>
 
-      <ol aria-label="NairobiX solution areas" className="mt-8 grid lg:mt-10 lg:grid-cols-6">
+      <ol aria-label="NairobiX growth capabilities" className="mt-8 grid lg:mt-10 lg:grid-cols-6">
         {items.map((item, index) => {
           const isActive = index === activeIndex;
           const carriesSignal = index === activeIndex - 1;

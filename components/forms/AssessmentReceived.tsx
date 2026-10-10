@@ -83,7 +83,7 @@ export function AssessmentReceived({
               </p>
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                 <Button href={`${BOOKING_URL}?ref=assessment`} variant="primary" size="md">
-                  Book a Consultation →
+                  Talk to Us →
                 </Button>
                 <Button href="/case-studies" variant="secondary" size="md">
                   See how we approach problems →

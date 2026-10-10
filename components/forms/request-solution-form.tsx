@@ -138,16 +138,16 @@ export function RequestSolutionForm() {
   if (isSuccess) {
     return (
       <LeadFormShell
-        eyebrow="NAIROBIX · REQUEST A SOLUTION"
-        title="Request a Solution"
-        description="Share the challenge, the solution you need, and the project direction you're considering."
+        eyebrow="NAIROBIX · GROWTH SYSTEM REQUEST"
+        title="Request a Growth System"
+        description="Share the growth challenge, the capabilities you are considering, and the direction you want the business to take."
       >
         <FormSuccessState
           title="Request received."
           description="We have your requirements. NairobiX will review them against the wider business context and identify the appropriate next step."
           details={[
             ["Business", formData.Company],
-            ["Solutions", formData.Solution_Needed.join(", ")],
+            ["Growth areas", formData.Solution_Needed.join(", ")],
             ["We'll reply to", formData.Email],
           ].filter((row): row is [string, string] => Boolean(row[1]))}
           next={REQUEST_NEXT}
@@ -160,15 +160,15 @@ export function RequestSolutionForm() {
 
   return (
     <LeadFormShell
-      eyebrow="NAIROBIX · REQUEST A SOLUTION"
-      title="Request a Solution"
-      description="Already know what you need? Tell us the solution, the context and the direction you're considering, and we'll shape the right next step."
+      eyebrow="NAIROBIX · GROWTH SYSTEM REQUEST"
+      title="Request a Growth System"
+      description="Already know where growth is getting stuck? Tell us what needs to change, what is already in place and where you want to go."
       aside={
         <FormContext
           steps={REQUEST_NEXT}
           alternative={{
-            lead: "Not sure which solution fits?",
-            label: "Start the 4-minute Growth Assessment",
+            lead: "Not sure which growth capabilities fit?",
+            label: "Find Your Growth Leak",
             href: "/business-growth-audit",
           }}
         />
@@ -190,20 +190,20 @@ export function RequestSolutionForm() {
         </div>
 
         <div>
-          <SectionHeader number="02" title="Solution" description="Choose the NairobiX solution that best matches your current challenge or opportunity." />
+          <SectionHeader number="02" title="Growth Areas" description="Choose the capabilities closest to your current challenge or opportunity." />
           <ChipGroup
-            label="Solution Needed"
+            label="Growth Areas"
             name="Solution_Needed"
             options={solutionOptions}
             selected={formData.Solution_Needed}
             onSelect={toggleSelection}
             error={errors.Solution_Needed}
-            helperText="Select one or more areas, or choose a custom quote when you need a tailored recommendation."
+            helperText="Select one or more areas, or choose a custom quote for a tailored recommendation."
           />
         </div>
 
         <div>
-          <SectionHeader number="03" title="Estimated Investment" description="This helps us plan a solution that matches your current business realities and growth stage." />
+          <SectionHeader number="03" title="Estimated Investment" description="This gives the team context for a recommendation that fits your current stage and priorities." />
           <div className="max-w-xl">
             <FormSelect
               label="Estimated Investment"

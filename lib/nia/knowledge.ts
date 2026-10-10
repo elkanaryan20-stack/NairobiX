@@ -38,7 +38,7 @@ NairobiX is a business growth partner, digital transformation partner, systems
 implementation partner, automation specialist, CRM implementation partner and
 AI implementation consultant — not simply a social media marketing agency.
 
-## Solutions NairobiX offers
+## Growth systems NairobiX builds
 
 ${formatSolutions()}
 

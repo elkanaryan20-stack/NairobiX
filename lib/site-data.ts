@@ -2,7 +2,7 @@ import { CONCEPT_CASES } from "@/lib/case-studies";
 export const BOOKING_URL = "/book";
 
 export const NAV_ITEMS = [
-  { label: "Solutions", href: "/solutions" },
+  { label: "Growth Systems", href: "/solutions" },
   { label: "Industries", href: "/industries" },
   { label: "Case Studies", href: "/case-studies" },
   { label: "Insights", href: "/insights" },
@@ -28,8 +28,8 @@ export const FOOTER_LINKS = {
     { label: "Contact", href: "/contact" },
   ],
   start: [
-    { label: "Free Business Growth Assessment", href: "/business-growth-audit", external: false },
-    { label: "Book a Consultation", href: BOOKING_URL, external: false },
+    { label: "Find Your Growth Leak", href: "/business-growth-audit", external: false },
+    { label: "Talk to Us", href: BOOKING_URL, external: false },
     { label: "Talk to Nia", href: "#", external: false, chat: true },
   ],
 };
@@ -123,7 +123,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           "Improve online visibility",
           "Make marketing more measurable",
         ],
-        cta: "Get Your Growth Assessment →",
+        cta: "Find Your Growth Leak →",
         href: "/business-growth-audit",
         image: "/images/photography/nairobi-skyline.webp",
         imageAlt: "The Nairobi city skyline under a bright midday sky.",
@@ -206,14 +206,14 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         problem:
           "Budget and effort are going somewhere, but it's difficult to say with confidence which activities are actually driving results.",
         description:
-          "We help businesses identify growth opportunities, understand performance and make better decisions using strategy and business data.",
+          "Growth strategy and analytics give decision-makers a clearer view of performance, priorities and the next move.",
         ideal: [
           "Find growth opportunities",
           "Understand what's working",
           "Improve marketing and sales performance",
           "Make better decisions with data",
         ],
-        cta: "Get Your Growth Assessment →",
+        cta: "Find Your Growth Leak →",
         href: "/business-growth-audit",
         image: "/images/photography/acquire-grow.webp",
         imageAlt: "A concrete staircase leading upward toward daylight.",
@@ -305,7 +305,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           "Organize the sales pipeline",
           "Build a more predictable sales process",
         ],
-        cta: "Get Your Growth Assessment →",
+        cta: "Find Your Growth Leak →",
         href: "/business-growth-audit",
         image: "/images/photography/convert-scale.webp",
         imageAlt: "Colleagues reviewing notes together at a wooden table.",
@@ -392,7 +392,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           "Automate follow-ups",
           "Improve operational efficiency",
         ],
-        cta: "Get Your Growth Assessment →",
+        cta: "Find Your Growth Leak →",
         href: "/business-growth-audit",
         image: "/images/photography/operations-workflow.webp",
         imageAlt: "A team member working on a laptop at a standing desk inside an organized operations facility.",
@@ -476,14 +476,14 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
         problem:
           "Customer questions, internal tasks and routine information requests still take up time that could go toward higher-value work.",
         description:
-          "We implement practical AI solutions that help businesses automate tasks, support customers, improve productivity and make better use of their information.",
+          "Practical AI integrations can streamline routine work, support customers, improve productivity and make business information more useful.",
         ideal: [
           "Introduce AI into operations",
           "Automate intelligent tasks",
           "Improve customer support",
           "Increase productivity",
         ],
-        cta: "Get Your Growth Assessment →",
+        cta: "Find Your Growth Leak →",
         href: "/business-growth-audit",
         image: "/images/photography/modern-office.webp",
         imageAlt: "A sunlit modern office with people working quietly in the background.",
@@ -568,7 +568,7 @@ export const SOLUTION_CATEGORIES: { id: string; title: string; intro: string; it
           "Create digital platforms",
           "Turn a website into a business tool",
         ],
-        cta: "Get Your Growth Assessment →",
+        cta: "Find Your Growth Leak →",
         href: "/business-growth-audit",
         image: "/images/photography/digital-payment.webp",
         imageAlt: "Two people exchanging phones to complete a digital payment at a retail counter.",
@@ -655,7 +655,7 @@ export const HOME_SOLUTIONS = [
     imageAlt: "A tailor carrying a sewing machine through a busy African market street.",
     href: "/solutions#acquire-grow",
     capabilities: ["Strategy & Analytics", "Digital Marketing"],
-    cta: "Explore these solutions →",
+    cta: "Explore this growth system →",
   },
   {
     title: "Convert & Scale",
@@ -665,7 +665,7 @@ export const HOME_SOLUTIONS = [
     imageAlt: "A hand holding a tablet showing a project task board, with market charts visible on a screen behind it.",
     href: "/solutions#convert-scale",
     capabilities: ["CRM & Sales Systems", "Business Automation"],
-    cta: "Explore these solutions →",
+    cta: "Explore this growth system →",
   },
   {
     title: "Build & Innovate",
@@ -675,7 +675,7 @@ export const HOME_SOLUTIONS = [
     imageAlt: "A developer focused on code across dual monitors in a modern office.",
     href: "/solutions#build-innovate",
     capabilities: ["AI Solutions", "Web & Digital Solutions"],
-    cta: "Explore these solutions →",
+    cta: "Explore this growth system →",
   },
 ];
 
@@ -707,14 +707,14 @@ export const CONNECTED_CAPABILITIES = [
 ];
 
 export const WHAT_WE_DO = {
-  eyebrow: "WHAT NAIROBIX DOES",
-  title: "Growth, built as a connected system.",
+  eyebrow: "THE GROWTH GAP",
+  title: "Demand is only the start.",
   summary:
-    "NairobiX connects strategy, digital, sales, automation, AI and technology to build systems that move businesses forward.",
+    "Campaigns can create interest. Sales follow-up, customer experience and reporting determine whether that interest becomes durable growth. When those parts run separately, opportunities disappear between them.",
   statement: "Growth happens between the systems that make a business work.",
   // Long-form version — no longer shown on the homepage, but still the
   // source for Nia's knowledge base (lib/nia/knowledge.ts).
-  body: "NairobiX is not a marketing agency, a software vendor, or an automation consultancy — although the work touches all three. Digital marketing, CRM and sales systems, business automation, AI implementation, web and digital solutions, growth strategy and analytics are brought together as one body of work, because in practice these disciplines determine each other. A campaign that generates leads a sales team can't follow up on is not a marketing problem — it's a systems problem. NairobiX works at the level where growth actually happens: across the whole business, not inside a single department.",
+  body: "NairobiX is a growth and digital transformation partner working across marketing, CRM and sales, business automation, AI, web and analytics. These disciplines shape one another in day-to-day business: a campaign that generates leads needs a sales process able to respond, capture context and keep opportunities moving. NairobiX joins that work across teams and tools, so each stage contributes to the next.",
 };
 
 export const PROBLEMS_WE_SOLVE = [
@@ -1253,7 +1253,7 @@ export const FAQS = [
   {
     question: "What does NairobiX actually do?",
     answer:
-      "NairobiX helps businesses improve growth by connecting strategy, acquisition, sales systems, automation, web and digital solutions, and AI implementation into a single operating system.",
+      "NairobiX connects strategy, acquisition, sales systems, automation, web and digital solutions, and AI implementation into one operating system for business growth.",
   },
   {
     question: "Do you offer individual services or complete growth systems?",

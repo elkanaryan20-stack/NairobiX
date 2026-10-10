@@ -72,7 +72,7 @@ export function SiteFooter() {
               <span className="text-lg font-bold sm:text-xl">Nairobi<span className="text-[var(--color-primary)]">X</span></span>
             </div>
             <p className="max-w-xs text-sm leading-7 text-[var(--text-secondary)]">
-              Intelligent growth systems for ambitious businesses.
+              Growth and digital transformation, handled as one connected system.
             </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
@@ -83,7 +83,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--text-tertiary)]">Solutions</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--text-tertiary)]">Growth Systems</p>
             <ul className="-my-1 text-sm text-[var(--text-secondary)]">
               {FOOTER_LINKS.solutions.map((item) => (
                 <li key={item.label}>

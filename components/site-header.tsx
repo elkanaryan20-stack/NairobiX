@@ -10,8 +10,8 @@ import { BOOKING_URL, NAV_ITEMS, SOLUTION_CATEGORIES } from "@/lib/site-data";
 import { SkipToContent } from "@/components/skip-to-content";
 
 const CTAS = [
-  { label: "Book a Consultation", href: BOOKING_URL, external: false },
-  { label: "Start Free Assessment", href: "/business-growth-audit", external: false },
+  { label: "Find Your Growth Leak", href: "/business-growth-audit", external: false },
+  { label: "Talk to Us", href: BOOKING_URL, external: false },
 ];
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -20,7 +20,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Solutions mega-menu. Open state is explicit (not CSS :hover alone) so it
+  // Growth Systems mega-menu. Open state is explicit (not CSS :hover alone) so it
   // survives the pointer crossing the gap between the trigger and the panel,
   // and can close on Escape, an outside click, or another nav item.
   const [menuOpen, setMenuOpen] = useState(false);
@@ -99,14 +99,14 @@ export function SiteHeader() {
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             const linkClass = `relative text-sm font-medium transition after:absolute after:-bottom-1 after:left-0 after:h-px after:bg-[var(--color-primary)] after:transition-all after:duration-300 ${
               isActive
                 ? "text-[var(--color-primary)] after:w-full"
                 : "text-[var(--text-secondary)] after:w-0 hover:text-white hover:after:w-full"
             }`;
 
-            if (item.label === "Solutions") {
+            if (item.label === "Growth Systems") {
               return (
                 <div key={item.label} className="contents">
                 <Link
@@ -134,7 +134,7 @@ export function SiteHeader() {
                   />
                 </Link>
 
-                {/* Solutions mega-menu — spans the header's content container, so its
+                {/* Growth Systems mega-menu — spans the header's content container, so its
                     edges are the page grid's edges and can never leave the viewport. */}
                 <div
                   id="solutions-menu"
@@ -190,7 +190,7 @@ export function SiteHeader() {
                         onClick={closeMenu}
                         className="group/cta whitespace-nowrap text-sm font-semibold text-[var(--color-primary)] transition-colors hover:text-white"
                       >
-                        Get Your Free Growth Assessment{" "}
+                        Find Your Growth Leak{" "}
                         <span aria-hidden="true" className="inline-block transition-transform duration-200 group-hover/cta:translate-x-1">
                           →
                         </span>
@@ -214,7 +214,7 @@ export function SiteHeader() {
         <div className="hidden items-center gap-3 lg:flex">
           {CTAS.map((cta) => {
             const className =
-              cta.label === "Book a Consultation"
+              cta.label === "Talk to Us"
                 ? "inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:border-white/30 hover:bg-white/10"
                 : "inline-flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--color-on-primary)] transition hover:bg-[var(--color-primary-strong)]";
             // Internal CTAs use client-side navigation: a plain <a> reloaded the
@@ -267,13 +267,13 @@ export function SiteHeader() {
                 onClick={() => setMobileOpen(false)}
                 className="mb-3 flex w-full items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm font-medium text-white"
               >
-                Book a Consultation
+                Talk to Us
               </Link>
               <Link
                 href="/business-growth-audit"
                 className="flex w-full items-center justify-center rounded-full bg-[var(--color-primary)] px-4 py-3 text-sm font-semibold text-[var(--color-on-primary)]"
               >
-                Start Free Assessment
+                Find Your Growth Leak
               </Link>
             </div>
           </div>

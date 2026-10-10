@@ -18,7 +18,7 @@ import { faqPageJsonLd, webPageJsonLd } from "@/lib/structured-data";
 
 const TITLE = "Contact: Start a Conversation";
 const DESCRIPTION =
-  "Start a conversation with NairobiX: take the Business Growth Assessment, book a consultation, or send a general enquiry.";
+  "Tell NairobiX what is slowing growth or what you are trying to build. Find your growth leak, start a conversation, or send a general enquiry.";
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/contact" });
 
@@ -32,7 +32,7 @@ const PATHS = [
     title: "Business Growth Assessment",
     forWho: "For businesses that want to understand where growth is getting stuck.",
     what: "A structured set of questions about how your business acquires, converts and operates, reviewed by the team to identify what to address first.",
-    cta: "Start the Assessment",
+    cta: "Find Your Growth Leak",
     href: "/business-growth-audit",
     primary: true,
   },
@@ -42,7 +42,7 @@ const PATHS = [
     title: "Business Growth Consultation",
     forWho: "For businesses ready to discuss a specific challenge or opportunity.",
     what: "Choose a time for a focused conversation with the team about what you're working on.",
-    cta: "Book a Consultation",
+    cta: "Talk to Us",
     href: BOOKING_URL,
     primary: false,
   },
@@ -227,7 +227,7 @@ export default function ContactPage() {
                   href="/business-growth-audit"
                   className="group mt-2 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-white"
                 >
-                  Start the Business Growth Assessment
+                  Find Your Growth Leak
                   <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
                 </Link>
               </div>

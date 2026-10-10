@@ -6,7 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 
-const TITLE = "NairobiX Opportunities Network — Network Application";
+const TITLE = "Opportunity Network Application";
 const DESCRIPTION = "Apply to join the NairobiX Opportunities Network and support businesses with premium growth systems.";
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/partner" });

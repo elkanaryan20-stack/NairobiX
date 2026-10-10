@@ -4,7 +4,7 @@ import { Heading } from "@/components/ui/Heading";
 /**
  * "What to expect" — the message that NairobiX prepares before the
  * conversation. `fromAssessment` is only ever true when the visitor arrived
- * via the Growth Assessment's own "Book a Consultation" link (see
+ * via the Growth Assessment's own "Talk to Us" link (see
  * AssessmentNextSteps, which appends ?ref=assessment) — the one signal this
  * page actually has. Absent that, the copy stays honest about not assuming
  * an assessment exists, while still explaining that whatever is shared in

@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-export const alt = "NairobiX — Premium Business Growth Systems";
+export const alt = "NairobiX — Growth and Digital Transformation Partner";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -51,7 +51,7 @@ export default function Image() {
             color: "#94a3b8",
           }}
         >
-          Premium Business Growth Systems
+          Growth & Digital Transformation Partner
         </div>
       </div>
     ),

@@ -17,9 +17,9 @@ import { webPageJsonLd, serviceListJsonLd } from "@/lib/structured-data";
 import { SolutionArchitecture } from "@/components/solutions/SolutionArchitecture";
 import { NiaSectionCue } from "@/components/nia/NiaSectionCue";
 
-const TITLE = "Solutions";
+const TITLE = "Growth Systems";
 const DESCRIPTION =
-  "NairobiX designs connected growth systems across digital marketing, CRM and sales, automation, AI, web and analytics — not six services sold separately.";
+  "Explore how NairobiX connects marketing, sales, CRM, automation and digital infrastructure into a growth system built around your business.";
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/solutions" });
 
@@ -33,7 +33,7 @@ const GROUP_TONE = {
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
- * The Solutions overview. Journey: what NairobiX builds (hero) → how the
+ * The Growth Systems overview. Journey: what NairobiX builds (hero) → how the
  * capabilities connect (interactive architecture) → what each one solves
  * (capability modules, grouped) → you don't have to choose alone (the
  * Growth Assessment). Each solution's full detail stays on its own page;
@@ -50,21 +50,21 @@ export default function SolutionsPage() {
         <section className="nx-env-map border-b border-white/10">
           <Container className="pb-14 pt-20 sm:pb-16 sm:pt-24 lg:pt-28">
             <div className="max-w-3xl">
-              <Eyebrow>NAIROBIX · SOLUTIONS</Eyebrow>
+              <Eyebrow>NAIROBIX · GROWTH SYSTEMS</Eyebrow>
               <Heading as="h1" variant="display-lg" className="mt-4">
                 NairobiX designs connected growth systems.
               </Heading>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">
-                Six capabilities — marketing, strategy and analytics, CRM and sales, automation, AI and
-                web — combined around what your business actually needs. Not six services sold
-                separately, but the working parts of one growth system.
+                Growth breaks down when marketing, sales, customer follow-up and reporting work in
+                separate lanes. NairobiX connects the right mix of strategy, CRM, automation, AI
+                and digital infrastructure around how your business operates.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <Button href="/business-growth-audit" variant="primary" className="min-h-12">
-                  Find the Solutions That Fit →
+                  Find Your Growth Leak →
                 </Button>
                 <Button href={BOOKING_URL} variant="secondary" className="min-h-12">
-                  Book a Consultation →
+                  Talk to Us →
                 </Button>
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function SolutionsPage() {
           <div className="mb-12 max-w-2xl">
             <Eyebrow>SYSTEM ARCHITECTURE</Eyebrow>
             <Heading variant="display-md" className="mt-4" as="h2">
-              How the six solutions connect.
+              How the six growth capabilities connect.
             </Heading>
             <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
               Select a solution to see where it sits in the system — and what it connects to on
@@ -156,8 +156,8 @@ export default function SolutionsPage() {
               Start with the Business Growth Assessment.
             </Heading>
             <p className="mt-5 text-lg leading-8 text-[var(--text-secondary)]">
-              There are {ALL_SOLUTIONS.length} solutions, and your business doesn&apos;t need all of
-              them. The assessment identifies which combination is relevant to your current
+              The six capabilities work in combination, and your business may need only some of
+              them. The assessment identifies which mix fits your current
               requirements — before anything is built.
             </p>
 
@@ -177,16 +177,16 @@ export default function SolutionsPage() {
                 ))}
               </div>
               <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--text-tertiary)]">
-                Six solutions · the combination that fits
+                Six capabilities · the combination that fits
               </p>
             </div>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
               <Button href="/business-growth-audit" variant="primary">
-                Start the 4-Minute Assessment →
+                Find Your Growth Leak →
               </Button>
               <Button href={BOOKING_URL} variant="secondary">
-                Book a Consultation →
+                Talk to Us →
               </Button>
             </div>
           </div>

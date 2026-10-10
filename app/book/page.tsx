@@ -10,9 +10,9 @@ import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 
-const TITLE = "Book a Consultation";
+const TITLE = "Talk to Us";
 const DESCRIPTION =
-  "Book a 30-minute NairobiX Business Growth Consultation: a focused conversation about your growth priority, your biggest constraint and the practical next step.";
+  "Talk with NairobiX about your growth priority, what is slowing progress and the practical next step in a focused 30-minute conversation.";
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/book" });
 
@@ -90,7 +90,7 @@ export default async function BookPage({
 }) {
   const params = await searchParams;
   // The only signal this page has that a visitor completed a Growth
-  // Assessment — set by the assessment's own "Book a Consultation" link.
+  // Assessment — set by the assessment's own "Talk to Us" link.
   const fromAssessment = params.ref === "assessment";
 
   return (

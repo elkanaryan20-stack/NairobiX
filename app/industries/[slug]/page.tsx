@@ -99,10 +99,10 @@ export default async function IndustryDetailPage({ params }: { params: Promise<{
               <p className="mt-6 text-lg leading-8 text-white/80">{industry.challenge}</p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <Button href="/business-growth-audit" variant="primary">
-                  Start Your Growth Assessment →
+                  Find Your Growth Leak →
                 </Button>
                 <Button href={BOOKING_URL} variant="secondary">
-                  Book a Consultation →
+                  Talk to Us →
                 </Button>
               </div>
             </div>
@@ -243,7 +243,7 @@ export default async function IndustryDetailPage({ params }: { params: Promise<{
                 See What Your Business Needs →
               </Button>
               <Button href={BOOKING_URL} variant="secondary">
-                Book a Consultation →
+                Talk to Us →
               </Button>
             </div>
           </div>

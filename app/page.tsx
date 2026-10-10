@@ -102,6 +102,11 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#030304] via-[#030304]/70 to-[#030304]/20" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#030304] via-[#030304]/50 to-transparent" />
             <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-70 mix-blend-screen"
+              style={{ backgroundImage: "radial-gradient(ellipse at 76% 38%, rgba(249,115,22,0.16), transparent 46%), radial-gradient(ellipse at 86% 82%, rgba(38,91,105,0.14), transparent 44%)" }}
+            />
+            <div
               className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
               style={{ backgroundImage: `url("${GRAIN_DATA_URI}")` }}
             />
@@ -109,37 +114,37 @@ export default function HomePage() {
 
           <Container className="relative pt-16 sm:pt-20 lg:pt-28">
             <div className="grid gap-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-end lg:gap-12 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] xl:gap-16">
-              <div className="max-w-2xl lg:pb-2">
+              <div className="flex max-w-2xl flex-col lg:pb-2">
                 <div className="hero-rise" style={{ animationDelay: "150ms" }}>
                   <Eyebrow>NAIROBIX / GROWTH SYSTEMS</Eyebrow>
                 </div>
                 <h1
-                  className="hero-rise mt-7 text-balance font-display text-[2.375rem] font-medium leading-[1.08] tracking-tight text-white sm:text-[3.5rem] lg:text-[2.875rem] xl:text-[3.75rem]"
+                  className="hero-rise order-1 mt-7 text-balance font-display text-[2.375rem] font-medium leading-[1.08] tracking-tight text-white sm:text-[3.5rem] lg:order-none lg:text-[2.875rem] xl:text-[3.75rem]"
                   style={{ animationDelay: "300ms" }}
                 >
                   Growth handled as one
                   <br className="hidden sm:inline" /> connected system.
-                  <span className="mt-4 block text-[0.56em] leading-tight text-white/45 sm:mt-6">
-                    Not five disconnected vendors.
+                  <span className="mt-4 block text-[0.56em] leading-tight text-white/70 sm:mt-6">
+                    Every growth lever, working from one plan.
                   </span>
                 </h1>
                 <p
-                  className="hero-rise mt-8 max-w-xl text-lg leading-8 text-[var(--text-secondary)]"
+                  className="hero-rise order-3 mt-6 max-w-xl text-base leading-7 text-[var(--text-secondary)] lg:order-none lg:mt-8 lg:text-lg lg:leading-8"
                   style={{ animationDelay: "450ms" }}
                 >
-                  NairobiX connects strategy, acquisition, sales, automation, AI and digital
-                  infrastructure into one growth system — so the parts of your business responsible
-                  for growth work together.
+                  Campaigns can create demand; sales follow-up, customer experience and reporting
+                  decide what happens next. NairobiX connects those moving parts, so opportunities
+                  are easier to see, act on and improve.
                 </p>
                 <div
-                  className="hero-rise mt-9 flex flex-col gap-3 sm:flex-row sm:gap-4"
+                  className="hero-rise order-2 mt-6 flex flex-col gap-3 sm:flex-row sm:gap-4 lg:order-none lg:mt-9"
                   style={{ animationDelay: "600ms" }}
                 >
                   <Button href="/business-growth-audit" variant="primary" className="min-h-12">
-                    Start Your Free Growth Assessment →
+                    Find Your Growth Leak →
                   </Button>
                   <Button href={BOOKING_URL} variant="secondary" className="min-h-12">
-                    Book a Consultation →
+                    Talk to Us →
                   </Button>
                 </div>
               </div>
@@ -221,13 +226,13 @@ export default function HomePage() {
           </div>
         </Section>
 
-        {/* 03 — Solutions · an operating system of components (steel) */}
+        {/* 03 — Growth Systems · an operating system of components (steel) */}
         <Section tone="steel" border="top" seam="node" id="solutions" className="scroll-mt-[72px]">
           <Reveal>
             <div className="mb-10 max-w-2xl sm:mb-12">
-              <Eyebrow>SOLUTIONS</Eyebrow>
+              <Eyebrow>GROWTH SYSTEMS</Eyebrow>
               <Heading variant="display-md" className="mt-4">
-                Three ways we help businesses grow.
+                Growth gains momentum when its moving parts work together.
               </Heading>
               <p className="mt-4 text-lg leading-8 text-[var(--text-secondary)]">
                 Six capabilities, connected around the way your business grows.
@@ -505,7 +510,7 @@ export default function HomePage() {
               href={BOOKING_URL}
               className="group inline-flex items-center gap-2 font-semibold text-white/85 transition-colors duration-300 hover:text-white"
             >
-              Book a Consultation
+              Talk to Us
               <span
                 aria-hidden="true"
                 className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1.5 group-hover:text-[var(--color-primary)]"
@@ -569,7 +574,7 @@ export default function HomePage() {
                 </p>
                 <div className="mt-8">
                   <Button href="/business-growth-audit" variant="primary">
-                    Start the 4-Minute Assessment →
+                    Find Your Growth Leak →
                   </Button>
                 </div>
                 <p className="mt-4 max-w-md text-sm leading-6 text-[var(--text-tertiary)]">
@@ -603,10 +608,10 @@ export default function HomePage() {
           detail={<CtaSystemLine />}
         >
           <Button href="/business-growth-audit" variant="primary">
-            Start Your Free Growth Assessment →
+            Find Your Growth Leak →
           </Button>
           <Button href={BOOKING_URL} variant="secondary">
-            Book a Consultation →
+            Talk to Us →
           </Button>
         </CTASection>
       </main>

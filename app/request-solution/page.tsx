@@ -6,8 +6,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 
-const TITLE = "Request a Solution";
-const DESCRIPTION = "Request the NairobiX solution that best matches your growth priorities and business goals.";
+const TITLE = "Request a Growth System";
+const DESCRIPTION = "Tell NairobiX what is slowing growth and which capabilities you are considering. We will review the business context and shape a practical next step.";
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/request-solution" });
 

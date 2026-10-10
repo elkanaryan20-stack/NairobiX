@@ -229,7 +229,7 @@ export default async function InsightArticlePage({ params }: { params: Promise<{
                       href="/business-growth-audit"
                       className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-primary)] hover:text-white"
                     >
-                      Take the Growth Assessment <span aria-hidden="true">→</span>
+                      Find Your Growth Leak <span aria-hidden="true">→</span>
                     </Link>
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export default async function InsightArticlePage({ params }: { params: Promise<{
             Apply This to Your Business →
           </Button>
           <Button href={BOOKING_URL} variant="secondary">
-            Book a Consultation →
+            Talk to Us →
           </Button>
         </CTASection>
       </main>

@@ -61,7 +61,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
       <JsonLd
         data={breadcrumbJsonLd([
           { name: "Home", path: "/" },
-          { name: "Solutions", path: "/solutions" },
+          { name: "Growth Systems", path: "/solutions" },
           { name: solution.title, path: `/solutions/${solution.id}` },
         ])}
       />
@@ -86,7 +86,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
             <nav aria-label="Breadcrumb">
               <ol className="flex flex-wrap items-center gap-2 text-sm text-white/55">
                 <li>
-                  <Link href="/solutions" className="hover:text-white">Solutions</Link>
+                  <Link href="/solutions" className="hover:text-white">Growth Systems</Link>
                 </li>
                 <li aria-hidden="true">/</li>
                 <li aria-current="page" className="text-white/80">{solution.title}</li>
@@ -95,7 +95,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
             <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-stretch lg:gap-14">
               <div>
                 <p className={`${MONO} text-[var(--color-primary)]`}>
-                  Solution {pad(index + 1)} · {solution.title}
+                  Growth capability {pad(index + 1)} · {solution.title}
                 </p>
                 <Heading as="h1" variant="display-lg" className="mt-4">
                   {solution.heading}
@@ -111,10 +111,10 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
                 </ul>
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-4">
                   <Button href="/business-growth-audit" variant="primary">
-                    Start Your Growth Assessment →
+                    Find Your Growth Leak →
                   </Button>
                   <Button href={BOOKING_URL} variant="secondary">
-                    Book a Consultation →
+                    Talk to Us →
                   </Button>
                 </div>
               </div>
@@ -292,10 +292,10 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
               <Button href="/business-growth-audit" variant="primary">
-                Start Your Growth Assessment →
+                Find Your Growth Leak →
               </Button>
               <Button href={BOOKING_URL} variant="secondary">
-                Book a Consultation →
+                Talk to Us →
               </Button>
             </div>
           </div>

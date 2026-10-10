@@ -20,7 +20,7 @@ import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 import { BOOKING_URL, BUSINESSES_WE_SERVE, SOLUTION_CATEGORIES, TECHNOLOGY_PREVIEW } from "@/lib/site-data";
 
-const TITLE = "About Us: Growth Systems Built in Nairobi";
+const TITLE = "About: Growth Partner in Nairobi";
 const DESCRIPTION =
   "NairobiX is a Nairobi-based business growth and digital transformation partner. We bring strategy, marketing, CRM, automation, AI and digital solutions together around what a business actually needs.";
 
@@ -173,7 +173,7 @@ export default function AboutPage() {
             <div className="max-w-3xl">
               <Eyebrow>NAIROBIX · ABOUT</Eyebrow>
               <Heading as="h1" variant="display-lg" className="mt-5">
-                Built to help ambitious businesses grow as one connected system.
+                Growth takes a partner who can see the whole system.
               </Heading>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">
                 NairobiX is a business growth and digital transformation partner based in Nairobi. We
@@ -183,7 +183,7 @@ export default function AboutPage() {
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <Button href="/business-growth-audit" variant="primary" className="min-h-12">
-                  Start Your Free Growth Assessment →
+                  Find Your Growth Leak →
                 </Button>
                 <Button href="#how-we-work" variant="secondary" className="min-h-12">
                   Explore How We Work →
@@ -304,15 +304,15 @@ export default function AboutPage() {
               <div className="lg:sticky lg:top-28">
                 <Eyebrow>WHAT NAIROBIX IS</Eyebrow>
                 <Heading variant="display-md" className="mt-4">
-                  More than a vendor. A growth partner.
+                  Connected thinking, grounded in daily operations.
                 </Heading>
                 <p className="mt-6 text-lg leading-8 text-[var(--text-secondary)]">
-                  NairobiX works across strategy, marketing, CRM, automation, AI and digital solutions. But
-                  the value isn&apos;t the list of capabilities — it&apos;s connecting the right ones around
-                  what a business actually requires.
+                  NairobiX works across strategy, marketing, CRM, automation, AI and digital platforms.
+                  The work connects the right capabilities around what a business needs and how it
+                  operates, so each step builds on the system already in place.
                 </p>
                 <p className="mt-5 text-base leading-7 text-[var(--text-tertiary)]">
-                  A partner starts at the need, not at the solution.
+                  Each engagement starts with the need, the people involved and the systems already in place.
                 </p>
               </div>
             </Reveal>
@@ -435,14 +435,14 @@ export default function AboutPage() {
               <div className="max-w-2xl">
                 <Eyebrow>THE WORK</Eyebrow>
                 <Heading variant="display-md" className="mt-4">
-                  Six solution areas. One connected approach.
+                  Six growth capabilities. One connected approach.
                 </Heading>
               </div>
               <Link
                 href="/solutions"
                 className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white/85 transition-colors hover:text-white"
               >
-                Explore all solutions
+                Explore Growth Systems
                 <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 group-hover:text-[var(--color-primary)]">
                   →
                 </span>
@@ -651,10 +651,10 @@ export default function AboutPage() {
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
               <Button href="/business-growth-audit" variant="primary">
-                Assess Your Growth System →
+                Find Your Growth Leak →
               </Button>
               <Button href={BOOKING_URL} variant="secondary">
-                Book a Consultation →
+                Talk to Us →
               </Button>
             </div>
           </div>

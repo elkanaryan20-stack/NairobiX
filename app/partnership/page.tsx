@@ -16,7 +16,7 @@ import { pageMetadata } from "@/lib/seo";
 import { webPageJsonLd } from "@/lib/structured-data";
 import { OPPORTUNITY_ACCESS_OPTIONS } from "@/lib/forms/options";
 
-const TITLE = "NairobiX Opportunity Network";
+const TITLE = "Opportunity Network";
 const DESCRIPTION =
   "A curated network of individuals and organizations whose capabilities, expertise, relationships and opportunities can contribute to stronger business outcomes.";
 
