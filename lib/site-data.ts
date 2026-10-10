@@ -885,14 +885,15 @@ export const WHY_NAIROBIX = [
 // are joined up — used to contrast against the disconnected-tools reality
 // most businesses start from (see components/solutions/SystemComparison).
 export const CONNECTED_GROWTH_FLOW: { label: string; detail: string }[] = [
-  { label: "Marketing", detail: "Campaigns and content built to reach a specific, qualified audience." },
-  { label: "Lead Capture", detail: "Every inquiry is recorded automatically, wherever it comes from." },
-  { label: "CRM", detail: "One system of record the whole team can see and act on." },
-  { label: "Follow-up", detail: "Automated reminders make sure no inquiry sits untouched." },
-  { label: "Sales", detail: "The team works a visible, qualified pipeline instead of a cold list." },
-  { label: "Customer", detail: "A won deal becomes a tracked relationship, not a closed ticket." },
-  { label: "Reporting", detail: "What happened, and why, is visible without a manual roundup." },
-  { label: "Optimization", detail: "The system is refined based on what it actually produces." },
+  { label: "Strategy", detail: "Set growth objectives, priorities and a clear direction for the business." },
+  { label: "Attract", detail: "Reach the right people with relevant offers, content and channels." },
+  { label: "Capture", detail: "Record each inquiry as a lead, with the source and context needed to respond." },
+  { label: "Qualify", detail: "Understand fit, need and readiness so the team can prioritize well." },
+  { label: "Nurture", detail: "Build trust through useful communication and timely follow-up." },
+  { label: "Convert", detail: "Guide qualified leads through a clear sales process into customers." },
+  { label: "Deliver", detail: "Provide the agreed service and a consistent customer experience." },
+  { label: "Retain", detail: "Strengthen customer relationships and encourage repeat business." },
+  { label: "Measure", detail: "Track outcomes, learn what is working and improve the growth system." },
 ];
 
 // Disconnected pairs — the default state before a connected system exists.
