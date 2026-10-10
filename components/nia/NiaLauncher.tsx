@@ -11,6 +11,7 @@ export function NiaLauncher() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [homeHeroVisible, setHomeHeroVisible] = useState(pathname === "/");
   const {
     buttonRef,
     glyphClass,
@@ -38,6 +39,26 @@ export function NiaLauncher() {
     return () => window.removeEventListener("nairobix:mobile-nav", handleMobileNav);
   }, []);
 
+  // Keep the floating assistant clear of the homepage's first impression.
+  useEffect(() => {
+    if (pathname !== "/") {
+      setHomeHeroVisible(false);
+      return;
+    }
+
+    const hero = document.querySelector<HTMLElement>("[data-nia-hide-launcher]");
+    if (!hero) {
+      setHomeHeroVisible(false);
+      return;
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setHomeHeroVisible(Boolean(entry?.isIntersecting));
+    });
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [pathname]);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -63,7 +84,7 @@ export function NiaLauncher() {
         <div className="fixed inset-0 z-50 sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[min(640px,calc(100vh-7rem))] sm:w-[400px]">
           <NiaChat onClose={() => setIsOpen(false)} />
         </div>
-      ) : mobileNavOpen ? null : (
+      ) : mobileNavOpen || (pathname === "/" && homeHeroVisible) ? null : (
         // A click-through, clipped stage the size of the viewport: Nia can roll
         // to (and past) its edges without ever creating page overflow or
         // touching layout — she only ever moves by transform.
