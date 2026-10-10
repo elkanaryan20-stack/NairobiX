@@ -89,7 +89,7 @@ export default function HomePage() {
       <SiteHeader />
       <main className="bg-[#0b0b0d] text-white">
         {/* 1. Hero */}
-        <section className="relative isolate overflow-hidden border-b border-white/10">
+        <section data-nia-hide-launcher className="relative isolate overflow-hidden border-b border-white/10">
           <div className="absolute inset-0">
             <Image
               src={HERO_IMAGE.src}
