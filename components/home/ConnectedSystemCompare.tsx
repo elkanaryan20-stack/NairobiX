@@ -22,7 +22,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * from each pair and stops short: the height comes from the interruptions,
  * not from padding.
  *
- * Right — connected: one continuous line through all eight stages. Where
+ * Right — connected: one continuous line through all nine stages. Where
  * scroll-driven animation is supported, an orange progress line fills that
  * rail as the visitor scrolls through (.nx-rail-progress).
  */
