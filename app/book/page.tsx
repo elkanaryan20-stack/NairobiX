@@ -73,7 +73,7 @@ function SessionContext({ fromAssessment }: { fromAssessment: boolean }) {
           <p className="mt-3 text-sm leading-6 text-white/50">
             Not ready to talk yet?{" "}
             <Link href="/business-growth-audit" className="font-semibold text-white underline decoration-white/30 underline-offset-4 hover:decoration-[var(--color-primary)]">
-              Start the 4-minute assessment
+              Start the 3-minute assessment
             </Link>{" "}
             instead.
           </p>
