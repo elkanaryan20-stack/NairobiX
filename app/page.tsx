@@ -19,7 +19,8 @@ import { HeroSystem } from "@/components/home/HeroSystem";
 import { CapabilitySystem } from "@/components/home/CapabilitySystem";
 import { GrowthBreakdown } from "@/components/home/GrowthBreakdown";
 import { TechnologyMatrix } from "@/components/home/TechnologyMatrix";
-import { ConnectedSystemCompare } from "@/components/home/ConnectedSystemCompare";
+import { GrowthSystemOverview } from "@/components/home/GrowthSystemOverview";
+import { ScenarioShowcase } from "@/components/home/ScenarioShowcase";
 import { SolutionPathways } from "@/components/home/SolutionPathways";
 import { ProcessLine } from "@/components/home/ProcessLine";
 import { WhyNairobixList } from "@/components/home/WhyNairobixList";
@@ -42,7 +43,6 @@ import {
   WHAT_WE_DO,
   CONNECTED_CAPABILITIES,
   PROBLEMS_WE_SOLVE,
-  DISCONNECTED_PAIRS,
   CONNECTED_GROWTH_FLOW,
   ENGAGEMENT_PROCESS,
   PROBLEM_BREAK_POINTS,
@@ -302,39 +302,24 @@ export default function HomePage() {
           </Reveal>
         </Section>
 
-        {/* 05 — The connected growth system · flow (flow) */}
-        <Section tone="flow" border="top" seam="signal">
+        {/* 05 — Compact growth system summary */}
+        <Section tone="flow" border="top" seam="signal" spacing="compact">
           <Reveal>
             <div className="max-w-2xl">
-              <Eyebrow>THE CONNECTED GROWTH SYSTEM</Eyebrow>
+              <Eyebrow>THE NAIROBIX GROWTH SYSTEM</Eyebrow>
               <Heading variant="display-md" className="mt-4">
-                From disconnected tools to one connected system.
+                One growth journey. Every handoff connected.
               </Heading>
-              <p className="mt-5 text-lg leading-8 text-[var(--text-secondary)]">
-                Structurally, most businesses look like the left — a handful of tools that don&apos;t
-                talk to each other. NairobiX builds the right: one system that does.
+              <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
+                From strategy through measurement, each stage informs the next.
               </p>
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <div className="mt-12 lg:mt-14">
-              <ConnectedSystemCompare disconnected={DISCONNECTED_PAIRS} connected={CONNECTED_GROWTH_FLOW} />
+            <div className="mt-8">
+              <GrowthSystemOverview stages={CONNECTED_GROWTH_FLOW} />
             </div>
           </Reveal>
-          <div className="mt-12 border-t border-white/10 pt-6">
-            <Link
-              href="#solutions"
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-white/85 transition-colors duration-300 hover:text-white"
-            >
-              See how we can help
-              <span
-                aria-hidden="true"
-                className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1.5 group-hover:text-[var(--color-primary)]"
-              >
-                →
-              </span>
-            </Link>
-          </div>
         </Section>
 
         {/* 06 — Systems & technology · precision (technical) */}
@@ -360,45 +345,21 @@ export default function HomePage() {
           </Reveal>
         </Section>
 
-        {/* 11 — Illustrative scenarios · application, image-led (ink) */}
-        <Section tone="ink" border="top">
+        {/* 11 — Illustrative scenarios · selected, image-led feature */}
+        <Section tone="ink" border="top" spacing="compact">
           <Reveal>
-            <div className="mb-10 max-w-2xl">
+            <div className="mb-8 max-w-2xl">
               <Eyebrow>ILLUSTRATIVE SCENARIOS</Eyebrow>
               <Heading variant="display-md" className="mt-4">
-                What a connected growth system could look like
+                A connected system, in context.
               </Heading>
-              <p className="mt-4 text-sm leading-6 text-[var(--text-tertiary)]">
-                These are concept case studies illustrating how NairobiX approaches a growth system
-                for a given industry — not documented results from a specific client.
+              <p className="mt-3 text-sm leading-6 text-[var(--text-tertiary)]">
+                Explore a representative business situation and the system path NairobiX could build.
               </p>
             </div>
           </Reveal>
-          <Reveal>
-            <div className="grid gap-6 lg:grid-cols-3">
-              {CASE_STUDIES.map((study) => (
-                <Link key={study.slug} href={`/case-studies/${study.slug}`} className="group block">
-                  <ImageFrame
-                    src={study.image}
-                    alt={study.imageAlt}
-                    aspect="wide"
-                    sizes="(min-width: 1024px) 33vw, 100vw"
-                  />
-                  <div className="mt-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
-                      {study.label} · Concept Case Study
-                    </p>
-                    <Heading variant="heading-md" as="h3" className="mt-3">
-                      {study.title}
-                    </Heading>
-                    <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">{study.description}</p>
-                    <span className="mt-4 inline-flex items-center text-sm font-semibold text-white transition group-hover:text-[var(--color-primary)]">
-                      Explore the case study →
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+          <Reveal delay={120}>
+            <ScenarioShowcase scenarios={CASE_STUDIES.slice(0, 3)} />
           </Reveal>
         </Section>
 
