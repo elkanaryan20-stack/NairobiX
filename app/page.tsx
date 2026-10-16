@@ -19,7 +19,7 @@ import { HeroSystem } from "@/components/home/HeroSystem";
 import { CapabilitySystem } from "@/components/home/CapabilitySystem";
 import { GrowthBreakdown } from "@/components/home/GrowthBreakdown";
 import { TechnologyMatrix } from "@/components/home/TechnologyMatrix";
-import { ConnectedSystemCompare } from "@/components/home/ConnectedSystemCompare";
+import { GrowthSystemOverview } from "@/components/home/GrowthSystemOverview";
 import { ScenarioShowcase } from "@/components/home/ScenarioShowcase";
 import { SolutionPathways } from "@/components/home/SolutionPathways";
 import { ProcessLine } from "@/components/home/ProcessLine";
@@ -287,13 +287,13 @@ export default function HomePage() {
                 One growth journey. Every handoff connected.
               </Heading>
               <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
-                Strategy through retention, with measurement guiding what improves next.
+                From strategy through measurement, each stage informs the next.
               </p>
             </div>
           </Reveal>
           <Reveal delay={120}>
             <div className="mt-8">
-              <ConnectedSystemCompare connected={CONNECTED_GROWTH_FLOW} />
+              <GrowthSystemOverview stages={CONNECTED_GROWTH_FLOW} />
             </div>
           </Reveal>
         </Section>
