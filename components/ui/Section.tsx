@@ -37,6 +37,8 @@ const TONE_CLASSES = {
   ink: "bg-[#08090a] [--section-bg:#08090a]",
   /** Knowledge: the one light editorial surface. Content needs dark text. */
   editorial: "nx-env-editorial",
+  /** Homepage chapter surface: clean off-white with dark text. */
+  paper: "bg-[#F9F9FB] [--section-bg:#F9F9FB]",
   /** Focus: the richest warm near-black, directional light. */
   focus: "nx-env-focus",
   /** Clarity: pure black, deliberately bare. */

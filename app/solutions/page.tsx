@@ -21,7 +21,7 @@ const TITLE = "Growth Systems";
 const DESCRIPTION =
   "Explore how NairobiX connects marketing, sales, CRM, automation and digital infrastructure into a growth system built around your business.";
 
-export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/solutions" });
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/growth-systems" });
 
 // Each capability group gets its own environment (see globals.css).
 const GROUP_TONE = {
@@ -42,7 +42,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export default function SolutionsPage() {
   return (
     <>
-      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/solutions" })} />
+      <JsonLd data={webPageJsonLd({ name: TITLE, description: DESCRIPTION, path: "/growth-systems" })} />
       <JsonLd data={serviceListJsonLd(SOLUTION_CATEGORIES)} />
       <SiteHeader />
       <main id="main-content" className="bg-[#070808] text-white">

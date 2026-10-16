@@ -25,7 +25,7 @@ export const ROAM_MESSAGES = {
 // First match wins; checked against the current pathname.
 const PAGE_MESSAGES: [test: (path: string) => boolean, message: string][] = [
   [(p) => p === "/", "Exploring NairobiX?"],
-  [(p) => p.startsWith("/solutions"), "Looking for the right solution?"],
+  [(p) => p.startsWith("/growth-systems") || p.startsWith("/solutions"), "Looking for the right solution?"],
   [(p) => p.startsWith("/case-studies"), "Want to see how we think?"],
   [(p) => p.startsWith("/insights/"), "Have a question about this?"],
   [(p) => p.startsWith("/business-growth-audit"), "Ready to explore your growth?"],

@@ -140,7 +140,7 @@ export default function IndustriesPage() {
                 <Link href="/about#how-we-work" className="text-white hover:text-[var(--color-primary)]">
                   How NairobiX works →
                 </Link>
-                <Link href="/solutions" className="text-white hover:text-[var(--color-primary)]">
+                <Link href="/growth-systems" className="text-white hover:text-[var(--color-primary)]">
                   The six growth capabilities →
                 </Link>
               </div>

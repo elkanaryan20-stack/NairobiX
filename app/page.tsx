@@ -79,6 +79,16 @@ const HOME_WORKSPACE_PREVIEW = {
   ],
 };
 
+const GROWTH_MAP_PIECES = [
+  { label: "Marketing", x: 6, y: 10 },
+  { label: "CRM", x: 64, y: 8 },
+  { label: "Website", x: 70, y: 32 },
+  { label: "WhatsApp", x: 8, y: 56 },
+  { label: "Sales", x: 58, y: 60 },
+  { label: "Automation", x: 18, y: 84 },
+  { label: "Data", x: 76, y: 84 },
+];
+
 export const metadata: Metadata = homeMetadata();
 
 export default function HomePage() {
@@ -87,7 +97,7 @@ export default function HomePage() {
       <JsonLd data={webPageJsonLd({ name: HOME_TITLE, description: HOME_DESCRIPTION, path: "/" })} />
       <JsonLd data={faqPageJsonLd(FAQS.slice(0, 5))} />
       <SiteHeader />
-      <main className="bg-[#0b0b0d] text-white">
+      <main className="bg-[#121212] text-white">
         {/* 1. Hero */}
         <section data-nia-hide-launcher className="relative isolate overflow-hidden border-b border-white/10">
           <div className="absolute inset-0">
@@ -97,15 +107,10 @@ export default function HomePage() {
               fill
               preload
               sizes="100vw"
-              className="object-cover"
+              className="object-cover object-[center_56%]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#030304] via-[#030304]/70 to-[#030304]/20" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#030304] via-[#030304]/50 to-transparent" />
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 opacity-70 mix-blend-screen"
-              style={{ backgroundImage: "radial-gradient(ellipse at 76% 38%, rgba(249,115,22,0.16), transparent 46%), radial-gradient(ellipse at 86% 82%, rgba(38,91,105,0.14), transparent 44%)" }}
-            />
             <div
               className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
               style={{ backgroundImage: `url("${GRAIN_DATA_URI}")` }}
@@ -213,12 +218,31 @@ export default function HomePage() {
               </div>
             </Reveal>
             <Reveal delay={120} className="order-last lg:order-none">
-              <ImageFrame
-                src="/images/photography/modern-office.webp"
-                alt="Two colleagues working together at a bright, plant-filled office table."
-                aspect="landscape"
-                sizes="(min-width: 1024px) 45vw, 100vw"
-              />
+              <figure className="relative">
+                <div className="relative">
+                  <ImageFrame
+                    src="/images/photography/pexels-a-darmel-7710088.jpg"
+                    alt="A man arranging separate sticky notes across a wall while planning."
+                    aspect="landscape"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                  />
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+                    {GROWTH_MAP_PIECES.map((piece) => (
+                      <span
+                        key={piece.label}
+                        className="absolute flex items-center gap-1.5 rounded-sm bg-[#070707]/70 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/85 backdrop-blur-[2px] sm:text-[10px]"
+                        style={{ left: `${piece.x}%`, top: `${piece.y}%` }}
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full border border-white/60" />
+                        {piece.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <figcaption className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--text-tertiary)]">
+                  The pieces — each working on its own
+                </figcaption>
+              </figure>
             </Reveal>
             <Reveal delay={120} className="lg:col-span-2">
               <CapabilitySystem items={CONNECTED_CAPABILITIES} />
@@ -264,11 +288,11 @@ export default function HomePage() {
         {/* Industries · relevance, straight after the problems they shape (business).
             The same photographic strip as the /industries hero — one shared
             component, so the cards are identical on both pages. */}
-        <Section tone="business" border="top">
+        <Section tone="paper">
           <Reveal>
             <div className="mb-10 max-w-2xl">
-              <Eyebrow>INDUSTRIES WE UNDERSTAND</Eyebrow>
-              <Heading variant="display-md" className="mt-4">
+              <Eyebrow className="text-[#c2410c]">INDUSTRIES WE UNDERSTAND</Eyebrow>
+              <Heading variant="display-md" className="mt-4 !text-[#121212]">
                 Growth systems designed around your industry&apos;s realities.
               </Heading>
             </div>
@@ -403,7 +427,7 @@ export default function HomePage() {
               4:3 block above the content. */}
           <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[48%] lg:block">
             <Image
-              src="/images/photography/why-nairobix.jpg"
+              src="/images/photography/home-why-nairobix.webp"
               alt="A dramatic upward view of glass office towers in Nairobi's central business district."
               fill
               sizes="48vw"
@@ -419,7 +443,7 @@ export default function HomePage() {
           </div>
           <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
             <ImageFrame
-              src="/images/photography/why-nairobix.jpg"
+              src="/images/photography/home-why-nairobix.webp"
               alt="A dramatic upward view of glass office towers in Nairobi's central business district."
               aspect="landscape"
               sizes="(min-width: 640px) calc(100vw - 48px), calc(100vw - 32px)"

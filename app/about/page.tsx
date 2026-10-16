@@ -439,7 +439,7 @@ export default function AboutPage() {
                 </Heading>
               </div>
               <Link
-                href="/solutions"
+                href="/growth-systems"
                 className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white/85 transition-colors hover:text-white"
               >
                 Explore Growth Systems

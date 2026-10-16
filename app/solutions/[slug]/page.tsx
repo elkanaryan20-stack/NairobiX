@@ -61,7 +61,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
       <JsonLd
         data={breadcrumbJsonLd([
           { name: "Home", path: "/" },
-          { name: "Growth Systems", path: "/solutions" },
+          { name: "Growth Systems", path: "/growth-systems" },
           { name: solution.title, path: `/solutions/${solution.id}` },
         ])}
       />
@@ -86,7 +86,7 @@ export default async function SolutionDetailPage({ params }: { params: Promise<{
             <nav aria-label="Breadcrumb">
               <ol className="flex flex-wrap items-center gap-2 text-sm text-white/55">
                 <li>
-                  <Link href="/solutions" className="hover:text-white">Growth Systems</Link>
+                  <Link href="/growth-systems" className="hover:text-white">Growth Systems</Link>
                 </li>
                 <li aria-hidden="true">/</li>
                 <li aria-current="page" className="text-white/80">{solution.title}</li>

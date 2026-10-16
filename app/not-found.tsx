@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 const ROUTES = [
-  ["Growth Systems", "/solutions", "The six connected growth capabilities"],
+  ["Growth Systems", "/growth-systems", "The six connected growth capabilities"],
   ["Case studies", "/case-studies", "How we approach real business problems"],
   ["Insights", "/insights", "Practical thinking on growth, CRM, automation and AI"],
   ["Contact", "/contact", "Start a conversation with the team"],

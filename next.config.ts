@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
           { source: "/privacy", destination: "/privacy-policy", permanent: true },
           { source: "/terms", destination: "/terms-of-service", permanent: true },
         ],
+        [{ source: "/solutions", destination: "/growth-systems", permanent: true }],
       );
   },
 };
