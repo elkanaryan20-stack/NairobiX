@@ -14,9 +14,9 @@ type Scenario = {
 };
 
 const JOURNEYS: Record<string, string[]> = {
-  professional: ["Referral / web", "Lead captured", "Qualified", "Follow-up", "Engagement"],
-  property: ["Portal / WhatsApp", "Lead captured", "Agent assigned", "Viewing", "Deal"],
-  retail: ["Campaign / store", "Product visit", "Order", "Fulfilment", "Repeat"],
+  professional: ["Source", "Capture", "Qualify", "Follow-up", "Engagement"],
+  property: ["Enquiry", "Capture", "Assign", "Viewing", "Deal"],
+  retail: ["Campaign", "Visit", "Order", "Fulfil", "Repeat"],
 };
 
 function journeyFor(slug: string) {
